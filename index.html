@@ -3,9 +3,6 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-<meta http-equiv="Pragma" content="no-cache" />
-<meta http-equiv="Expires" content="0" />
 <title>CourtClass</title>
 <link rel="icon" href="data:,">
 <style>
@@ -24,13 +21,13 @@
 <script src="https://cdn.jsdelivr.net/npm/react@18.3.1/umd/react.production.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.24.7/babel.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 </head>
 <body>
 <div id="root"></div>
 <script type="text/babel" data-presets="react">
 const SUPABASE_URL = "https://ghwrwixkcdvtwbgdjhad.supabase.co";
-const SUPABASE_KEY = "sb_publishable_4nImQx09JqSVdqQ3RpbCag_IgfIRTNz";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdod3J3aXhrY2R2dHdiZ2RqaGFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYxMzEyMTksImV4cCI6MjEwMTcwNzIxOX0.BJuNv1HnMwTzBCYPuoV9HLRtEEBexwI_fJPojI528UE";
 
 const { useState, useEffect, useCallback } = React;
 
@@ -82,12 +79,7 @@ function loadData() {
   return { alumnos: [], clases: [], clubes: [], disponibilidad: [], disponibilidadExcepciones: {} };
 }
 
-const noCacheFetch = (url, options = {}) =>
-  fetch(url, { ...options, cache: "no-store", keepalive: true, headers: { ...(options.headers || {}), "Cache-Control": "no-cache" } });
-
-const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
-  global: { fetch: noCacheFetch },
-});
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 let currentUserId = null;
 

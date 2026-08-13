@@ -81,7 +81,26 @@ function uid() {
 }
 
 function loadData() {
-  return { alumnos: [], clases: [], clubes: [], disponibilidad: [], disponibilidadExcepciones: {} };
+  return {
+    alumnos: [],
+    clases: [],
+    clubes: [],
+    disponibilidad: [],
+    disponibilidadExcepciones: {},
+    plantillasWhatsApp: {
+      confirmacion: "Hola! Te confirmo tu clase{club} el {fechaHora}. Cualquier cosa avisame 🎾",
+      reprogramacion: "Hola! Te reprogramo la clase del {fechaHoraOriginal} para el {fechaHoraNueva} ({motivo}). ¿Te queda bien?",
+      cancelacion: "Hola! Te aviso que se cancela la clase del {fechaHora} ({motivo}). Coordinamos otra fecha.",
+    },
+  };
+}
+
+function armarMensajeWa(plantilla, vars) {
+  let texto = plantilla || "";
+  Object.keys(vars).forEach((k) => {
+    texto = texto.split(`{${k}}`).join(vars[k] ?? "");
+  });
+  return texto;
 }
 
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -89,7 +108,7 @@ const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 let currentUserId = null;
 
 function mergeConDefaults(d) {
-  return { alumnos: [], clases: [], clubes: [], disponibilidad: [], disponibilidadExcepciones: {}, ...(d || {}) };
+  return { ...loadData(), ...(d || {}) };
 }
 
 async function persist(data) {
@@ -141,6 +160,27 @@ async function fetchData() {
     console.error("Error leyendo datos", e);
     return loadData();
   }
+}
+
+async function persist(data) {
+  try {
+    await window.storage.set("profe-data", JSON.stringify(data), false);
+  } catch (e) {
+    console.error("No se pudo guardar", e);
+  }
+}
+
+async function fetchData() {
+  try {
+    const res = await window.storage.get("profe-data", false);
+    if (res && res.value) {
+      const parsed = JSON.parse(res.value);
+      return { ...loadData(), ...parsed };
+    }
+  } catch (e) {
+    // no existe todavía
+  }
+  return loadData();
 }
 
 function startOfWeek(date) {
@@ -223,6 +263,7 @@ function App({ onOpenAccount } = {}) {
   const [cancelando, setCancelando] = useState(null);
   const [editandoClub, setEditandoClub] = useState(null);
   const [editandoHorario, setEditandoHorario] = useState(null);
+  const [showPlantillas, setShowPlantillas] = useState(false);
   const [verAlumno, setVerAlumno] = useState(null);
   const [toast, setToast] = useState(null);
   const [syncStatus, setSyncStatus] = useState("idle"); // idle | saving | saved | error
@@ -435,9 +476,15 @@ function App({ onOpenAccount } = {}) {
     showToast("Horario actualizado");
   };
 
+  const guardarPlantillas = (nuevas) => {
+    save({ ...data, plantillasWhatsApp: nuevas });
+    setShowPlantillas(false);
+    showToast("Mensajes actualizados");
+  };
+
   return (
     <div className="app-shell" style={{ minHeight: "100vh", background: COLORS.bg, fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif", color: COLORS.ink, paddingBottom: 90 }}>
-      <Header onOpenAccount={onOpenAccount} syncStatus={syncStatus} />
+      <Header onOpenAccount={onOpenAccount} syncStatus={syncStatus} onOpenPlantillas={() => setShowPlantillas(true)} />
 
       {tab === "agenda" && (
         <AgendaView
@@ -532,10 +579,23 @@ function App({ onOpenAccount } = {}) {
         />
       )}
       {reprogramando && (
-        <ReprogramarModal clase={reprogramando} alumnos={data.alumnos} onClose={() => setReprogramando(null)} onSave={reprogramarClase} />
+        <ReprogramarModal
+          clase={reprogramando}
+          alumnos={data.alumnos}
+          clasesExistentes={data.clases}
+          plantillas={data.plantillasWhatsApp || loadData().plantillasWhatsApp}
+          onClose={() => setReprogramando(null)}
+          onSave={reprogramarClase}
+        />
       )}
       {cancelando && (
-        <CancelarModal clase={cancelando} alumnos={data.alumnos} onClose={() => setCancelando(null)} onSave={cancelarClase} />
+        <CancelarModal
+          clase={cancelando}
+          alumnos={data.alumnos}
+          plantillas={data.plantillasWhatsApp || loadData().plantillasWhatsApp}
+          onClose={() => setCancelando(null)}
+          onSave={cancelarClase}
+        />
       )}
       {editandoClub && (
         <EditarClubModal clase={editandoClub} clubes={data.clubes || []} onClose={() => setEditandoClub(null)} onSave={editarClubDeClase} />
@@ -545,6 +605,9 @@ function App({ onOpenAccount } = {}) {
       )}
       {verAlumno && (
         <AlumnoClasesModal alumno={verAlumno} clases={data.clases} clubes={data.clubes || []} onClose={() => setVerAlumno(null)} />
+      )}
+      {showPlantillas && (
+        <PlantillasModal plantillas={data.plantillasWhatsApp || loadData().plantillasWhatsApp} onClose={() => setShowPlantillas(false)} onSave={guardarPlantillas} />
       )}
       {toast && <Toast msg={toast} />}
     </div>
@@ -583,7 +646,7 @@ function Logo({ height = 34 }) {
   );
 }
 
-function Header({ onOpenAccount, syncStatus }) {
+function Header({ onOpenAccount, syncStatus, onOpenPlantillas }) {
   return (
     <div style={{ background: "#fff", padding: "18px 20px 16px", position: "relative", borderBottom: `1px solid ${COLORS.line}` }}>
       {syncStatus && syncStatus !== "idle" && (
@@ -591,7 +654,7 @@ function Header({ onOpenAccount, syncStatus }) {
           style={{
             position: "absolute",
             top: 18,
-            right: 62,
+            right: 106,
             fontSize: 11,
             fontWeight: 700,
             padding: "5px 10px",
@@ -607,6 +670,30 @@ function Header({ onOpenAccount, syncStatus }) {
           {syncStatus === "saved" && "✓ Guardado"}
           {syncStatus === "error" && "⚠ No se guardó"}
         </div>
+      )}
+      {onOpenPlantillas && (
+        <button
+          onClick={onOpenPlantillas}
+          title="Personalizar mensajes de WhatsApp"
+          style={{
+            position: "absolute",
+            top: 14,
+            right: 60,
+            background: COLORS.clayLight,
+            border: "none",
+            color: COLORS.ink,
+            width: 34,
+            height: 34,
+            borderRadius: "50%",
+            cursor: "pointer",
+            fontSize: 15,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          {"\u2699"}
+        </button>
       )}
       {onOpenAccount && (
         <button
@@ -636,6 +723,41 @@ function Header({ onOpenAccount, syncStatus }) {
       <Logo height={38} />
       <div style={{ fontSize: 13, color: COLORS.inkSoft, marginTop: 6, fontWeight: 600 }}>Mi agenda de clases</div>
     </div>
+  );
+}
+
+function PlantillasModal({ plantillas, onClose, onSave }) {
+  const [confirmacion, setConfirmacion] = useState(plantillas.confirmacion);
+  const [reprogramacion, setReprogramacion] = useState(plantillas.reprogramacion);
+  const [cancelacion, setCancelacion] = useState(plantillas.cancelacion);
+
+  const taStyle = { ...inputStyle, minHeight: 70, resize: "vertical", fontFamily: "inherit", marginBottom: 6 };
+
+  return (
+    <ModalShell title="Personalizar mensajes de WhatsApp" onClose={onClose}>
+      <div style={{ fontSize: 12.5, color: COLORS.inkSoft, marginBottom: 16 }}>
+        Usá estas palabras clave y se completan solas: <strong>{"{fechaHora}"}</strong>, <strong>{"{club}"}</strong>,{" "}
+        <strong>{"{motivo}"}</strong>, <strong>{"{fechaHoraOriginal}"}</strong>, <strong>{"{fechaHoraNueva}"}</strong>
+      </div>
+
+      <Label>Al confirmar una clase nueva</Label>
+      <textarea value={confirmacion} onChange={(e) => setConfirmacion(e.target.value)} style={taStyle} />
+      <div style={{ fontSize: 11, color: COLORS.inkSoft, marginBottom: 14 }}>Disponibles: {"{fechaHora}"}, {"{club}"}</div>
+
+      <Label>Al reprogramar</Label>
+      <textarea value={reprogramacion} onChange={(e) => setReprogramacion(e.target.value)} style={taStyle} />
+      <div style={{ fontSize: 11, color: COLORS.inkSoft, marginBottom: 14 }}>
+        Disponibles: {"{fechaHoraOriginal}"}, {"{fechaHoraNueva}"}, {"{motivo}"}
+      </div>
+
+      <Label>Al cancelar</Label>
+      <textarea value={cancelacion} onChange={(e) => setCancelacion(e.target.value)} style={taStyle} />
+      <div style={{ fontSize: 11, color: COLORS.inkSoft, marginBottom: 18 }}>Disponibles: {"{fechaHora}"}, {"{motivo}"}</div>
+
+      <button onClick={() => onSave({ confirmacion, reprogramacion, cancelacion })} style={primaryBtn}>
+        Guardar mensajes
+      </button>
+    </ModalShell>
   );
 }
 
@@ -733,8 +855,51 @@ function AgendaView({ data, weekStart, setWeekStart, onAddClick, onToggleCobrado
   const now = new Date();
   const in24h = new Date(now.getTime() + 24 * 3600 * 1000);
 
+  const fechasSemana = days.map((d) => d.toISOString().slice(0, 10));
+  const clasesSemana = data.clases.filter((c) => fechasSemana.includes(c.fecha) && c.estado !== "cancelada");
+  const pendientesSemana = clasesSemana.filter((c) => !c.cobrado).length;
+
   return (
     <div style={{ padding: "16px 16px 0" }}>
+      <div
+        style={{
+          background: `linear-gradient(120deg, ${COLORS.court} 0%, #8C4420 100%)`,
+          borderRadius: 14,
+          padding: "16px 18px",
+          marginBottom: 16,
+          position: "relative",
+          overflow: "hidden",
+        }}
+      >
+        <svg
+          width="120"
+          height="90"
+          viewBox="0 0 420 335"
+          style={{ position: "absolute", right: -14, bottom: -28, opacity: 0.22 }}
+        >
+          <circle cx="380" cy="150" r="42" fill="#B8D91A" />
+          <circle cx="150" cy="175" r="16" fill="#FAF9F6" />
+          <rect x="142" y="188" width="16" height="150" fill="#FAF9F6" />
+          <path d="M 150 198 Q 270 210 420 268" fill="none" stroke="#FAF9F6" strokeWidth="13" strokeLinecap="round" />
+          <g stroke="#FAF9F6" strokeWidth="9" strokeLinecap="round">
+            <line x1="150" y1="202" x2="135" y2="337" />
+            <line x1="217" y1="205" x2="212" y2="330" />
+            <line x1="285" y1="214" x2="285" y2="322" />
+            <line x1="352" y1="234" x2="358" y2="325" />
+            <line x1="420" y1="268" x2="420" y2="335" />
+          </g>
+        </svg>
+        <div style={{ color: "#fff", fontSize: 13, fontWeight: 700, opacity: 0.85 }}>Esta semana</div>
+        <div style={{ color: "#fff", fontSize: 26, fontWeight: 800, marginTop: 2 }}>
+          {clasesSemana.length} clase{clasesSemana.length === 1 ? "" : "s"}
+        </div>
+        {pendientesSemana > 0 && (
+          <div style={{ color: "#F3E0D3", fontSize: 12.5, fontWeight: 600, marginTop: 4 }}>
+            {pendientesSemana} pendiente{pendientesSemana === 1 ? "" : "s"} de cobro
+          </div>
+        )}
+      </div>
+
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
         <button
           onClick={() => {
@@ -917,7 +1082,11 @@ function AgendaView({ data, weekStart, setWeekStart, onAddClick, onToggleCobrado
                               .map((n) => alumnoByNombre[n])
                               .filter((a) => a && a.contacto);
                             if (alumnosConTel.length === 0) return null;
-                            const mensaje = `Hola! Te confirmo tu clase${c.clubId && clubById[c.clubId] ? ` en ${clubById[c.clubId].nombre}` : ""} el ${fmtFechaHoraLarga(c.fecha, c.hora)}. Cualquier cosa avisame 🎾`;
+                            const plantillasActuales = data.plantillasWhatsApp || loadData().plantillasWhatsApp;
+                            const mensaje = armarMensajeWa(plantillasActuales.confirmacion, {
+                              fechaHora: fmtFechaHoraLarga(c.fecha, c.hora),
+                              club: c.clubId && clubById[c.clubId] ? ` en ${clubById[c.clubId].nombre}` : "",
+                            });
                             return (
                               <div style={{ display: "flex", gap: 6, marginTop: 10, flexWrap: "wrap" }}>
                                 {alumnosConTel.map((a) => (
@@ -1824,12 +1993,6 @@ function AddClaseModal({ alumnos, clubes, clasesExistentes, onClose, onSave }) {
         Termina a las {horaFin} — se agenda de una vez, no hace falta cargarla en dos partes.
       </div>
 
-      {superpuesta && (
-        <div style={{ fontSize: 12.5, color: "#B23A3A", marginTop: -6, marginBottom: 12, fontWeight: 600 }}>
-          ⚠ Se superpone con la clase de {superpuesta.alumnosNombres.join(", ")} ({superpuesta.hora} - {addMinutos(superpuesta.hora, superpuesta.duracionMin || 60)}).
-        </div>
-      )}
-
       <Label>Precio {modoAbono ? "por clase" : "total de la clase"}</Label>
       <input
         type="number"
@@ -1894,6 +2057,23 @@ function AddClaseModal({ alumnos, clubes, clasesExistentes, onClose, onSave }) {
         </>
       )}
 
+      {superpuesta && (
+        <div
+          style={{
+            background: "#FBE4E4",
+            border: "1.5px solid #B23A3A",
+            borderRadius: 10,
+            padding: "10px 12px",
+            marginBottom: 12,
+            fontSize: 13,
+            color: "#8A2A2A",
+            fontWeight: 700,
+          }}
+        >
+          ⚠ Se pisa con la clase de {superpuesta.alumnosNombres.join(", ")} ({superpuesta.hora} - {addMinutos(superpuesta.hora, superpuesta.duracionMin || 60)}). Revisá el horario antes de guardar.
+        </div>
+      )}
+
       <button
         disabled={!puedeGuardar}
         onClick={() =>
@@ -1925,10 +2105,15 @@ function AddClaseModal({ alumnos, clubes, clasesExistentes, onClose, onSave }) {
         }
         style={{
           ...primaryBtn,
+          background: superpuesta ? "#B23A3A" : primaryBtn.background,
           opacity: puedeGuardar ? 1 : 0.4,
         }}
       >
-        {modoAbono ? `Agendar ${fechasAbono.length} clases del mes` : "Guardar clase"}
+        {superpuesta
+          ? "Guardar de todos modos (se pisa)"
+          : modoAbono
+          ? `Agendar ${fechasAbono.length} clases del mes`
+          : "Guardar clase"}
       </button>
     </ModalShell>
   );
@@ -2087,15 +2272,27 @@ function AddAlumnoModal({ clubes, alumno, onClose, onSave }) {
   );
 }
 
-function ReprogramarModal({ clase, alumnos, onClose, onSave }) {
+function ReprogramarModal({ clase, alumnos, clasesExistentes, plantillas, onClose, onSave }) {
   const [fecha, setFecha] = useState(clase.fecha);
   const [hora, setHora] = useState(clase.hora);
   const [motivo, setMotivo] = useState("Lluvia");
 
+  const duracion = clase.duracionMin || 60;
+  const horaFin = addMinutos(hora, duracion);
+  const superpuesta = (clasesExistentes || []).find((c) => {
+    if (c.id === clase.id || c.estado === "cancelada" || c.fecha !== fecha) return false;
+    const finExistente = addMinutos(c.hora, c.duracionMin || 60);
+    return rangosSuperponen(hora, horaFin, c.hora, finExistente);
+  });
+
   const alumnosConTel = clase.alumnosNombres
     .map((n) => (alumnos || []).find((a) => a.nombre === n))
     .filter((a) => a && a.contacto);
-  const mensajeWa = `Hola! Te reprogramo la clase del ${fmtFechaHoraLarga(clase.fecha, clase.hora)} para el ${fmtFechaHoraLarga(fecha, hora)} (${motivo.toLowerCase()}). ¿Te queda bien?`;
+  const mensajeWa = armarMensajeWa(plantillas.reprogramacion, {
+    fechaHoraOriginal: fmtFechaHoraLarga(clase.fecha, clase.hora),
+    fechaHoraNueva: fmtFechaHoraLarga(fecha, hora),
+    motivo: motivo.toLowerCase(),
+  });
 
   return (
     <ModalShell title="Reprogramar clase" onClose={onClose}>
@@ -2122,9 +2319,27 @@ function ReprogramarModal({ clase, alumnos, onClose, onSave }) {
       <Label>Nueva fecha</Label>
       <input type="date" value={fecha} onChange={(e) => setFecha(e.target.value)} style={{ ...inputStyle, marginBottom: 12 }} />
       <Label>Nuevo horario</Label>
-      <input type="time" value={hora} onChange={(e) => setHora(e.target.value)} style={{ ...inputStyle, marginBottom: 18 }} />
-      <button onClick={() => onSave(clase.id, fecha, hora, motivo)} style={primaryBtn}>
-        Confirmar reprogramación
+      <input type="time" value={hora} onChange={(e) => setHora(e.target.value)} style={{ ...inputStyle, marginBottom: 12 }} />
+
+      {superpuesta && (
+        <div
+          style={{
+            background: "#FBE4E4",
+            border: "1.5px solid #B23A3A",
+            borderRadius: 10,
+            padding: "10px 12px",
+            marginBottom: 12,
+            fontSize: 13,
+            color: "#8A2A2A",
+            fontWeight: 700,
+          }}
+        >
+          ⚠ Se pisa con la clase de {superpuesta.alumnosNombres.join(", ")} ({superpuesta.hora} - {addMinutos(superpuesta.hora, superpuesta.duracionMin || 60)}).
+        </div>
+      )}
+
+      <button onClick={() => onSave(clase.id, fecha, hora, motivo)} style={{ ...primaryBtn, background: superpuesta ? "#B23A3A" : primaryBtn.background, marginBottom: superpuesta ? 4 : 0 }}>
+        {superpuesta ? "Reprogramar de todos modos (se pisa)" : "Confirmar reprogramación"}
       </button>
       {alumnosConTel.length > 0 && (
         <div style={{ display: "flex", gap: 6, marginTop: 10, flexWrap: "wrap" }}>
@@ -2145,14 +2360,17 @@ function ReprogramarModal({ clase, alumnos, onClose, onSave }) {
   );
 }
 
-function CancelarModal({ clase, alumnos, onClose, onSave }) {
+function CancelarModal({ clase, alumnos, plantillas, onClose, onSave }) {
   const [motivo, setMotivo] = useState("Alumno");
   const [conAviso, setConAviso] = useState(true);
 
   const alumnosConTel = clase.alumnosNombres
     .map((n) => (alumnos || []).find((a) => a.nombre === n))
     .filter((a) => a && a.contacto);
-  const mensajeWa = `Hola! Te aviso que se cancela la clase del ${fmtFechaHoraLarga(clase.fecha, clase.hora)} (${motivo.toLowerCase()}). Coordinamos otra fecha.`;
+  const mensajeWa = armarMensajeWa(plantillas.cancelacion, {
+    fechaHora: fmtFechaHoraLarga(clase.fecha, clase.hora),
+    motivo: motivo.toLowerCase(),
+  });
 
   return (
     <ModalShell title="Cancelar clase" onClose={onClose}>
@@ -2678,9 +2896,12 @@ function AccountModal({ session, onClose }) {
   const [modoPass, setModoPass] = useState(false);
   const [password, setPassword] = useState("");
   const [confirmar, setConfirmar] = useState("");
+  const [nombre, setNombre] = useState((session.user.user_metadata && session.user.user_metadata.nombre) || "");
+  const [telefono, setTelefono] = useState((session.user.user_metadata && session.user.user_metadata.telefono) || "");
   const [error, setError] = useState("");
   const [aviso, setAviso] = useState("");
   const [cargando, setCargando] = useState(false);
+  const [cargandoPerfil, setCargandoPerfil] = useState(false);
 
   const cambiarPassword = async () => {
     setError(""); setAviso("");
@@ -2693,16 +2914,50 @@ function AccountModal({ session, onClose }) {
     else { setAviso("Contraseña actualizada."); setPassword(""); setConfirmar(""); setModoPass(false); }
   };
 
+  const guardarPerfil = async () => {
+    setError(""); setAviso("");
+    setCargandoPerfil(true);
+    const { error } = await supabaseClient.auth.updateUser({ data: { nombre: nombre.trim(), telefono: telefono.trim() } });
+    setCargandoPerfil(false);
+    if (error) setError(error.message);
+    else setAviso("Datos de perfil actualizados.");
+  };
+
   return (
     <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)", display: "flex", alignItems: "flex-end", zIndex: 300 }} onClick={onClose}>
-      <div style={{ background: COLORS.bg, width: "100%", maxWidth: 480, margin: "0 auto", borderRadius: "18px 18px 0 0", padding: 20, paddingBottom: 32 }} onClick={(e) => e.stopPropagation()}>
+      <div style={{ background: COLORS.bg, width: "100%", maxWidth: 480, margin: "0 auto", borderRadius: "18px 18px 0 0", padding: 20, paddingBottom: 32, maxHeight: "85vh", overflowY: "auto" }} onClick={(e) => e.stopPropagation()}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 18 }}>
           <div style={{ fontWeight: 800, fontSize: 17 }}>Mi cuenta</div>
           <button onClick={onClose} style={{ background: "none", border: "none", color: COLORS.inkSoft, cursor: "pointer", fontSize: 18 }}>✕</button>
         </div>
 
         <div style={{ fontSize: 12, fontWeight: 700, color: COLORS.inkSoft, textTransform: "uppercase", marginBottom: 4 }}>Email</div>
-        <div style={{ fontSize: 15, fontWeight: 600, marginBottom: 20 }}>{session.user.email}</div>
+        <div style={{ fontSize: 15, fontWeight: 600, marginBottom: 18 }}>{session.user.email}</div>
+
+        <div style={{ fontSize: 12, fontWeight: 700, color: COLORS.inkSoft, textTransform: "uppercase", marginBottom: 6 }}>Nombre y apellido</div>
+        <input
+          value={nombre}
+          onChange={(e) => setNombre(e.target.value)}
+          placeholder="Ej: Juan Pérez"
+          style={{ width: "100%", padding: "11px 12px", borderRadius: 10, border: `1px solid ${COLORS.line}`, fontSize: 15, marginBottom: 10, boxSizing: "border-box" }}
+        />
+        <div style={{ fontSize: 12, fontWeight: 700, color: COLORS.inkSoft, textTransform: "uppercase", marginBottom: 6 }}>Teléfono de contacto</div>
+        <input
+          value={telefono}
+          onChange={(e) => setTelefono(e.target.value)}
+          placeholder="Ej: 1123456789"
+          style={{ width: "100%", padding: "11px 12px", borderRadius: 10, border: `1px solid ${COLORS.line}`, fontSize: 15, marginBottom: 6, boxSizing: "border-box" }}
+        />
+        <div style={{ fontSize: 11.5, color: COLORS.inkSoft, marginBottom: 10 }}>
+          Estos datos van a servir para que un club te identifique cuando conectemos esa parte de la app.
+        </div>
+        <button
+          onClick={guardarPerfil}
+          disabled={cargandoPerfil}
+          style={{ width: "100%", background: "#fff", border: `1px solid ${COLORS.court}`, color: COLORS.court, padding: "11px 0", borderRadius: 12, fontSize: 14, fontWeight: 700, cursor: "pointer", marginBottom: 18, opacity: cargandoPerfil ? 0.6 : 1 }}
+        >
+          {cargandoPerfil ? "Un momento..." : "Guardar datos de perfil"}
+        </button>
 
         {!modoPass ? (
           <button
@@ -2727,7 +2982,6 @@ function AccountModal({ session, onClose }) {
               placeholder="Repetir contraseña"
               style={{ width: "100%", padding: "11px 12px", borderRadius: 10, border: `1px solid ${COLORS.line}`, fontSize: 15, marginBottom: 10, boxSizing: "border-box" }}
             />
-            {error && <div style={{ color: "#B23A3A", fontSize: 13, marginBottom: 8, fontWeight: 600 }}>{error}</div>}
             <button
               onClick={cambiarPassword}
               disabled={cargando}
@@ -2738,6 +2992,7 @@ function AccountModal({ session, onClose }) {
           </div>
         )}
 
+        {error && <div style={{ color: "#B23A3A", fontSize: 13, marginBottom: 14, fontWeight: 600 }}>{error}</div>}
         {aviso && <div style={{ color: COLORS.court, fontSize: 13, marginBottom: 14, fontWeight: 600 }}>{aviso}</div>}
 
         <button

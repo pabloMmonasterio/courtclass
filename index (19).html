@@ -1,0 +1,3039 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>CourtClass</title>
+<link rel="icon" type="image/png" href="data:image/png;base64,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">
+<link rel="apple-touch-icon" href="data:image/png;base64,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">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="CourtClass">
+<meta name="theme-color" content="#B85C2E">
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #E7E4DC; }
+  #root { min-height: 100vh; }
+  .app-shell { max-width: 480px; margin: 0 auto; background: #FAF9F6; position: relative; }
+  .fixed-bar { max-width: 480px; margin: 0 auto; }
+  @media (min-width: 900px) {
+    .app-shell { max-width: 1100px; min-height: 100vh; box-shadow: 0 0 60px rgba(0,0,0,0.10); }
+    .fixed-bar { max-width: 1100px; }
+    .week-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 12px; align-items: start; }
+    .week-grid > div { margin-bottom: 0 !important; }
+  }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/react@18.3.1/umd/react.production.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.24.7/babel.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel" data-presets="react">
+const SUPABASE_URL = "https://ghwrwixkcdvtwbgdjhad.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdod3J3aXhrY2R2dHdiZ2RqaGFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYxMzEyMTksImV4cCI6MjEwMTcwNzIxOX0.BJuNv1HnMwTzBCYPuoV9HLRtEEBexwI_fJPojI528UE";
+
+const { useState, useEffect, useCallback } = React;
+
+
+const IconSpan = ({ children, size = 16, color, style, ...rest }) => (
+  <span style={{ fontSize: size, lineHeight: 1, color: color || "currentColor", display: "inline-flex", alignItems: "center", justifyContent: "center", width: size, height: size, ...style }} {...rest}>
+    {children}
+  </span>
+);
+const Calendar = (p) => <IconSpan {...p}>{"\uD83D\uDCC5"}</IconSpan>;
+const Users = (p) => <IconSpan {...p}>{"\uD83D\uDC65"}</IconSpan>;
+const Building2 = (p) => <IconSpan {...p}>{"\uD83C\uDFE2"}</IconSpan>;
+const TrendingUp = (p) => <IconSpan {...p}>{"\uD83D\uDCC8"}</IconSpan>;
+const Plus = (p) => <IconSpan {...p} style={{ fontWeight: 900 }}>{"+"}</IconSpan>;
+const X = (p) => <IconSpan {...p} style={{ fontWeight: 900 }}>{"\u2715"}</IconSpan>;
+const CloudRain = (p) => <IconSpan {...p}>{"\uD83C\uDF27\uFE0F"}</IconSpan>;
+const Check = (p) => <IconSpan {...p} style={{ fontWeight: 900 }}>{"\u2713"}</IconSpan>;
+const Clock = (p) => <IconSpan {...p}>{"\uD83D\uDD52"}</IconSpan>;
+const Trash2 = (p) => <IconSpan {...p}>{"\uD83D\uDDD1\uFE0F"}</IconSpan>;
+const ChevronLeft = (p) => <IconSpan {...p} style={{ fontWeight: 900 }}>{"\u2039"}</IconSpan>;
+const ChevronRight = (p) => <IconSpan {...p} style={{ fontWeight: 900 }}>{"\u203A"}</IconSpan>;
+const Bell = (p) => <IconSpan {...p}>{"\uD83D\uDD14"}</IconSpan>;
+const Pencil = (p) => <IconSpan {...p}>{"\u270E"}</IconSpan>;
+const MessageCircle = (p) => <IconSpan {...p}>{"\uD83D\uDCAC"}</IconSpan>;
+
+
+const DIAS = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+const DIAS_CORTO = ["DOM", "LUN", "MAR", "MIE", "JUE", "VIE", "SAB"];
+
+const COLORS = {
+  bg: "#FAF9F6",
+  court: "#B85C2E",
+  courtDark: "#8C4420",
+  clay: "#D9A62E",
+  clayLight: "#F3E0D3",
+  disponible: "#7DA818",
+  ink: "#2B211B",
+  inkSoft: "#6B5F54",
+  line: "#E4DCD2",
+  card: "#FFFFFF",
+};
+
+const CLUB_COLORS = ["#3B6E8F", "#7A4FA3", "#B23A3A", "#2E8B7A", "#8C6D1F"];
+
+function uid() {
+  return Math.random().toString(36).slice(2, 10);
+}
+
+function loadData() {
+  return {
+    alumnos: [],
+    clases: [],
+    clubes: [],
+    disponibilidad: [],
+    disponibilidadExcepciones: {},
+    plantillasWhatsApp: {
+      confirmacion: "Hola! Te confirmo tu clase{club} el {fechaHora}. Cualquier cosa avisame 🎾",
+      reprogramacion: "Hola! Te reprogramo la clase del {fechaHoraOriginal} para el {fechaHoraNueva} ({motivo}). ¿Te queda bien?",
+      cancelacion: "Hola! Te aviso que se cancela la clase del {fechaHora} ({motivo}). Coordinamos otra fecha.",
+    },
+  };
+}
+
+function armarMensajeWa(plantilla, vars) {
+  let texto = plantilla || "";
+  Object.keys(vars).forEach((k) => {
+    texto = texto.split(`{${k}}`).join(vars[k] ?? "");
+  });
+  return texto;
+}
+
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let currentUserId = null;
+
+function mergeConDefaults(d) {
+  return { ...loadData(), ...(d || {}) };
+}
+
+async function persist(data) {
+  if (!currentUserId) return false;
+  try {
+    const { error } = await supabaseClient
+      .from("estado_app")
+      .upsert({ user_id: currentUserId, data, actualizado_en: new Date().toISOString() }, { onConflict: "user_id" });
+    if (error) {
+      console.error("No se pudo guardar", error);
+      return false;
+    }
+    return true;
+  } catch (e) {
+    console.error("No se pudo guardar", e);
+    return false;
+  }
+}
+
+async function leerFilaUsuario() {
+  const { data: filas, error } = await supabaseClient
+    .from("estado_app")
+    .select("data")
+    .eq("user_id", currentUserId)
+    .order("actualizado_en", { ascending: false });
+  if (error) throw error;
+  return filas && filas.length > 0 ? filas[0] : null;
+}
+
+async function fetchData() {
+  if (!currentUserId) return loadData();
+  try {
+    const fila = await leerFilaUsuario();
+    if (fila) return mergeConDefaults(fila.data);
+
+    const inicial = loadData();
+    const { error: insertError } = await supabaseClient.from("estado_app").insert({ user_id: currentUserId, data: inicial });
+
+    if (insertError) {
+      try {
+        const filaReintento = await leerFilaUsuario();
+        if (filaReintento) return mergeConDefaults(filaReintento.data);
+      } catch (e2) {
+        console.error("Error releyendo datos", e2);
+      }
+    }
+    return inicial;
+  } catch (e) {
+    console.error("Error leyendo datos", e);
+    return loadData();
+  }
+}
+
+
+
+function startOfWeek(date) {
+  const d = new Date(date);
+  const day = d.getDay();
+  d.setDate(d.getDate() - day);
+  d.setHours(0, 0, 0, 0);
+  return d;
+}
+
+function fmtMoney(n) {
+  return "$" + Number(n || 0).toLocaleString("es-AR");
+}
+
+function calcularGanancia(c) {
+  if (c.montoFijo != null && c.montoFijo !== "") return Number(c.montoFijo);
+  return (Number(c.precio || 0) * Number(c.porcentaje || 100)) / 100;
+}
+
+function fmtDateShort(d) {
+  return d.toLocaleDateString("es-AR", { day: "2-digit", month: "2-digit", year: "numeric" });
+}
+
+function addMinutos(hora, minutos) {
+  const [h, m] = hora.split(":").map(Number);
+  const total = h * 60 + m + minutos;
+  const hh = Math.floor(((total % 1440) + 1440) % 1440 / 60);
+  const mm = ((total % 60) + 60) % 60;
+  return `${String(hh).padStart(2, "0")}:${String(mm).padStart(2, "0")}`;
+}
+
+function rangosSuperponen(inicioA, finA, inicioB, finB) {
+  return inicioA < finB && inicioB < finA;
+}
+
+function linkWhatsApp(telefono, mensaje) {
+  const limpio = (telefono || "").replace(/[^\d]/g, "");
+  return `https://wa.me/${limpio}?text=${encodeURIComponent(mensaje)}`;
+}
+
+function fmtFechaLarga(fechaISO) {
+  const d = new Date(fechaISO + "T00:00:00");
+  const texto = d.toLocaleDateString("es-AR", { weekday: "long", day: "numeric", month: "long" });
+  return texto.charAt(0).toUpperCase() + texto.slice(1);
+}
+
+function fmtFechaHoraLarga(fechaISO, hora) {
+  return `${fmtFechaLarga(fechaISO)} a las ${hora}`;
+}
+
+function toISODateLocal(d) {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
+function fechasDelMesPorDiaSemana(fechaBase) {
+  const [y, m, day] = fechaBase.split("-").map(Number);
+  const base = new Date(y, m - 1, day);
+  const weekday = base.getDay();
+  const fechas = [];
+  const cursor = new Date(y, m - 1, 1);
+  while (cursor.getMonth() === m - 1) {
+    if (cursor.getDay() === weekday && cursor >= base) {
+      fechas.push(toISODateLocal(cursor));
+    }
+    cursor.setDate(cursor.getDate() + 1);
+  }
+  return fechas;
+}
+
+function App({ onOpenAccount } = {}) {
+  const [data, setData] = useState(null);
+  const [tab, setTab] = useState("agenda");
+  const [weekStart, setWeekStart] = useState(() => startOfWeek(new Date()));
+  const [showAddClase, setShowAddClase] = useState(false);
+  const [showAddAlumno, setShowAddAlumno] = useState(false);
+  const [editandoAlumno, setEditandoAlumno] = useState(null);
+  const [showAddClub, setShowAddClub] = useState(false);
+  const [editandoClubInfo, setEditandoClubInfo] = useState(null);
+  const [reprogramando, setReprogramando] = useState(null);
+  const [cancelando, setCancelando] = useState(null);
+  const [editandoClub, setEditandoClub] = useState(null);
+  const [editandoHorario, setEditandoHorario] = useState(null);
+  const [showPlantillas, setShowPlantillas] = useState(false);
+  const [verAlumno, setVerAlumno] = useState(null);
+  const [toast, setToast] = useState(null);
+  const [syncStatus, setSyncStatus] = useState("idle"); // idle | saving | saved | error
+
+  useEffect(() => {
+    fetchData().then((d) => setData(d));
+  }, []);
+
+  const save = useCallback((next) => {
+    setData(next);
+    setSyncStatus("saving");
+    persist(next).then((ok) => {
+      setSyncStatus(ok ? "saved" : "error");
+      if (ok) setTimeout(() => setSyncStatus((s) => (s === "saved" ? "idle" : s)), 1800);
+    });
+  }, []);
+
+  const showToast = (msg) => {
+    setToast(msg);
+    setTimeout(() => setToast(null), 2200);
+  };
+
+  if (!data) {
+    return (
+      <div style={{ minHeight: "100vh", background: COLORS.bg, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "system-ui" }}>
+        <div style={{ color: COLORS.inkSoft }}>Cargando...</div>
+      </div>
+    );
+  }
+
+  const addAlumno = (nombre, contacto, clubId) => {
+    const alumno = { id: uid(), nombre, contacto, clubId: clubId || null };
+    save({ ...data, alumnos: [...data.alumnos, alumno] });
+    showToast("Alumno agregado");
+  };
+
+  const deleteAlumno = (id) => {
+    save({ ...data, alumnos: data.alumnos.filter((a) => a.id !== id) });
+  };
+
+  const updateAlumno = (id, cambios) => {
+    save({ ...data, alumnos: data.alumnos.map((a) => (a.id === id ? { ...a, ...cambios } : a)) });
+    showToast("Alumno actualizado");
+  };
+
+  const addClub = (info) => {
+    const colorIndex = (data.clubes || []).length % CLUB_COLORS.length;
+    const club = { id: uid(), color: CLUB_COLORS[colorIndex], ...info };
+    save({ ...data, clubes: [...(data.clubes || []), club] });
+    showToast("Club agregado");
+  };
+
+  const updateClub = (id, cambios) => {
+    save({ ...data, clubes: data.clubes.map((c) => (c.id === id ? { ...c, ...cambios } : c)) });
+    showToast("Club actualizado");
+  };
+
+  const toggleDisponibilidad = (dia, hora) => {
+    const key = `${dia}-${hora}`;
+    const actual = data.disponibilidad || [];
+    const nueva = actual.includes(key) ? actual.filter((k) => k !== key) : [...actual, key];
+    save({ ...data, disponibilidad: nueva });
+  };
+
+  const limpiarDisponibilidadDia = (dia) => {
+    const actual = data.disponibilidad || [];
+    const nueva = actual.filter((k) => !k.startsWith(`${dia}-`));
+    save({ ...data, disponibilidad: nueva });
+  };
+
+  const marcarDiaCompletoDisponible = (dia, horas) => {
+    const actual = (data.disponibilidad || []).filter((k) => !k.startsWith(`${dia}-`));
+    const nuevas = horas.map((h) => `${dia}-${h}`);
+    save({ ...data, disponibilidad: [...actual, ...nuevas] });
+  };
+
+  const toggleExcepcion = (fecha, diaSemana, hora) => {
+    const key = `${fecha}-${hora}`;
+    const patronBase = (data.disponibilidad || []).includes(`${diaSemana}-${hora}`);
+    const excepciones = { ...(data.disponibilidadExcepciones || {}) };
+    const actual = excepciones[key];
+    const efectivoActual = actual === "on" ? true : actual === "off" ? false : patronBase;
+    const nuevoEfectivo = !efectivoActual;
+    if (nuevoEfectivo === patronBase) {
+      delete excepciones[key];
+    } else {
+      excepciones[key] = nuevoEfectivo ? "on" : "off";
+    }
+    save({ ...data, disponibilidadExcepciones: excepciones });
+  };
+
+  const setExcepcionDiaCompleto = (fecha, diaSemana, horas, forzarOn) => {
+    const excepciones = { ...(data.disponibilidadExcepciones || {}) };
+    horas.forEach((h) => {
+      const key = `${fecha}-${h}`;
+      const patronBase = (data.disponibilidad || []).includes(`${diaSemana}-${h}`);
+      if (forzarOn === patronBase) delete excepciones[key];
+      else excepciones[key] = forzarOn ? "on" : "off";
+    });
+    save({ ...data, disponibilidadExcepciones: excepciones });
+  };
+
+  const limpiarExcepcionesDia = (fecha) => {
+    const excepciones = { ...(data.disponibilidadExcepciones || {}) };
+    Object.keys(excepciones).forEach((key) => {
+      if (key.startsWith(`${fecha}-`)) delete excepciones[key];
+    });
+    save({ ...data, disponibilidadExcepciones: excepciones });
+  };
+
+  const deleteClub = (id) => {
+    save({
+      ...data,
+      clubes: data.clubes.filter((c) => c.id !== id),
+      clases: data.clases.map((c) => (c.clubId === id ? { ...c, clubId: null } : c)),
+    });
+  };
+
+  const addClase = (payload) => {
+    const nuevosAlumnos = payload.nuevosAlumnos || [];
+    const alumnosActualizados = nuevosAlumnos.length > 0 ? [...data.alumnos, ...nuevosAlumnos] : data.alumnos;
+
+    if (payload.multiple) {
+      const { fechas, abonoId, nuevosAlumnos: _drop, ...resto } = payload;
+      const nuevas = fechas.map((fecha) => ({
+        ...resto,
+        fecha,
+        id: uid(),
+        cobrado: false,
+        reprogramada: null,
+        estado: "programada",
+        cancelacion: null,
+        asistencia: null,
+        abonoId,
+      }));
+      save({ ...data, alumnos: alumnosActualizados, clases: [...data.clases, ...nuevas] });
+      showToast(`${nuevas.length} clases del abono agendadas`);
+    } else {
+      const { nuevosAlumnos: _drop, ...resto } = payload;
+      save({
+        ...data,
+        alumnos: alumnosActualizados,
+        clases: [
+          ...data.clases,
+          { ...resto, id: uid(), cobrado: false, reprogramada: null, estado: "programada", cancelacion: null, asistencia: null },
+        ],
+      });
+      showToast("Clase agendada");
+    }
+  };
+
+  const deleteClase = (id) => {
+    save({ ...data, clases: data.clases.filter((c) => c.id !== id) });
+  };
+
+  const toggleCobrado = (id) => {
+    save({
+      ...data,
+      clases: data.clases.map((c) => (c.id === id ? { ...c, cobrado: !c.cobrado } : c)),
+    });
+  };
+
+  const reprogramarClase = (id, nuevaFecha, nuevaHora, motivo) => {
+    save({
+      ...data,
+      clases: data.clases.map((c) =>
+        c.id === id
+          ? { ...c, fecha: nuevaFecha, hora: nuevaHora, reprogramada: { motivo, fecha_anterior: c.fecha, hora_anterior: c.hora } }
+          : c
+      ),
+    });
+    setReprogramando(null);
+    showToast("Clase reprogramada");
+  };
+
+  const cancelarClase = (id, motivo, conAviso) => {
+    save({
+      ...data,
+      clases: data.clases.map((c) =>
+        c.id === id ? { ...c, estado: "cancelada", cancelacion: { motivo, conAviso } } : c
+      ),
+    });
+    setCancelando(null);
+    showToast("Clase cancelada");
+  };
+
+  const reactivarClase = (id) => {
+    save({
+      ...data,
+      clases: data.clases.map((c) => (c.id === id ? { ...c, estado: "programada", cancelacion: null } : c)),
+    });
+  };
+
+  const marcarAsistencia = (id, valor) => {
+    save({
+      ...data,
+      clases: data.clases.map((c) => (c.id === id ? { ...c, asistencia: c.asistencia === valor ? null : valor } : c)),
+    });
+  };
+
+  const editarClubDeClase = (id, clubId) => {
+    save({ ...data, clases: data.clases.map((c) => (c.id === id ? { ...c, clubId } : c)) });
+    setEditandoClub(null);
+    showToast("Club actualizado");
+  };
+
+  const editarHorarioClase = (id, hora, duracionMin) => {
+    save({ ...data, clases: data.clases.map((c) => (c.id === id ? { ...c, hora, duracionMin } : c)) });
+    setEditandoHorario(null);
+    showToast("Horario actualizado");
+  };
+
+  const guardarPlantillas = (nuevas) => {
+    save({ ...data, plantillasWhatsApp: nuevas });
+    setShowPlantillas(false);
+    showToast("Mensajes actualizados");
+  };
+
+  return (
+    <div className="app-shell" style={{ minHeight: "100vh", background: COLORS.bg, fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif", color: COLORS.ink, paddingBottom: 90 }}>
+      <Header onOpenAccount={onOpenAccount} syncStatus={syncStatus} onOpenPlantillas={() => setShowPlantillas(true)} />
+
+      {tab === "agenda" && (
+        <AgendaView
+          data={data}
+          weekStart={weekStart}
+          setWeekStart={setWeekStart}
+          onAddClick={() => setShowAddClase(true)}
+          onToggleCobrado={toggleCobrado}
+          onDelete={deleteClase}
+          onReprogramar={(clase) => setReprogramando(clase)}
+          onCancelar={(clase) => setCancelando(clase)}
+          onReactivar={reactivarClase}
+          onMarcarAsistencia={marcarAsistencia}
+          onEditarClub={(clase) => setEditandoClub(clase)}
+          onEditarHorario={(clase) => setEditandoHorario(clase)}
+        />
+      )}
+      {tab === "alumnos" && (
+        <AlumnosView
+          data={data}
+          onAddClick={() => setShowAddAlumno(true)}
+          onDelete={deleteAlumno}
+          onEdit={(a) => setEditandoAlumno(a)}
+          onVerClases={(a) => setVerAlumno(a)}
+        />
+      )}
+      {tab === "clubes" && (
+        <ClubesView data={data} onAddClick={() => setShowAddClub(true)} onDelete={deleteClub} onEdit={(c) => setEditandoClubInfo(c)} />
+      )}
+      {tab === "disponibilidad" && (
+        <DisponibilidadView
+          data={data}
+          onToggle={toggleDisponibilidad}
+          onLimpiarDia={limpiarDisponibilidadDia}
+          onMarcarDiaCompleto={marcarDiaCompletoDisponible}
+          onToggleExcepcion={toggleExcepcion}
+          onSetExcepcionDiaCompleto={setExcepcionDiaCompleto}
+          onLimpiarExcepcionesDia={limpiarExcepcionesDia}
+        />
+      )}
+      {tab === "resumen" && <ResumenView data={data} />}
+
+      <TabBar tab={tab} setTab={setTab} />
+
+      {showAddClase && (
+        <AddClaseModal
+          alumnos={data.alumnos}
+          clubes={data.clubes || []}
+          clasesExistentes={data.clases}
+          onClose={() => setShowAddClase(false)}
+          onSave={(clase) => {
+            addClase(clase);
+            setShowAddClase(false);
+          }}
+        />
+      )}
+      {(showAddAlumno || editandoAlumno) && (
+        <AddAlumnoModal
+          clubes={data.clubes || []}
+          alumno={editandoAlumno}
+          onClose={() => {
+            setShowAddAlumno(false);
+            setEditandoAlumno(null);
+          }}
+          onSave={(a) => {
+            if (editandoAlumno) {
+              updateAlumno(editandoAlumno.id, a);
+            } else {
+              addAlumno(a.nombre, a.contacto, a.clubId);
+            }
+            setShowAddAlumno(false);
+            setEditandoAlumno(null);
+          }}
+        />
+      )}
+      {(showAddClub || editandoClubInfo) && (
+        <AddClubModal
+          club={editandoClubInfo}
+          onClose={() => {
+            setShowAddClub(false);
+            setEditandoClubInfo(null);
+          }}
+          onSave={(info) => {
+            if (editandoClubInfo) {
+              updateClub(editandoClubInfo.id, info);
+            } else {
+              addClub(info);
+            }
+            setShowAddClub(false);
+            setEditandoClubInfo(null);
+          }}
+        />
+      )}
+      {reprogramando && (
+        <ReprogramarModal
+          clase={reprogramando}
+          alumnos={data.alumnos}
+          clasesExistentes={data.clases}
+          plantillas={data.plantillasWhatsApp || loadData().plantillasWhatsApp}
+          onClose={() => setReprogramando(null)}
+          onSave={reprogramarClase}
+        />
+      )}
+      {cancelando && (
+        <CancelarModal
+          clase={cancelando}
+          alumnos={data.alumnos}
+          plantillas={data.plantillasWhatsApp || loadData().plantillasWhatsApp}
+          onClose={() => setCancelando(null)}
+          onSave={cancelarClase}
+        />
+      )}
+      {editandoClub && (
+        <EditarClubModal clase={editandoClub} clubes={data.clubes || []} onClose={() => setEditandoClub(null)} onSave={editarClubDeClase} />
+      )}
+      {editandoHorario && (
+        <EditarHorarioModal clase={editandoHorario} onClose={() => setEditandoHorario(null)} onSave={editarHorarioClase} />
+      )}
+      {verAlumno && (
+        <AlumnoClasesModal alumno={verAlumno} clases={data.clases} clubes={data.clubes || []} onClose={() => setVerAlumno(null)} />
+      )}
+      {showPlantillas && (
+        <PlantillasModal plantillas={data.plantillasWhatsApp || loadData().plantillasWhatsApp} onClose={() => setShowPlantillas(false)} onSave={guardarPlantillas} />
+      )}
+      {toast && <Toast msg={toast} />}
+    </div>
+  );
+}
+
+function Logo({ height = 34 }) {
+  return (
+    <svg height={height} viewBox="0 0 1900 520" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <clipPath id="ccRoundedSquare">
+          <rect x="40" y="40" width="440" height="440" rx="70" ry="70" />
+        </clipPath>
+      </defs>
+      <g clipPath="url(#ccRoundedSquare)">
+        <rect x="40" y="40" width="440" height="440" fill="#B85C2E" />
+        <circle cx="380" cy="150" r="42" fill="#B8D91A" />
+        <path d="M 40 350 Q 155 300 260 335 Q 370 372 480 335 L 480 480 L 40 480 Z" fill="#B8D91A" />
+        <circle cx="150" cy="175" r="16" fill="#FAF9F6" />
+        <rect x="142" y="188" width="16" height="150" fill="#FAF9F6" />
+        <path d="M 150 198 Q 270 210 420 268" fill="none" stroke="#FAF9F6" strokeWidth="13" strokeLinecap="round" />
+        <path d="M 95 340 Q 270 278 420 335" fill="none" stroke="#FAF9F6" strokeWidth="13" strokeLinecap="round" />
+        <g stroke="#FAF9F6" strokeWidth="9" strokeLinecap="round">
+          <line x1="150" y1="202" x2="135" y2="337" />
+          <line x1="217" y1="205" x2="212" y2="330" />
+          <line x1="285" y1="214" x2="285" y2="322" />
+          <line x1="352" y1="234" x2="358" y2="325" />
+          <line x1="420" y1="268" x2="420" y2="335" />
+        </g>
+      </g>
+      <rect x="40" y="40" width="440" height="440" rx="70" ry="70" fill="none" stroke="#FAF9F6" strokeWidth="6" />
+      <text x="545" y="315" fontFamily="Arial, Helvetica, sans-serif" fontWeight="800" letterSpacing="-1" fontSize="185" fill="#2B211B">
+        Court<tspan fill="#B85C2E">Class</tspan>
+      </text>
+    </svg>
+  );
+}
+
+function Header({ onOpenAccount, syncStatus, onOpenPlantillas }) {
+  return (
+    <div style={{ background: "#fff", padding: "18px 20px 16px", position: "relative", borderBottom: `1px solid ${COLORS.line}` }}>
+      {syncStatus && syncStatus !== "idle" && (
+        <div
+          style={{
+            position: "absolute",
+            top: 18,
+            right: 106,
+            fontSize: 11,
+            fontWeight: 700,
+            padding: "5px 10px",
+            borderRadius: 20,
+            background: syncStatus === "error" ? "#B23A3A" : COLORS.clayLight,
+            color: syncStatus === "error" ? "#fff" : COLORS.ink,
+            display: "flex",
+            alignItems: "center",
+            gap: 4,
+          }}
+        >
+          {syncStatus === "saving" && "Guardando..."}
+          {syncStatus === "saved" && "✓ Guardado"}
+          {syncStatus === "error" && "⚠ No se guardó"}
+        </div>
+      )}
+      {onOpenPlantillas && (
+        <button
+          onClick={onOpenPlantillas}
+          title="Personalizar mensajes de WhatsApp"
+          style={{
+            position: "absolute",
+            top: 14,
+            right: 60,
+            background: COLORS.clayLight,
+            border: "none",
+            color: COLORS.ink,
+            width: 34,
+            height: 34,
+            borderRadius: "50%",
+            cursor: "pointer",
+            fontSize: 15,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          {"\u2699"}
+        </button>
+      )}
+      {onOpenAccount && (
+        <button
+          onClick={onOpenAccount}
+          title="Mi cuenta"
+          style={{
+            position: "absolute",
+            top: 14,
+            right: 18,
+            background: COLORS.court,
+            border: "none",
+            color: "#fff",
+            width: 34,
+            height: 34,
+            borderRadius: "50%",
+            cursor: "pointer",
+            fontSize: 16,
+            fontWeight: 800,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          {"\u263A"}
+        </button>
+      )}
+      <Logo height={38} />
+      <div style={{ fontSize: 13, color: COLORS.inkSoft, marginTop: 6, fontWeight: 600 }}>Mi agenda de clases</div>
+    </div>
+  );
+}
+
+function PlantillasModal({ plantillas, onClose, onSave }) {
+  const [confirmacion, setConfirmacion] = useState(plantillas.confirmacion);
+  const [reprogramacion, setReprogramacion] = useState(plantillas.reprogramacion);
+  const [cancelacion, setCancelacion] = useState(plantillas.cancelacion);
+
+  const taStyle = { ...inputStyle, minHeight: 70, resize: "vertical", fontFamily: "inherit", marginBottom: 6 };
+
+  return (
+    <ModalShell title="Personalizar mensajes de WhatsApp" onClose={onClose}>
+      <div style={{ fontSize: 12.5, color: COLORS.inkSoft, marginBottom: 16 }}>
+        Usá estas palabras clave y se completan solas: <strong>{"{fechaHora}"}</strong>, <strong>{"{club}"}</strong>,{" "}
+        <strong>{"{motivo}"}</strong>, <strong>{"{fechaHoraOriginal}"}</strong>, <strong>{"{fechaHoraNueva}"}</strong>
+      </div>
+
+      <Label>Al confirmar una clase nueva</Label>
+      <textarea value={confirmacion} onChange={(e) => setConfirmacion(e.target.value)} style={taStyle} />
+      <div style={{ fontSize: 11, color: COLORS.inkSoft, marginBottom: 14 }}>Disponibles: {"{fechaHora}"}, {"{club}"}</div>
+
+      <Label>Al reprogramar</Label>
+      <textarea value={reprogramacion} onChange={(e) => setReprogramacion(e.target.value)} style={taStyle} />
+      <div style={{ fontSize: 11, color: COLORS.inkSoft, marginBottom: 14 }}>
+        Disponibles: {"{fechaHoraOriginal}"}, {"{fechaHoraNueva}"}, {"{motivo}"}
+      </div>
+
+      <Label>Al cancelar</Label>
+      <textarea value={cancelacion} onChange={(e) => setCancelacion(e.target.value)} style={taStyle} />
+      <div style={{ fontSize: 11, color: COLORS.inkSoft, marginBottom: 18 }}>Disponibles: {"{fechaHora}"}, {"{motivo}"}</div>
+
+      <button onClick={() => onSave({ confirmacion, reprogramacion, cancelacion })} style={primaryBtn}>
+        Guardar mensajes
+      </button>
+    </ModalShell>
+  );
+}
+
+function Toast({ msg }) {
+  return (
+    <div
+      style={{
+        position: "fixed",
+        bottom: 90,
+        left: "50%",
+        transform: "translateX(-50%)",
+        background: COLORS.ink,
+        color: "#fff",
+        padding: "10px 18px",
+        borderRadius: 30,
+        fontSize: 14,
+        fontWeight: 600,
+        boxShadow: "0 8px 24px rgba(0,0,0,0.25)",
+        zIndex: 100,
+      }}
+    >
+      {msg}
+    </div>
+  );
+}
+
+function TabBar({ tab, setTab }) {
+  const items = [
+    { id: "agenda", label: "Agenda", icon: Calendar },
+    { id: "alumnos", label: "Alumnos", icon: Users },
+    { id: "clubes", label: "Clubes", icon: Building2 },
+    { id: "disponibilidad", label: "Horarios", icon: Clock },
+    { id: "resumen", label: "Resumen", icon: TrendingUp },
+  ];
+  return (
+    <div
+      className="fixed-bar"
+      style={{
+        position: "fixed",
+        bottom: 0,
+        left: 0,
+        right: 0,
+        background: COLORS.card,
+        borderTop: `1px solid ${COLORS.line}`,
+        display: "flex",
+        padding: "8px 0 max(8px, env(safe-area-inset-bottom))",
+        zIndex: 50,
+      }}
+    >
+      {items.map(({ id, label, icon: Icon }) => (
+        <button
+          key={id}
+          onClick={() => setTab(id)}
+          style={{
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: 3,
+            background: "none",
+            border: "none",
+            padding: "6px 0",
+            cursor: "pointer",
+            color: tab === id ? COLORS.court : COLORS.inkSoft,
+          }}
+        >
+          <Icon size={20} strokeWidth={tab === id ? 2.5 : 2} />
+          <span style={{ fontSize: 11, fontWeight: tab === id ? 700 : 500 }}>{label}</span>
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function AgendaView({ data, weekStart, setWeekStart, onAddClick, onToggleCobrado, onDelete, onReprogramar, onCancelar, onReactivar, onMarcarAsistencia, onEditarClub, onEditarHorario }) {
+  const [filtroClub, setFiltroClub] = useState("todos");
+  const clubes = data.clubes || [];
+  const clubById = Object.fromEntries(clubes.map((c) => [c.id, c]));
+  const alumnoByNombre = Object.fromEntries((data.alumnos || []).map((a) => [a.nombre, a]));
+
+  const days = Array.from({ length: 7 }, (_, i) => {
+    const d = new Date(weekStart);
+    d.setDate(d.getDate() + i);
+    return d;
+  });
+
+  const clasesByDay = days.map((d) => {
+    const key = d.toISOString().slice(0, 10);
+    return data.clases
+      .filter((c) => c.fecha === key)
+      .filter((c) => filtroClub === "todos" || (filtroClub === "particular" ? !c.clubId : c.clubId === filtroClub))
+      .sort((a, b) => a.hora.localeCompare(b.hora));
+  });
+
+  const now = new Date();
+  const in24h = new Date(now.getTime() + 24 * 3600 * 1000);
+
+  const fechasSemana = days.map((d) => d.toISOString().slice(0, 10));
+  const clasesSemana = data.clases.filter((c) => fechasSemana.includes(c.fecha) && c.estado !== "cancelada");
+  const pendientesSemana = clasesSemana.filter((c) => !c.cobrado).length;
+
+  return (
+    <div style={{ padding: "16px 16px 0" }}>
+      <div
+        style={{
+          background: `linear-gradient(120deg, ${COLORS.court} 0%, #8C4420 100%)`,
+          borderRadius: 14,
+          padding: "16px 18px",
+          marginBottom: 16,
+          position: "relative",
+          overflow: "hidden",
+        }}
+      >
+        <svg
+          width="120"
+          height="90"
+          viewBox="0 0 420 335"
+          style={{ position: "absolute", right: -14, bottom: -28, opacity: 0.22 }}
+        >
+          <circle cx="380" cy="150" r="42" fill="#B8D91A" />
+          <circle cx="150" cy="175" r="16" fill="#FAF9F6" />
+          <rect x="142" y="188" width="16" height="150" fill="#FAF9F6" />
+          <path d="M 150 198 Q 270 210 420 268" fill="none" stroke="#FAF9F6" strokeWidth="13" strokeLinecap="round" />
+          <g stroke="#FAF9F6" strokeWidth="9" strokeLinecap="round">
+            <line x1="150" y1="202" x2="135" y2="337" />
+            <line x1="217" y1="205" x2="212" y2="330" />
+            <line x1="285" y1="214" x2="285" y2="322" />
+            <line x1="352" y1="234" x2="358" y2="325" />
+            <line x1="420" y1="268" x2="420" y2="335" />
+          </g>
+        </svg>
+        <div style={{ color: "#fff", fontSize: 13, fontWeight: 700, opacity: 0.85 }}>Esta semana</div>
+        <div style={{ color: "#fff", fontSize: 26, fontWeight: 800, marginTop: 2 }}>
+          {clasesSemana.length} clase{clasesSemana.length === 1 ? "" : "s"}
+        </div>
+        {pendientesSemana > 0 && (
+          <div style={{ color: "#F3E0D3", fontSize: 12.5, fontWeight: 600, marginTop: 4 }}>
+            {pendientesSemana} pendiente{pendientesSemana === 1 ? "" : "s"} de cobro
+          </div>
+        )}
+      </div>
+
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
+        <button
+          onClick={() => {
+            const d = new Date(weekStart);
+            d.setDate(d.getDate() - 7);
+            setWeekStart(d);
+          }}
+          style={navBtnStyle}
+        >
+          <ChevronLeft size={18} />
+        </button>
+        <div style={{ fontWeight: 700, fontSize: 14 }}>
+          {fmtDateShort(days[0])} – {fmtDateShort(days[6])}
+        </div>
+        <button
+          onClick={() => {
+            const d = new Date(weekStart);
+            d.setDate(d.getDate() + 7);
+            setWeekStart(d);
+          }}
+          style={navBtnStyle}
+        >
+          <ChevronRight size={18} />
+        </button>
+      </div>
+
+      {clubes.length > 0 && (
+        <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 16 }}>
+          <button
+            onClick={() => setFiltroClub("todos")}
+            style={{
+              ...chipStyle,
+              background: filtroClub === "todos" ? COLORS.ink : "#fff",
+              color: filtroClub === "todos" ? "#fff" : COLORS.ink,
+              borderColor: filtroClub === "todos" ? COLORS.ink : COLORS.line,
+            }}
+          >
+            Todos
+          </button>
+          <button
+            onClick={() => setFiltroClub("particular")}
+            style={{
+              ...chipStyle,
+              background: filtroClub === "particular" ? COLORS.ink : "#fff",
+              color: filtroClub === "particular" ? "#fff" : COLORS.ink,
+              borderColor: filtroClub === "particular" ? COLORS.ink : COLORS.line,
+            }}
+          >
+            Particular
+          </button>
+          {clubes.map((cl) => (
+            <button
+              key={cl.id}
+              onClick={() => setFiltroClub(cl.id)}
+              style={{
+                ...chipStyle,
+                background: filtroClub === cl.id ? cl.color : "#fff",
+                color: filtroClub === cl.id ? "#fff" : COLORS.ink,
+                borderColor: filtroClub === cl.id ? cl.color : COLORS.line,
+              }}
+            >
+              {cl.nombre}
+            </button>
+          ))}
+        </div>
+      )}
+
+      <div className="week-grid">
+        {days.map((d, i) => {
+        const key = d.toISOString().slice(0, 10);
+        const clases = clasesByDay[i];
+        const isToday = key === new Date().toISOString().slice(0, 10);
+        return (
+          <div key={key} style={{ marginBottom: 18 }}>
+            <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginBottom: 8 }}>
+              <span style={{ fontSize: 12, fontWeight: 800, letterSpacing: 1, color: isToday ? COLORS.clay : COLORS.inkSoft }}>
+                {DIAS_CORTO[d.getDay()]}
+              </span>
+              <span style={{ fontSize: 12, color: COLORS.inkSoft }}>{fmtDateShort(d)}</span>
+              {isToday && (
+                <span style={{ fontSize: 10, background: COLORS.clay, color: "#fff", padding: "1px 7px", borderRadius: 10, fontWeight: 700 }}>
+                  HOY
+                </span>
+              )}
+            </div>
+            {clases.length === 0 ? (
+              <div style={{ fontSize: 13, color: COLORS.inkSoft, paddingLeft: 2 }}>Sin clases</div>
+            ) : (
+              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                {clases.map((c) => {
+                  const claseDate = new Date(c.fecha + "T" + c.hora);
+                  const prontoRecordatorio = claseDate > now && claseDate <= in24h;
+                  const cancelada = c.estado === "cancelada";
+                  const finClase = new Date(c.fecha + "T" + addMinutos(c.hora, c.duracionMin || 60));
+                  const yaPaso = finClase < now;
+                  return (
+                    <div key={c.id} style={{ ...cardStyle, opacity: cancelada ? 0.6 : 1 }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                        <div>
+                          <div style={{ fontWeight: 700, fontSize: 15, display: "flex", alignItems: "center", gap: 6 }}>
+                            <Clock size={14} color={COLORS.court} />
+                            <span style={{ textDecoration: cancelada ? "line-through" : "none" }}>
+                              {c.hora} - {addMinutos(c.hora, c.duracionMin || 60)}
+                            </span>
+                            {prontoRecordatorio && !cancelada && (
+                              <span title="Recordatorio 24hs" style={{ display: "inline-flex" }}>
+                                <Bell size={13} color={COLORS.clay} />
+                              </span>
+                            )}
+                          </div>
+                          <div style={{ fontSize: 13.5, color: COLORS.inkSoft, marginTop: 2, display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
+                            {!cancelada && (
+                              <button
+                                onClick={() => onEditarClub(c)}
+                                style={{
+                                  fontSize: 10.5,
+                                  fontWeight: 700,
+                                  color: c.clubId && clubById[c.clubId] ? "#fff" : COLORS.inkSoft,
+                                  background: c.clubId && clubById[c.clubId] ? clubById[c.clubId].color : "transparent",
+                                  border: c.clubId && clubById[c.clubId] ? "none" : `1px dashed ${COLORS.line}`,
+                                  padding: "1px 7px",
+                                  borderRadius: 8,
+                                  cursor: "pointer",
+                                }}
+                              >
+                                {c.clubId && clubById[c.clubId] ? clubById[c.clubId].nombre : "Sin club ✎"}
+                              </button>
+                            )}
+                            {c.alumnosNombres.join(", ")}
+                          </div>
+                          {c.reprogramada && (
+                            <div style={{ fontSize: 11.5, color: COLORS.clay, marginTop: 4, display: "flex", alignItems: "center", gap: 4 }}>
+                              <CloudRain size={12} /> Reprogramada{c.reprogramada.motivo ? ` · ${c.reprogramada.motivo}` : ""}
+                            </div>
+                          )}
+                          {cancelada && (
+                            <div style={{ fontSize: 11.5, color: "#B23A3A", marginTop: 4, fontWeight: 700 }}>
+                              Cancelada{c.cancelacion?.motivo ? ` · ${c.cancelacion.motivo}` : ""}
+                              {c.cancelacion && (c.cancelacion.conAviso ? " · con aviso" : " · sin aviso")}
+                            </div>
+                          )}
+                          {!cancelada && c.asistencia && (
+                            <div
+                              style={{
+                                fontSize: 11.5,
+                                marginTop: 4,
+                                fontWeight: 700,
+                                color:
+                                  c.asistencia === "asistio" ? COLORS.court : c.asistencia === "falto_aviso" ? COLORS.clay : "#B23A3A",
+                              }}
+                            >
+                              {c.asistencia === "asistio" ? "Asistió" : c.asistencia === "falto_aviso" ? "Faltó con aviso" : "Faltó sin aviso"}
+                            </div>
+                          )}
+                        </div>
+                        <div style={{ textAlign: "right" }}>
+                          <div style={{ fontWeight: 700, fontSize: 14 }}>{fmtMoney(c.precio)}</div>
+                          <div style={{ fontSize: 11, color: COLORS.inkSoft }}>
+                            vos: {fmtMoney(calcularGanancia(c))}
+                          </div>
+                        </div>
+                      </div>
+
+                      {cancelada ? (
+                        <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
+                          <button onClick={() => onReactivar(c.id)} style={{ ...pillBtn, background: "transparent", color: COLORS.court, border: `1px solid ${COLORS.court}` }}>
+                            Reactivar
+                          </button>
+                          <button
+                            onClick={() => onDelete(c.id)}
+                            style={{ ...pillBtn, background: "transparent", color: COLORS.inkSoft, border: `1px solid ${COLORS.line}`, marginLeft: "auto" }}
+                          >
+                            <Trash2 size={12} />
+                          </button>
+                        </div>
+                      ) : (
+                        <>
+                          {(() => {
+                            const alumnosConTel = c.alumnosNombres
+                              .map((n) => alumnoByNombre[n])
+                              .filter((a) => a && a.contacto);
+                            if (alumnosConTel.length === 0) return null;
+                            const plantillasActuales = data.plantillasWhatsApp || loadData().plantillasWhatsApp;
+                            const mensaje = armarMensajeWa(plantillasActuales.confirmacion, {
+                              fechaHora: fmtFechaHoraLarga(c.fecha, c.hora),
+                              club: c.clubId && clubById[c.clubId] ? ` en ${clubById[c.clubId].nombre}` : "",
+                            });
+                            return (
+                              <div style={{ display: "flex", gap: 6, marginTop: 10, flexWrap: "wrap" }}>
+                                {alumnosConTel.map((a) => (
+                                  <a
+                                    key={a.id}
+                                    href={linkWhatsApp(a.contacto, mensaje)}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    style={{ ...pillBtn, background: "#25D366", color: "#fff", border: "none", textDecoration: "none" }}
+                                  >
+                                    <MessageCircle size={12} /> Avisar a {a.nombre.split(" ")[0]}
+                                  </a>
+                                ))}
+                              </div>
+                            );
+                          })()}
+                          <div style={{ display: "flex", gap: 8, marginTop: 10, flexWrap: "wrap" }}>
+                            <button
+                              onClick={() => onToggleCobrado(c.id)}
+                              style={{
+                                ...pillBtn,
+                                background: c.cobrado ? COLORS.court : "transparent",
+                                color: c.cobrado ? "#fff" : COLORS.court,
+                                border: `1px solid ${COLORS.court}`,
+                              }}
+                            >
+                              <Check size={12} /> {c.cobrado ? "Cobrado" : "Pendiente"}
+                            </button>
+                            <button onClick={() => onEditarHorario(c)} style={{ ...pillBtn, background: "transparent", color: COLORS.court, border: `1px solid ${COLORS.court}` }}>
+                              <Clock size={12} /> Editar horario
+                            </button>
+                            <button onClick={() => onReprogramar(c)} style={{ ...pillBtn, background: "transparent", color: COLORS.clay, border: `1px solid ${COLORS.clay}` }}>
+                              <CloudRain size={12} /> Reprogramar
+                            </button>
+                            <button onClick={() => onCancelar(c)} style={{ ...pillBtn, background: "transparent", color: "#B23A3A", border: "1px solid #B23A3A" }}>
+                              Cancelar
+                            </button>
+                            <button
+                              onClick={() => onDelete(c.id)}
+                              style={{ ...pillBtn, background: "transparent", color: COLORS.inkSoft, border: `1px solid ${COLORS.line}`, marginLeft: "auto" }}
+                            >
+                              <Trash2 size={12} />
+                            </button>
+                          </div>
+                          {yaPaso && (
+                            <div style={{ display: "flex", gap: 6, marginTop: 8, paddingTop: 8, borderTop: `1px dashed ${COLORS.line}` }}>
+                              <span style={{ fontSize: 11, color: COLORS.inkSoft, alignSelf: "center", marginRight: 2 }}>Asistencia:</span>
+                              <button
+                                onClick={() => onMarcarAsistencia(c.id, "asistio")}
+                                style={{
+                                  ...miniPillBtn,
+                                  background: c.asistencia === "asistio" ? COLORS.court : "transparent",
+                                  color: c.asistencia === "asistio" ? "#fff" : COLORS.court,
+                                  border: `1px solid ${COLORS.court}`,
+                                }}
+                              >
+                                Asistió
+                              </button>
+                              <button
+                                onClick={() => onMarcarAsistencia(c.id, "falto_aviso")}
+                                style={{
+                                  ...miniPillBtn,
+                                  background: c.asistencia === "falto_aviso" ? COLORS.clay : "transparent",
+                                  color: c.asistencia === "falto_aviso" ? "#fff" : COLORS.clay,
+                                  border: `1px solid ${COLORS.clay}`,
+                                }}
+                              >
+                                Faltó (avisó)
+                              </button>
+                              <button
+                                onClick={() => onMarcarAsistencia(c.id, "falto_sin_aviso")}
+                                style={{
+                                  ...miniPillBtn,
+                                  background: c.asistencia === "falto_sin_aviso" ? "#B23A3A" : "transparent",
+                                  color: c.asistencia === "falto_sin_aviso" ? "#fff" : "#B23A3A",
+                                  border: "1px solid #B23A3A",
+                                }}
+                              >
+                                Sin aviso
+                              </button>
+                            </div>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        );
+      })}
+      </div>
+
+      <button onClick={onAddClick} style={fabStyle}>
+        <Plus size={24} color="#fff" />
+      </button>
+    </div>
+  );
+}
+
+function AlumnosView({ data, onAddClick, onDelete, onEdit, onVerClases }) {
+  const clubById = Object.fromEntries((data.clubes || []).map((c) => [c.id, c]));
+  return (
+    <div style={{ padding: 16 }}>
+      <div style={{ fontWeight: 800, fontSize: 18, marginBottom: 12 }}>Alumnos ({data.alumnos.length})</div>
+      {data.alumnos.length === 0 && (
+        <div style={{ color: COLORS.inkSoft, fontSize: 14, marginBottom: 16 }}>Todavía no agregaste alumnos.</div>
+      )}
+      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        {data.alumnos.map((a) => (
+          <div key={a.id} style={{ ...cardStyle, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div onClick={() => onVerClases(a)} style={{ cursor: "pointer", flex: 1 }}>
+              <div style={{ fontWeight: 700, fontSize: 15, display: "flex", alignItems: "center", gap: 6 }}>
+                {a.nombre}
+                {a.clubId && clubById[a.clubId] && (
+                  <span
+                    style={{
+                      fontSize: 10.5,
+                      fontWeight: 700,
+                      color: "#fff",
+                      background: clubById[a.clubId].color,
+                      padding: "1px 7px",
+                      borderRadius: 8,
+                    }}
+                  >
+                    {clubById[a.clubId].nombre}
+                  </span>
+                )}
+              </div>
+              {a.contacto && <div style={{ fontSize: 13, color: COLORS.inkSoft }}>{a.contacto}</div>}
+            </div>
+            <div style={{ display: "flex", gap: 4 }}>
+              <button onClick={() => onEdit(a)} style={{ background: "none", border: "none", color: COLORS.inkSoft, cursor: "pointer", padding: 6 }}>
+                <Pencil size={16} />
+              </button>
+              <button onClick={() => onDelete(a.id)} style={{ background: "none", border: "none", color: COLORS.inkSoft, cursor: "pointer", padding: 6 }}>
+                <Trash2 size={16} />
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+      <button onClick={onAddClick} style={fabStyle}>
+        <Plus size={24} color="#fff" />
+      </button>
+    </div>
+  );
+}
+
+function primerDiaMes(d) {
+  return toISODateLocal(new Date(d.getFullYear(), d.getMonth(), 1));
+}
+function ultimoDiaMes(d) {
+  return toISODateLocal(new Date(d.getFullYear(), d.getMonth() + 1, 0));
+}
+
+const HORAS_DISPONIBILIDAD = Array.from({ length: 15 }, (_, i) => i + 8); // 8:00 a 22:00
+
+function DisponibilidadView({ data, onToggle, onLimpiarDia, onMarcarDiaCompleto, onToggleExcepcion, onSetExcepcionDiaCompleto, onLimpiarExcepcionesDia }) {
+  const [subVista, setSubVista] = useState("patron"); // patron | excepciones
+  const [mesRef, setMesRef] = useState(() => new Date());
+  const [semanaIdx, setSemanaIdx] = useState(0);
+
+  const disponibilidad = data.disponibilidad || [];
+  const excepciones = data.disponibilidadExcepciones || {};
+  const clubById = Object.fromEntries((data.clubes || []).map((c) => [c.id, c]));
+
+  const estaDisponiblePatron = (dia, hora) => disponibilidad.includes(`${dia}-${hora}`);
+  const diaCompletoPatron = (dia) => HORAS_DISPONIBILIDAD.every((h) => estaDisponiblePatron(dia, h));
+
+  // Ocupación global (para el patrón general): cualquier clase futura o de hoy, no cancelada,
+  // cruzada por día de semana + hora, sin importar el mes.
+  const ocupadoPatron = new Set();
+  {
+    const hoyStr = toISODateLocal(new Date());
+    (data.clases || [])
+      .filter((c) => c.estado !== "cancelada" && c.fecha >= hoyStr)
+      .forEach((c) => {
+        const diaSemana = new Date(c.fecha + "T00:00:00").getDay();
+        const [hh, mm] = c.hora.split(":").map(Number);
+        const inicioDec = hh + mm / 60;
+        const finDec = inicioDec + (c.duracionMin || 60) / 60;
+        HORAS_DISPONIBILIDAD.forEach((h) => {
+          if (inicioDec < h + 1 && finDec > h) ocupadoPatron.add(`${diaSemana}-${h}`);
+        });
+      });
+  }
+  const estaOcupadoPatron = (dia, hora) => ocupadoPatron.has(`${dia}-${hora}`);
+
+  const anio = mesRef.getFullYear();
+  const mes = mesRef.getMonth();
+  const nombreMes = mesRef.toLocaleDateString("es-AR", { month: "long", year: "numeric" });
+
+  // Semanas (domingo a sábado) que tocan este mes
+  const semanas = [];
+  {
+    let cursor = startOfWeek(new Date(anio, mes, 1));
+    const finMes = new Date(anio, mes + 1, 0);
+    while (cursor <= finMes) {
+      semanas.push(new Date(cursor));
+      cursor = new Date(cursor.getFullYear(), cursor.getMonth(), cursor.getDate() + 7);
+    }
+  }
+  const semanaBase = semanas[Math.min(semanaIdx, semanas.length - 1)] || startOfWeek(new Date(anio, mes, 1));
+  const diasSemana = Array.from({ length: 7 }, (_, i) => {
+    const d = new Date(semanaBase);
+    d.setDate(d.getDate() + i);
+    return d;
+  });
+
+  const efectivoEnFecha = (fechaStr, diaSemana, hora) => {
+    const key = `${fechaStr}-${hora}`;
+    const exc = excepciones[key];
+    if (exc === "on") return true;
+    if (exc === "off") return false;
+    return estaDisponiblePatron(diaSemana, hora);
+  };
+  const esExcepcion = (fechaStr, hora) => excepciones[`${fechaStr}-${hora}`] != null;
+
+  // Ocupación real por fecha exacta
+  const ocupadoInfo = {}; // key fecha-hora -> {clubId}
+  (data.clases || [])
+    .filter((c) => c.estado !== "cancelada")
+    .forEach((c) => {
+      const [hh, mm] = c.hora.split(":").map(Number);
+      const inicioDec = hh + mm / 60;
+      const finDec = inicioDec + (c.duracionMin || 60) / 60;
+      HORAS_DISPONIBILIDAD.forEach((h) => {
+        if (inicioDec < h + 1 && finDec > h) {
+          ocupadoInfo[`${c.fecha}-${h}`] = { clubId: c.clubId };
+        }
+      });
+    });
+
+  const diaCompletoExcepcion = (fechaStr, diaSemana) => HORAS_DISPONIBILIDAD.every((h) => efectivoEnFecha(fechaStr, diaSemana, h));
+
+  const modeBtn = (activo) => ({
+    flex: 1,
+    padding: "9px 0",
+    borderRadius: 10,
+    border: "none",
+    fontSize: 13,
+    fontWeight: 700,
+    cursor: "pointer",
+    background: activo ? COLORS.court : "#fff",
+    color: activo ? "#fff" : COLORS.ink,
+    boxShadow: activo ? "none" : `inset 0 0 0 1px ${COLORS.line}`,
+  });
+
+  return (
+    <div style={{ padding: 16 }}>
+      <div style={{ fontWeight: 800, fontSize: 18, marginBottom: 4 }}>Mis horarios disponibles</div>
+
+      <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
+        <button style={modeBtn(subVista === "patron")} onClick={() => setSubVista("patron")}>
+          Patrón general
+        </button>
+        <button style={modeBtn(subVista === "excepciones")} onClick={() => setSubVista("excepciones")}>
+          Excepciones por fecha
+        </button>
+      </div>
+
+      {subVista === "patron" ? (
+        <>
+          <div style={{ fontSize: 13, color: COLORS.inkSoft, marginBottom: 12 }}>
+            Esta es tu regla general: se repite todas las semanas. Tocá los bloques en los que podés dar clase habitualmente. Tocá el día para marcarlo completo o vaciarlo de una.
+          </div>
+          <div style={{ display: "flex", gap: 14, marginBottom: 14, flexWrap: "wrap" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11.5, color: COLORS.inkSoft }}>
+              <div style={{ width: 12, height: 12, borderRadius: 3, background: COLORS.disponible }} /> Disponible
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11.5, color: COLORS.inkSoft }}>
+              <div style={{ width: 12, height: 12, borderRadius: 3, background: "#E8B93E" }} /> Con clase agendada (hoy o después)
+            </div>
+          </div>
+          <div style={{ overflowX: "auto" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "44px repeat(7, 1fr)", gap: 3, minWidth: 460 }}>
+              <div />
+              {DIAS_CORTO.map((d, dia) => (
+                <button
+                  key={dia}
+                  onClick={() => (diaCompletoPatron(dia) ? onLimpiarDia(dia) : onMarcarDiaCompleto(dia, HORAS_DISPONIBILIDAD))}
+                  style={{
+                    border: "none",
+                    borderRadius: 6,
+                    padding: "6px 2px",
+                    fontSize: 10.5,
+                    fontWeight: 800,
+                    cursor: "pointer",
+                    background: diaCompletoPatron(dia) ? COLORS.disponible : COLORS.line,
+                    color: diaCompletoPatron(dia) ? "#fff" : COLORS.ink,
+                  }}
+                >
+                  {d}
+                </button>
+              ))}
+              {HORAS_DISPONIBILIDAD.map((hora) => (
+                <React.Fragment key={hora}>
+                  <div style={{ fontSize: 10.5, color: COLORS.inkSoft, display: "flex", alignItems: "center", justifyContent: "flex-end", paddingRight: 4 }}>
+                    {String(hora).padStart(2, "0")}
+                  </div>
+                  {DIAS_CORTO.map((_, dia) => {
+                    const activo = estaDisponiblePatron(dia, hora);
+                    const ocupado = estaOcupadoPatron(dia, hora);
+                    return (
+                      <button
+                        key={dia}
+                        onClick={() => onToggle(dia, hora)}
+                        title={ocupado ? "Tenés al menos una clase agendada en este horario" : undefined}
+                        style={{
+                          height: 26,
+                          border: "none",
+                          borderRadius: 4,
+                          cursor: "pointer",
+                          background: ocupado ? "#E8B93E" : activo ? COLORS.disponible : "#fff",
+                          boxShadow: ocupado || activo ? "none" : `inset 0 0 0 1px ${COLORS.line}`,
+                        }}
+                      />
+                    );
+                  })}
+                </React.Fragment>
+              ))}
+            </div>
+          </div>
+        </>
+      ) : (
+        <>
+          <div style={{ fontSize: 13, color: COLORS.inkSoft, marginBottom: 12 }}>
+            Acá corregís casos puntuales sin tocar tu regla general (ej: "los lunes suelo estar libre, pero este lunes 10 no").
+          </div>
+
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
+            <button
+              onClick={() => { setMesRef(new Date(anio, mes - 1, 1)); setSemanaIdx(0); }}
+              style={{ background: COLORS.card, border: `1px solid ${COLORS.line}`, borderRadius: 8, padding: 6, cursor: "pointer" }}
+            >
+              <ChevronLeft size={16} />
+            </button>
+            <div style={{ fontWeight: 700, fontSize: 14, textTransform: "capitalize" }}>{nombreMes}</div>
+            <button
+              onClick={() => { setMesRef(new Date(anio, mes + 1, 1)); setSemanaIdx(0); }}
+              style={{ background: COLORS.card, border: `1px solid ${COLORS.line}`, borderRadius: 8, padding: 6, cursor: "pointer" }}
+            >
+              <ChevronRight size={16} />
+            </button>
+          </div>
+
+          <div style={{ display: "flex", gap: 6, marginBottom: 14, flexWrap: "wrap" }}>
+            {semanas.map((s, i) => {
+              const fin = new Date(s);
+              fin.setDate(fin.getDate() + 6);
+              return (
+                <button
+                  key={i}
+                  onClick={() => setSemanaIdx(i)}
+                  style={{
+                    ...chipStyle,
+                    background: i === semanaIdx ? COLORS.court : "#fff",
+                    color: i === semanaIdx ? "#fff" : COLORS.ink,
+                    borderColor: i === semanaIdx ? COLORS.court : COLORS.line,
+                  }}
+                >
+                  {fmtDateShort(s)}–{fmtDateShort(fin)}
+                </button>
+              );
+            })}
+          </div>
+
+          <div style={{ display: "flex", gap: 14, marginBottom: 14, flexWrap: "wrap" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11.5, color: COLORS.inkSoft }}>
+              <div style={{ width: 12, height: 12, borderRadius: 3, background: COLORS.disponible }} /> Libre
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11.5, color: COLORS.inkSoft }}>
+              <div style={{ width: 12, height: 12, borderRadius: 3, background: "#E8B93E" }} /> Con clase agendada
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11.5, color: COLORS.inkSoft }}>
+              <div style={{ width: 12, height: 12, borderRadius: 3, boxShadow: `inset 0 0 0 2px ${COLORS.clay}` }} /> Excepción puntual
+            </div>
+          </div>
+
+          <div style={{ overflowX: "auto" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "44px repeat(7, 1fr)", gap: 3, minWidth: 460 }}>
+              <div />
+              {diasSemana.map((d, i) => {
+                const fechaStr = toISODateLocal(d);
+                const esHoy = fechaStr === toISODateLocal(new Date());
+                return (
+                  <button
+                    key={fechaStr}
+                    onClick={() => onSetExcepcionDiaCompleto(fechaStr, d.getDay(), HORAS_DISPONIBILIDAD, !diaCompletoExcepcion(fechaStr, d.getDay()))}
+                    style={{
+                      border: esHoy ? `1.5px solid ${COLORS.clay}` : "none",
+                      borderRadius: 6,
+                      padding: "4px 2px",
+                      fontSize: 10,
+                      fontWeight: 800,
+                      cursor: "pointer",
+                      background: diaCompletoExcepcion(fechaStr, d.getDay()) ? COLORS.disponible : COLORS.line,
+                      color: diaCompletoExcepcion(fechaStr, d.getDay()) ? "#fff" : COLORS.ink,
+                      lineHeight: 1.3,
+                    }}
+                  >
+                    {DIAS_CORTO[d.getDay()]}
+                    <br />
+                    {d.getDate()}
+                  </button>
+                );
+              })}
+
+              {HORAS_DISPONIBILIDAD.map((hora) => (
+                <React.Fragment key={hora}>
+                  <div style={{ fontSize: 10.5, color: COLORS.inkSoft, display: "flex", alignItems: "center", justifyContent: "flex-end", paddingRight: 4 }}>
+                    {String(hora).padStart(2, "0")}
+                  </div>
+                  {diasSemana.map((d) => {
+                    const fechaStr = toISODateLocal(d);
+                    const diaSemana = d.getDay();
+                    const activo = efectivoEnFecha(fechaStr, diaSemana, hora);
+                    const ocupInfo = ocupadoInfo[`${fechaStr}-${hora}`];
+                    const esExc = esExcepcion(fechaStr, hora);
+                    let bg = "#fff";
+                    let sombra = `inset 0 0 0 1px ${COLORS.line}`;
+                    if (ocupInfo) {
+                      bg = "#E8B93E";
+                      sombra = "none";
+                    } else if (activo) {
+                      bg = COLORS.court;
+                      sombra = "none";
+                    }
+                    if (esExc) sombra = `inset 0 0 0 2px ${COLORS.clay}`;
+                    return (
+                      <button
+                        key={fechaStr}
+                        onClick={() => onToggleExcepcion(fechaStr, diaSemana, hora)}
+                        title={ocupInfo ? `Clase agendada · ${fechaStr}` : esExc ? "Excepción puntual" : undefined}
+                        style={{ height: 26, border: "none", borderRadius: 4, cursor: "pointer", background: bg, boxShadow: sombra }}
+                      />
+                    );
+                  })}
+                </React.Fragment>
+              ))}
+            </div>
+          </div>
+
+          <button
+            onClick={() => diasSemana.forEach((d) => onLimpiarExcepcionesDia(toISODateLocal(d)))}
+            style={{ marginTop: 12, background: "none", border: "none", color: COLORS.inkSoft, fontSize: 12, fontWeight: 600, cursor: "pointer", padding: 0 }}
+          >
+            Borrar excepciones de esta semana (volver al patrón general)
+          </button>
+        </>
+      )}
+
+      <div style={{ fontSize: 12, color: COLORS.inkSoft, marginTop: 18 }}>
+        Esta disponibilidad es la base para cuando un club pueda asignarte clases directamente en los horarios que marques libres, sin tener que consultarte antes.
+      </div>
+    </div>
+  );
+}
+
+function ResumenView({ data }) {
+  const now = new Date();
+  const clubes = data.clubes || [];
+  const clubById = Object.fromEntries(clubes.map((c) => [c.id, c]));
+
+  const [desde, setDesde] = useState(primerDiaMes(now));
+  const [hasta, setHasta] = useState(ultimoDiaMes(now));
+  const [clubFiltro, setClubFiltro] = useState("todos");
+
+  const clasesDelRango = data.clases.filter((c) => c.fecha >= desde && c.fecha <= hasta);
+  const clasesFiltradas = clasesDelRango.filter(
+    (c) => clubFiltro === "todos" || (clubFiltro === "particular" ? !c.clubId : c.clubId === clubFiltro)
+  );
+
+  const clasesActivas = clasesFiltradas.filter((c) => c.estado !== "cancelada");
+  const canceladas = clasesFiltradas.filter((c) => c.estado === "cancelada");
+  const ausenciasSinAviso = clasesFiltradas.filter((c) => c.asistencia === "falto_sin_aviso").length;
+
+  const totalFacturado = clasesActivas.reduce((s, c) => s + Number(c.precio || 0), 0);
+  const totalCobrado = clasesActivas.filter((c) => c.cobrado).reduce((s, c) => s + Number(c.precio || 0), 0);
+  const totalPendiente = totalFacturado - totalCobrado;
+  const gananciaNeta = clasesActivas.reduce((s, c) => s + calcularGanancia(c), 0);
+
+  // El detalle final por club siempre muestra todos los clubes del rango, sin importar el filtro elegido arriba
+  const clasesActivasRango = clasesDelRango.filter((c) => c.estado !== "cancelada");
+  const porClub = {};
+  clasesActivasRango.forEach((c) => {
+    const key = c.clubId || "particular";
+    if (!porClub[key]) porClub[key] = { ganancia: 0, facturado: 0, cantidad: 0 };
+    porClub[key].ganancia += calcularGanancia(c);
+    porClub[key].facturado += Number(c.precio || 0);
+    porClub[key].cantidad += 1;
+  });
+
+  return (
+    <div style={{ padding: 16 }}>
+      <div style={{ fontWeight: 800, fontSize: 18, marginBottom: 12 }}>Resumen</div>
+
+      <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
+        <div style={{ flex: 1 }}>
+          <Label>Desde</Label>
+          <input type="date" value={desde} onChange={(e) => setDesde(e.target.value)} style={inputStyle} />
+        </div>
+        <div style={{ flex: 1 }}>
+          <Label>Hasta</Label>
+          <input type="date" value={hasta} onChange={(e) => setHasta(e.target.value)} style={inputStyle} />
+        </div>
+      </div>
+
+      {clubes.length > 0 && (
+        <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 14 }}>
+          <button
+            onClick={() => setClubFiltro("todos")}
+            style={{ ...chipStyle, background: clubFiltro === "todos" ? COLORS.ink : "#fff", color: clubFiltro === "todos" ? "#fff" : COLORS.ink, borderColor: clubFiltro === "todos" ? COLORS.ink : COLORS.line }}
+          >
+            Todos
+          </button>
+          <button
+            onClick={() => setClubFiltro("particular")}
+            style={{ ...chipStyle, background: clubFiltro === "particular" ? COLORS.ink : "#fff", color: clubFiltro === "particular" ? "#fff" : COLORS.ink, borderColor: clubFiltro === "particular" ? COLORS.ink : COLORS.line }}
+          >
+            Particular
+          </button>
+          {clubes.map((cl) => (
+            <button
+              key={cl.id}
+              onClick={() => setClubFiltro(cl.id)}
+              style={{ ...chipStyle, background: clubFiltro === cl.id ? cl.color : "#fff", color: clubFiltro === cl.id ? "#fff" : COLORS.ink, borderColor: clubFiltro === cl.id ? cl.color : COLORS.line }}
+            >
+              {cl.nombre}
+            </button>
+          ))}
+        </div>
+      )}
+
+      <div style={{ fontSize: 13, color: COLORS.inkSoft, marginBottom: 16 }}>
+        {clasesActivas.length} clases
+        {canceladas.length > 0 ? ` · ${canceladas.length} canceladas` : ""}
+        {ausenciasSinAviso > 0 ? ` · ${ausenciasSinAviso} ausencias sin aviso` : ""}
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+        <StatCard label="Facturado" value={fmtMoney(totalFacturado)} color={COLORS.ink} />
+        <StatCard label="Tu ganancia" value={fmtMoney(gananciaNeta)} color={COLORS.court} big />
+        <StatCard label="Cobrado" value={fmtMoney(totalCobrado)} color={COLORS.court} />
+        <StatCard label="Pendiente" value={fmtMoney(totalPendiente)} color={COLORS.clay} />
+      </div>
+
+      {clasesFiltradas.length === 0 && (
+        <div style={{ color: COLORS.inkSoft, fontSize: 14, marginTop: 20 }}>
+          No hay clases cargadas en ese rango{clubFiltro !== "todos" ? " para ese club" : ""}.
+        </div>
+      )}
+
+      {Object.keys(porClub).length > 0 && (
+        <div style={{ marginTop: 22 }}>
+          <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 2 }}>Detalle por club</div>
+          <div style={{ fontSize: 11.5, color: COLORS.inkSoft, marginBottom: 8 }}>Facturado trabajado en el período, sin importar el filtro de arriba</div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+            {Object.entries(porClub).map(([key, info]) => (
+              <div key={key} style={{ ...cardStyle, padding: "10px 14px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <div style={{ width: 8, height: 8, borderRadius: "50%", background: key === "particular" ? COLORS.inkSoft : clubById[key]?.color }} />
+                    <span style={{ fontSize: 13.5, fontWeight: 600 }}>{key === "particular" ? "Particular" : clubById[key]?.nombre || "Club eliminado"}</span>
+                    <span style={{ fontSize: 11.5, color: COLORS.inkSoft }}>· {info.cantidad} clases</span>
+                  </div>
+                  <span style={{ fontSize: 13.5, fontWeight: 700, color: COLORS.court }}>{fmtMoney(info.ganancia)}</span>
+                </div>
+                <div style={{ fontSize: 11.5, color: COLORS.inkSoft, marginTop: 3, marginLeft: 16 }}>
+                  Facturado total: {fmtMoney(info.facturado)}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function StatCard({ label, value, color, big }) {
+  return (
+    <div style={{ ...cardStyle, gridColumn: big ? "span 2" : "span 1" }}>
+      <div style={{ fontSize: 12, color: COLORS.inkSoft, fontWeight: 600, textTransform: "uppercase", letterSpacing: 0.5 }}>{label}</div>
+      <div style={{ fontSize: big ? 30 : 22, fontWeight: 800, color, marginTop: 4 }}>{value}</div>
+    </div>
+  );
+}
+
+function ModalShell({ title, onClose, children }) {
+  return (
+    <div
+      style={{
+        position: "fixed",
+        inset: 0,
+        background: "rgba(0,0,0,0.4)",
+        display: "flex",
+        alignItems: "flex-end",
+        zIndex: 200,
+      }}
+      onClick={onClose}
+    >
+      <div
+        style={{
+          background: COLORS.bg,
+          width: "100%",
+          maxHeight: "88vh",
+          overflowY: "auto",
+          borderRadius: "18px 18px 0 0",
+          padding: 20,
+          paddingBottom: 32,
+        }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+          <div style={{ fontWeight: 800, fontSize: 17 }}>{title}</div>
+          <button onClick={onClose} style={{ background: "none", border: "none", color: COLORS.inkSoft, cursor: "pointer" }}>
+            <X size={22} />
+          </button>
+        </div>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+function AddClaseModal({ alumnos, clubes, clasesExistentes, onClose, onSave }) {
+  const [seleccion, setSeleccion] = useState([]);
+  const [fecha, setFecha] = useState(new Date().toISOString().slice(0, 10));
+  const [hora, setHora] = useState("09:00");
+  const [duracionMin, setDuracionMin] = useState(60);
+  const [precio, setPrecio] = useState("");
+  const [porcentaje, setPorcentaje] = useState("100");
+  const [montoFijo, setMontoFijo] = useState("");
+  const [modoAbono, setModoAbono] = useState(false);
+  const [clubId, setClubId] = useState(null);
+  const [busquedaAlumno, setBusquedaAlumno] = useState("");
+  const [nuevoContacto, setNuevoContacto] = useState("");
+  const [mostrarLista, setMostrarLista] = useState(false);
+
+  const aplicarClub = (id) => {
+    setClubId(id);
+    const club = (clubes || []).find((cl) => cl.id === id);
+    if (club && club.gananciaTipo === "monto") {
+      setMontoFijo(String(club.gananciaValor ?? ""));
+      setPorcentaje("100");
+    } else if (club) {
+      setPorcentaje(String(club.gananciaValor ?? 100));
+      setMontoFijo("");
+    } else {
+      setMontoFijo("");
+    }
+  };
+
+  const horaFin = addMinutos(hora, duracionMin);
+
+  const fechasAbono = modoAbono ? fechasDelMesPorDiaSemana(fecha) : [fecha];
+  const totalAbono = fechasAbono.length * Number(precio || 0);
+
+  const conflictosAbono = modoAbono
+    ? fechasAbono.filter((f) =>
+        (clasesExistentes || []).some((c) => {
+          if (c.estado === "cancelada" || c.fecha !== f) return false;
+          const finExistente = addMinutos(c.hora, c.duracionMin || 60);
+          return rangosSuperponen(hora, horaFin, c.hora, finExistente);
+        })
+      )
+    : [];
+
+  const superpuesta = (clasesExistentes || []).find((c) => {
+    if (c.estado === "cancelada" || c.fecha !== fecha) return false;
+    const finExistente = addMinutos(c.hora, c.duracionMin || 60);
+    return rangosSuperponen(hora, horaFin, c.hora, finExistente);
+  });
+
+  const toggleAlumno = (a) => {
+    setSeleccion((prev) => {
+      const exists = prev.find((x) => x.id === a.id);
+      if (exists) return prev.filter((x) => x.id !== a.id);
+      if (prev.length >= 4) return prev;
+      if (prev.length === 0 && clubId === null && a.clubId) {
+        aplicarClub(a.clubId);
+      }
+      return [...prev, a];
+    });
+  };
+
+  const addNuevoAdHoc = () => {
+    if (!busquedaAlumno.trim() || seleccion.length >= 4) return;
+    setSeleccion((prev) => [...prev, { id: uid(), nombre: busquedaAlumno.trim(), contacto: nuevoContacto.trim(), adhoc: true }]);
+    setBusquedaAlumno("");
+    setNuevoContacto("");
+    setMostrarLista(false);
+  };
+
+  const alumnosFiltrados =
+    busquedaAlumno.trim().length === 0
+      ? []
+      : alumnos.filter(
+          (a) => a.nombre.toLowerCase().includes(busquedaAlumno.trim().toLowerCase()) && !seleccion.find((s) => s.id === a.id)
+        );
+
+  const yaExisteExacto = alumnos.some((a) => a.nombre.toLowerCase() === busquedaAlumno.trim().toLowerCase());
+
+  const puedeGuardar = seleccion.length > 0 && fecha && hora && precio;
+
+  return (
+    <ModalShell title="Nueva clase" onClose={onClose}>
+      {clubes && clubes.length > 0 && (
+        <>
+          <Label>Club / lugar</Label>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 14 }}>
+            <button
+              onClick={() => aplicarClub(null)}
+              style={{
+                ...chipStyle,
+                background: clubId === null ? COLORS.ink : "#fff",
+                color: clubId === null ? "#fff" : COLORS.ink,
+                borderColor: clubId === null ? COLORS.ink : COLORS.line,
+              }}
+            >
+              Particular
+            </button>
+            {clubes.map((cl) => (
+              <button
+                key={cl.id}
+                onClick={() => aplicarClub(cl.id)}
+                style={{
+                  ...chipStyle,
+                  background: clubId === cl.id ? cl.color : "#fff",
+                  color: clubId === cl.id ? "#fff" : COLORS.ink,
+                  borderColor: clubId === cl.id ? cl.color : COLORS.line,
+                }}
+              >
+                {cl.nombre}
+              </button>
+            ))}
+          </div>
+        </>
+      )}
+
+      <Label>Alumnos (hasta 4)</Label>
+
+      {seleccion.length > 0 && (
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 10 }}>
+          {seleccion.map((s) => (
+            <button
+              key={s.id}
+              onClick={() => toggleAlumno(s)}
+              style={{ ...chipStyle, background: COLORS.court, color: "#fff", borderColor: COLORS.court, display: "flex", alignItems: "center", gap: 5 }}
+            >
+              {s.nombre} <span style={{ fontWeight: 900 }}>✕</span>
+            </button>
+          ))}
+        </div>
+      )}
+
+      {seleccion.length < 4 && (
+        <div style={{ position: "relative", marginBottom: 6 }}>
+          <input
+            value={busquedaAlumno}
+            onChange={(e) => {
+              setBusquedaAlumno(e.target.value);
+              setMostrarLista(true);
+            }}
+            onFocus={() => setMostrarLista(true)}
+            placeholder="🔍 Buscar alumno por nombre..."
+            style={inputStyle}
+          />
+          {mostrarLista && busquedaAlumno.trim().length > 0 && (
+            <div
+              style={{
+                position: "absolute",
+                top: "100%",
+                left: 0,
+                right: 0,
+                background: "#fff",
+                border: `1px solid ${COLORS.line}`,
+                borderRadius: 10,
+                marginTop: 4,
+                maxHeight: 220,
+                overflowY: "auto",
+                zIndex: 10,
+                boxShadow: "0 8px 20px rgba(0,0,0,0.12)",
+              }}
+            >
+              {alumnosFiltrados.map((a) => (
+                <button
+                  key={a.id}
+                  onClick={() => {
+                    toggleAlumno(a);
+                    setBusquedaAlumno("");
+                    setMostrarLista(false);
+                  }}
+                  style={{
+                    display: "block",
+                    width: "100%",
+                    textAlign: "left",
+                    padding: "10px 12px",
+                    border: "none",
+                    background: "none",
+                    borderBottom: `1px solid ${COLORS.line}`,
+                    cursor: "pointer",
+                    fontSize: 14,
+                  }}
+                >
+                  {a.nombre}
+                </button>
+              ))}
+              {!yaExisteExacto && (
+                <div style={{ padding: 12 }}>
+                  <div style={{ fontSize: 12, color: COLORS.inkSoft, marginBottom: 6 }}>
+                    No encontrado. Cargar "{busquedaAlumno.trim()}" como alumno nuevo:
+                  </div>
+                  <input
+                    value={nuevoContacto}
+                    onChange={(e) => setNuevoContacto(e.target.value)}
+                    placeholder="Teléfono (opcional)"
+                    style={{ ...inputStyle, marginBottom: 8, fontSize: 13, padding: "8px 10px" }}
+                  />
+                  <button onClick={addNuevoAdHoc} style={{ ...pillBtn, background: COLORS.court, color: "#fff", border: "none", width: "100%", justifyContent: "center" }}>
+                    + Agregar como alumno nuevo
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+      {seleccion.length > 0 && (
+        <div style={{ fontSize: 12.5, color: COLORS.inkSoft, marginBottom: 14 }}>
+          Clase de {seleccion.length} alumno{seleccion.length > 1 ? "s" : ""}: {seleccion.map((s) => s.nombre).join(", ")}
+        </div>
+      )}
+
+      <Label>Fecha {modoAbono ? "de la primera clase" : ""}</Label>
+      <input type="date" value={fecha} onChange={(e) => setFecha(e.target.value)} style={{ ...inputStyle, marginBottom: 12 }} />
+
+      <div
+        onClick={() => setModoAbono((v) => !v)}
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 10,
+          padding: "10px 12px",
+          borderRadius: 10,
+          border: `1px solid ${modoAbono ? COLORS.court : COLORS.line}`,
+          background: modoAbono ? "#EAF2EF" : "#fff",
+          marginBottom: 14,
+          cursor: "pointer",
+        }}
+      >
+        <div
+          style={{
+            width: 18,
+            height: 18,
+            borderRadius: 5,
+            border: `2px solid ${modoAbono ? COLORS.court : COLORS.inkSoft}`,
+            background: modoAbono ? COLORS.court : "transparent",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexShrink: 0,
+          }}
+        >
+          {modoAbono && <Check size={12} color="#fff" />}
+        </div>
+        <div>
+          <div style={{ fontWeight: 700, fontSize: 13.5 }}>Abono mensual (repetir cada semana)</div>
+          <div style={{ fontSize: 12, color: COLORS.inkSoft }}>
+            Reserva automáticamente el mismo día y horario todas las semanas hasta fin de mes.
+          </div>
+        </div>
+      </div>
+
+      <Label>Horario</Label>
+      <input type="time" value={hora} onChange={(e) => setHora(e.target.value)} style={{ ...inputStyle, marginBottom: 12 }} />
+
+      <Label>Duración</Label>
+      <div style={{ display: "flex", gap: 6, marginBottom: 4 }}>
+        {[
+          { label: "1 h", min: 60 },
+          { label: "1:30 h", min: 90 },
+          { label: "2 h", min: 120 },
+          { label: "2:30 h", min: 150 },
+        ].map((opt) => (
+          <button
+            key={opt.min}
+            onClick={() => setDuracionMin(opt.min)}
+            style={{
+              ...chipStyle,
+              background: duracionMin === opt.min ? COLORS.court : "#fff",
+              color: duracionMin === opt.min ? "#fff" : COLORS.ink,
+              borderColor: duracionMin === opt.min ? COLORS.court : COLORS.line,
+            }}
+          >
+            {opt.label}
+          </button>
+        ))}
+      </div>
+      <div style={{ fontSize: 12, color: COLORS.inkSoft, marginBottom: 12 }}>
+        Termina a las {horaFin} — se agenda de una vez, no hace falta cargarla en dos partes.
+      </div>
+
+      <Label>Precio {modoAbono ? "por clase" : "total de la clase"}</Label>
+      <input
+        type="number"
+        inputMode="numeric"
+        value={precio}
+        onChange={(e) => setPrecio(e.target.value)}
+        placeholder="Ej: 8000"
+        style={{ ...inputStyle, marginBottom: modoAbono ? 6 : 12 }}
+      />
+
+      {modoAbono && (
+        <div style={{ background: COLORS.clayLight, borderRadius: 10, padding: "10px 12px", marginBottom: 12 }}>
+          <div style={{ fontSize: 13, fontWeight: 700, color: COLORS.ink }}>
+            {fechasAbono.length} clases este mes ({DIAS[new Date(fecha + "T00:00:00").getDay()]}s)
+          </div>
+          <div style={{ fontSize: 13, color: COLORS.ink, marginTop: 2 }}>
+            Total del mes: <strong>{fmtMoney(totalAbono)}</strong>
+          </div>
+          {conflictosAbono.length > 0 && (
+            <div style={{ fontSize: 12, color: "#B23A3A", marginTop: 6, fontWeight: 600 }}>
+              ⚠ {conflictosAbono.length} de esas fechas se superponen con clases que ya tenés agendadas.
+            </div>
+          )}
+        </div>
+      )}
+
+      {montoFijo !== "" ? (
+        <>
+          <Label>Tu ganancia fija por esta clase</Label>
+          <input
+            type="number"
+            inputMode="numeric"
+            value={montoFijo}
+            onChange={(e) => setMontoFijo(e.target.value)}
+            placeholder="Ej: 5000"
+            style={{ ...inputStyle, marginBottom: 4 }}
+          />
+          <div style={{ fontSize: 12, color: COLORS.inkSoft, marginBottom: 4 }}>
+            Autocompletado desde la configuración del club. Podés cambiarlo para esta clase puntual.
+          </div>
+          <button
+            onClick={() => setMontoFijo("")}
+            style={{ background: "none", border: "none", color: COLORS.court, fontSize: 12, fontWeight: 700, padding: 0, marginBottom: 18, cursor: "pointer" }}
+          >
+            Usar % en vez de monto fijo
+          </button>
+        </>
+      ) : (
+        <>
+          <Label>% que te queda a vos</Label>
+          <input
+            type="number"
+            inputMode="numeric"
+            value={porcentaje}
+            onChange={(e) => setPorcentaje(e.target.value)}
+            placeholder="100"
+            style={{ ...inputStyle, marginBottom: 4 }}
+          />
+          <div style={{ fontSize: 12, color: COLORS.inkSoft, marginBottom: 18 }}>
+            Usalo si alquilás cancha o trabajás para un club (ej: 70% para vos, 30% cancha). Se autocompleta según la configuración de cada club.
+          </div>
+        </>
+      )}
+
+      {superpuesta && (
+        <div
+          style={{
+            background: "#FBE4E4",
+            border: "1.5px solid #B23A3A",
+            borderRadius: 10,
+            padding: "10px 12px",
+            marginBottom: 12,
+            fontSize: 13,
+            color: "#8A2A2A",
+            fontWeight: 700,
+          }}
+        >
+          ⚠ Se pisa con la clase de {superpuesta.alumnosNombres.join(", ")} ({superpuesta.hora} - {addMinutos(superpuesta.hora, superpuesta.duracionMin || 60)}). Revisá el horario antes de guardar.
+        </div>
+      )}
+
+      <button
+        disabled={!puedeGuardar}
+        onClick={() =>
+          modoAbono
+            ? onSave({
+                multiple: true,
+                fechas: fechasAbono,
+                hora,
+                duracionMin,
+                precio: Number(precio),
+                porcentaje: Number(porcentaje) || 100,
+                alumnosNombres: seleccion.map((s) => s.nombre),
+                abonoId: uid(),
+                clubId,
+                montoFijo: montoFijo !== "" ? Number(montoFijo) : null,
+                nuevosAlumnos: seleccion.filter((s) => s.adhoc).map((s) => ({ id: s.id, nombre: s.nombre, contacto: s.contacto || "", clubId })),
+              })
+            : onSave({
+                fecha,
+                hora,
+                duracionMin,
+                precio: Number(precio),
+                porcentaje: Number(porcentaje) || 100,
+                alumnosNombres: seleccion.map((s) => s.nombre),
+                clubId,
+                montoFijo: montoFijo !== "" ? Number(montoFijo) : null,
+                nuevosAlumnos: seleccion.filter((s) => s.adhoc).map((s) => ({ id: s.id, nombre: s.nombre, contacto: s.contacto || "", clubId })),
+              })
+        }
+        style={{
+          ...primaryBtn,
+          background: superpuesta ? "#B23A3A" : primaryBtn.background,
+          opacity: puedeGuardar ? 1 : 0.4,
+        }}
+      >
+        {superpuesta
+          ? "Guardar de todos modos (se pisa)"
+          : modoAbono
+          ? `Agendar ${fechasAbono.length} clases del mes`
+          : "Guardar clase"}
+      </button>
+    </ModalShell>
+  );
+}
+
+function ClubesView({ data, onAddClick, onDelete, onEdit }) {
+  const clubes = data.clubes || [];
+  return (
+    <div style={{ padding: 16 }}>
+      <div style={{ fontWeight: 800, fontSize: 18, marginBottom: 4 }}>Clubes ({clubes.length})</div>
+      <div style={{ fontSize: 13, color: COLORS.inkSoft, marginBottom: 14 }}>
+        Si das clases en más de un lugar, agregalos acá para llevar cada agenda distinguida y evitar que se te crucen horarios entre clubes.
+      </div>
+      {clubes.length === 0 && (
+        <div style={{ color: COLORS.inkSoft, fontSize: 14, marginBottom: 16 }}>Todavía no agregaste ningún club/cancha.</div>
+      )}
+      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        {clubes.map((c) => (
+          <div key={c.id} style={{ ...cardStyle, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <div style={{ width: 10, height: 10, borderRadius: "50%", background: c.color }} />
+              <div>
+                <div style={{ fontWeight: 700, fontSize: 15 }}>{c.nombre}</div>
+                <div style={{ fontSize: 11.5, color: COLORS.inkSoft, marginTop: 1 }}>
+                  {c.gananciaTipo === "monto" ? `Ganancia fija: ${fmtMoney(c.gananciaValor)}/clase` : `Ganancia por defecto: ${c.gananciaValor ?? 100}%`}
+                </div>
+              </div>
+            </div>
+            <div style={{ display: "flex", gap: 4 }}>
+              <button onClick={() => onEdit(c)} style={{ background: "none", border: "none", color: COLORS.inkSoft, cursor: "pointer", padding: 6 }}>
+                <Pencil size={16} />
+              </button>
+              <button onClick={() => onDelete(c.id)} style={{ background: "none", border: "none", color: COLORS.inkSoft, cursor: "pointer", padding: 6 }}>
+                <Trash2 size={16} />
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+      <button onClick={onAddClick} style={fabStyle}>
+        <Plus size={24} color="#fff" />
+      </button>
+    </div>
+  );
+}
+
+function AddClubModal({ club, onClose, onSave }) {
+  const [nombre, setNombre] = useState(club?.nombre || "");
+  const [gananciaTipo, setGananciaTipo] = useState(club?.gananciaTipo || "porcentaje");
+  const [gananciaValor, setGananciaValor] = useState(club?.gananciaValor != null ? String(club.gananciaValor) : "100");
+
+  return (
+    <ModalShell title={club ? "Editar club" : "Nuevo club / cancha"} onClose={onClose}>
+      <Label>Nombre</Label>
+      <input value={nombre} onChange={(e) => setNombre(e.target.value)} style={{ ...inputStyle, marginBottom: 16 }} placeholder="Ej: Club Norte, Cancha de Juan..." />
+
+      <Label>Tu ganancia por defecto en este club</Label>
+      <div style={{ display: "flex", gap: 6, marginBottom: 10 }}>
+        <button
+          onClick={() => setGananciaTipo("porcentaje")}
+          style={{
+            ...chipStyle,
+            background: gananciaTipo === "porcentaje" ? COLORS.court : "#fff",
+            color: gananciaTipo === "porcentaje" ? "#fff" : COLORS.ink,
+            borderColor: gananciaTipo === "porcentaje" ? COLORS.court : COLORS.line,
+          }}
+        >
+          % del precio
+        </button>
+        <button
+          onClick={() => setGananciaTipo("monto")}
+          style={{
+            ...chipStyle,
+            background: gananciaTipo === "monto" ? COLORS.court : "#fff",
+            color: gananciaTipo === "monto" ? "#fff" : COLORS.ink,
+            borderColor: gananciaTipo === "monto" ? COLORS.court : COLORS.line,
+          }}
+        >
+          Monto fijo por clase
+        </button>
+      </div>
+      <input
+        type="number"
+        inputMode="numeric"
+        value={gananciaValor}
+        onChange={(e) => setGananciaValor(e.target.value)}
+        placeholder={gananciaTipo === "porcentaje" ? "Ej: 70" : "Ej: 5000"}
+        style={{ ...inputStyle, marginBottom: 6 }}
+      />
+      <div style={{ fontSize: 12, color: COLORS.inkSoft, marginBottom: 18 }}>
+        {gananciaTipo === "porcentaje"
+          ? "Se autocompleta al elegir este club en una clase nueva. Siempre lo podés cambiar a mano en esa clase puntual."
+          : "Cobrás este monto fijo por clase en este club, sin importar el precio que le cobrás al alumno. También editable a mano si hace falta."}
+      </div>
+
+      <button disabled={!nombre.trim()} onClick={() => onSave({ nombre: nombre.trim(), gananciaTipo, gananciaValor: Number(gananciaValor) || 0 })} style={{ ...primaryBtn, opacity: nombre.trim() ? 1 : 0.4 }}>
+        {club ? "Guardar cambios" : "Guardar club"}
+      </button>
+    </ModalShell>
+  );
+}
+
+function AddAlumnoModal({ clubes, alumno, onClose, onSave }) {
+  const [nombre, setNombre] = useState(alumno?.nombre || "");
+  const [contacto, setContacto] = useState(alumno?.contacto || "");
+  const [clubId, setClubId] = useState(alumno?.clubId ?? null);
+
+  return (
+    <ModalShell title={alumno ? "Editar alumno" : "Nuevo alumno"} onClose={onClose}>
+      <Label>Nombre</Label>
+      <input value={nombre} onChange={(e) => setNombre(e.target.value)} style={{ ...inputStyle, marginBottom: 12 }} placeholder="Nombre y apellido" />
+      <Label>Contacto</Label>
+      <input value={contacto} onChange={(e) => setContacto(e.target.value)} style={{ ...inputStyle, marginBottom: 12 }} placeholder="Teléfono o WhatsApp" />
+
+      {clubes && clubes.length > 0 && (
+        <>
+          <Label>Club</Label>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 18 }}>
+            <button
+              onClick={() => setClubId(null)}
+              style={{
+                ...chipStyle,
+                background: clubId === null ? COLORS.ink : "#fff",
+                color: clubId === null ? "#fff" : COLORS.ink,
+                borderColor: clubId === null ? COLORS.ink : COLORS.line,
+              }}
+            >
+              Particular
+            </button>
+            {clubes.map((cl) => (
+              <button
+                key={cl.id}
+                onClick={() => setClubId(cl.id)}
+                style={{
+                  ...chipStyle,
+                  background: clubId === cl.id ? cl.color : "#fff",
+                  color: clubId === cl.id ? "#fff" : COLORS.ink,
+                  borderColor: clubId === cl.id ? cl.color : COLORS.line,
+                }}
+              >
+                {cl.nombre}
+              </button>
+            ))}
+          </div>
+        </>
+      )}
+
+      <button
+        disabled={!nombre.trim()}
+        onClick={() => onSave({ nombre: nombre.trim(), contacto: contacto.trim(), clubId })}
+        style={{ ...primaryBtn, opacity: nombre.trim() ? 1 : 0.4 }}
+      >
+        {alumno ? "Guardar cambios" : "Guardar alumno"}
+      </button>
+    </ModalShell>
+  );
+}
+
+function ReprogramarModal({ clase, alumnos, clasesExistentes, plantillas, onClose, onSave }) {
+  const [fecha, setFecha] = useState(clase.fecha);
+  const [hora, setHora] = useState(clase.hora);
+  const [motivo, setMotivo] = useState("Lluvia");
+
+  const duracion = clase.duracionMin || 60;
+  const horaFin = addMinutos(hora, duracion);
+  const superpuesta = (clasesExistentes || []).find((c) => {
+    if (c.id === clase.id || c.estado === "cancelada" || c.fecha !== fecha) return false;
+    const finExistente = addMinutos(c.hora, c.duracionMin || 60);
+    return rangosSuperponen(hora, horaFin, c.hora, finExistente);
+  });
+
+  const alumnosConTel = clase.alumnosNombres
+    .map((n) => (alumnos || []).find((a) => a.nombre === n))
+    .filter((a) => a && a.contacto);
+  const mensajeWa = armarMensajeWa(plantillas.reprogramacion, {
+    fechaHoraOriginal: fmtFechaHoraLarga(clase.fecha, clase.hora),
+    fechaHoraNueva: fmtFechaHoraLarga(fecha, hora),
+    motivo: motivo.toLowerCase(),
+  });
+
+  return (
+    <ModalShell title="Reprogramar clase" onClose={onClose}>
+      <div style={{ fontSize: 13.5, color: COLORS.inkSoft, marginBottom: 14 }}>
+        {clase.alumnosNombres.join(", ")} · originalmente {fmtFechaHoraLarga(clase.fecha, clase.hora)}
+      </div>
+      <Label>Motivo</Label>
+      <div style={{ display: "flex", gap: 6, marginBottom: 12 }}>
+        {["Lluvia", "Alumno", "Profe", "Otro"].map((m) => (
+          <button
+            key={m}
+            onClick={() => setMotivo(m)}
+            style={{
+              ...chipStyle,
+              background: motivo === m ? COLORS.clay : "#fff",
+              color: motivo === m ? "#fff" : COLORS.ink,
+              borderColor: motivo === m ? COLORS.clay : COLORS.line,
+            }}
+          >
+            {m}
+          </button>
+        ))}
+      </div>
+      <Label>Nueva fecha</Label>
+      <input type="date" value={fecha} onChange={(e) => setFecha(e.target.value)} style={{ ...inputStyle, marginBottom: 12 }} />
+      <Label>Nuevo horario</Label>
+      <input type="time" value={hora} onChange={(e) => setHora(e.target.value)} style={{ ...inputStyle, marginBottom: 12 }} />
+
+      {superpuesta && (
+        <div
+          style={{
+            background: "#FBE4E4",
+            border: "1.5px solid #B23A3A",
+            borderRadius: 10,
+            padding: "10px 12px",
+            marginBottom: 12,
+            fontSize: 13,
+            color: "#8A2A2A",
+            fontWeight: 700,
+          }}
+        >
+          ⚠ Se pisa con la clase de {superpuesta.alumnosNombres.join(", ")} ({superpuesta.hora} - {addMinutos(superpuesta.hora, superpuesta.duracionMin || 60)}).
+        </div>
+      )}
+
+      <button onClick={() => onSave(clase.id, fecha, hora, motivo)} style={{ ...primaryBtn, background: superpuesta ? "#B23A3A" : primaryBtn.background, marginBottom: superpuesta ? 4 : 0 }}>
+        {superpuesta ? "Reprogramar de todos modos (se pisa)" : "Confirmar reprogramación"}
+      </button>
+      {alumnosConTel.length > 0 && (
+        <div style={{ display: "flex", gap: 6, marginTop: 10, flexWrap: "wrap" }}>
+          {alumnosConTel.map((a) => (
+            <a
+              key={a.id}
+              href={linkWhatsApp(a.contacto, mensajeWa)}
+              target="_blank"
+              rel="noreferrer"
+              style={{ ...pillBtn, background: "#25D366", color: "#fff", border: "none", textDecoration: "none" }}
+            >
+              <MessageCircle size={12} /> Avisar a {a.nombre.split(" ")[0]}
+            </a>
+          ))}
+        </div>
+      )}
+    </ModalShell>
+  );
+}
+
+function CancelarModal({ clase, alumnos, plantillas, onClose, onSave }) {
+  const [motivo, setMotivo] = useState("Alumno");
+  const [conAviso, setConAviso] = useState(true);
+
+  const alumnosConTel = clase.alumnosNombres
+    .map((n) => (alumnos || []).find((a) => a.nombre === n))
+    .filter((a) => a && a.contacto);
+  const mensajeWa = armarMensajeWa(plantillas.cancelacion, {
+    fechaHora: fmtFechaHoraLarga(clase.fecha, clase.hora),
+    motivo: motivo.toLowerCase(),
+  });
+
+  return (
+    <ModalShell title="Cancelar clase" onClose={onClose}>
+      <div style={{ fontSize: 13.5, color: COLORS.inkSoft, marginBottom: 14 }}>
+        {clase.alumnosNombres.join(", ")} · {fmtFechaHoraLarga(clase.fecha, clase.hora)}
+      </div>
+      <Label>¿Quién cancela?</Label>
+      <div style={{ display: "flex", gap: 6, marginBottom: 14, flexWrap: "wrap" }}>
+        {["Alumno", "Profe", "Clima", "Otro"].map((m) => (
+          <button
+            key={m}
+            onClick={() => setMotivo(m)}
+            style={{
+              ...chipStyle,
+              background: motivo === m ? "#B23A3A" : "#fff",
+              color: motivo === m ? "#fff" : COLORS.ink,
+              borderColor: motivo === m ? "#B23A3A" : COLORS.line,
+            }}
+          >
+            {m}
+          </button>
+        ))}
+      </div>
+      <Label>¿Avisó con tiempo suficiente?</Label>
+      <div style={{ display: "flex", gap: 6, marginBottom: 18 }}>
+        <button
+          onClick={() => setConAviso(true)}
+          style={{
+            ...chipStyle,
+            background: conAviso ? COLORS.court : "#fff",
+            color: conAviso ? "#fff" : COLORS.ink,
+            borderColor: conAviso ? COLORS.court : COLORS.line,
+          }}
+        >
+          Sí, con aviso
+        </button>
+        <button
+          onClick={() => setConAviso(false)}
+          style={{
+            ...chipStyle,
+            background: !conAviso ? "#B23A3A" : "#fff",
+            color: !conAviso ? "#fff" : COLORS.ink,
+            borderColor: !conAviso ? "#B23A3A" : COLORS.line,
+          }}
+        >
+          No, tarde / sin aviso
+        </button>
+      </div>
+      <div style={{ fontSize: 12, color: COLORS.inkSoft, marginBottom: 18 }}>
+        Esto te sirve para decidir si corresponde cobrar igual o descontar del bono, según tu propia política.
+      </div>
+      <button onClick={() => onSave(clase.id, motivo, conAviso)} style={{ ...primaryBtn, background: "#B23A3A" }}>
+        Confirmar cancelación
+      </button>
+      {alumnosConTel.length > 0 && (
+        <div style={{ display: "flex", gap: 6, marginTop: 10, flexWrap: "wrap" }}>
+          {alumnosConTel.map((a) => (
+            <a
+              key={a.id}
+              href={linkWhatsApp(a.contacto, mensajeWa)}
+              target="_blank"
+              rel="noreferrer"
+              style={{ ...pillBtn, background: "#25D366", color: "#fff", border: "none", textDecoration: "none" }}
+            >
+              <MessageCircle size={12} /> Avisar a {a.nombre.split(" ")[0]}
+            </a>
+          ))}
+        </div>
+      )}
+    </ModalShell>
+  );
+}
+
+function EditarClubModal({ clase, clubes, onClose, onSave }) {
+  const [clubId, setClubId] = useState(clase.clubId ?? null);
+
+  return (
+    <ModalShell title="Editar club de la clase" onClose={onClose}>
+      <div style={{ fontSize: 13.5, color: COLORS.inkSoft, marginBottom: 14 }}>
+        {clase.alumnosNombres.join(", ")} · {fmtFechaHoraLarga(clase.fecha, clase.hora)}
+      </div>
+      <Label>Club / lugar</Label>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 20 }}>
+        <button
+          onClick={() => setClubId(null)}
+          style={{
+            ...chipStyle,
+            background: clubId === null ? COLORS.ink : "#fff",
+            color: clubId === null ? "#fff" : COLORS.ink,
+            borderColor: clubId === null ? COLORS.ink : COLORS.line,
+          }}
+        >
+          Particular
+        </button>
+        {clubes.map((cl) => (
+          <button
+            key={cl.id}
+            onClick={() => setClubId(cl.id)}
+            style={{
+              ...chipStyle,
+              background: clubId === cl.id ? cl.color : "#fff",
+              color: clubId === cl.id ? "#fff" : COLORS.ink,
+              borderColor: clubId === cl.id ? cl.color : COLORS.line,
+            }}
+          >
+            {cl.nombre}
+          </button>
+        ))}
+      </div>
+      <button onClick={() => onSave(clase.id, clubId)} style={primaryBtn}>
+        Guardar
+      </button>
+    </ModalShell>
+  );
+}
+
+function EditarHorarioModal({ clase, onClose, onSave }) {
+  const [hora, setHora] = useState(clase.hora);
+  const [duracionMin, setDuracionMin] = useState(clase.duracionMin || 60);
+
+  return (
+    <ModalShell title="Editar horario de la clase" onClose={onClose}>
+      <div style={{ fontSize: 13.5, color: COLORS.inkSoft, marginBottom: 14 }}>
+        {clase.alumnosNombres.join(", ")} · {fmtFechaLarga(clase.fecha)}
+      </div>
+
+      <Label>Horario de inicio</Label>
+      <input type="time" value={hora} onChange={(e) => setHora(e.target.value)} style={{ ...inputStyle, marginBottom: 12 }} />
+
+      <Label>Duración</Label>
+      <div style={{ display: "flex", gap: 6, marginBottom: 4, flexWrap: "wrap" }}>
+        {[
+          { label: "1 h", min: 60 },
+          { label: "1:30 h", min: 90 },
+          { label: "2 h", min: 120 },
+          { label: "2:30 h", min: 150 },
+        ].map((opt) => (
+          <button
+            key={opt.min}
+            onClick={() => setDuracionMin(opt.min)}
+            style={{
+              ...chipStyle,
+              background: duracionMin === opt.min ? COLORS.court : "#fff",
+              color: duracionMin === opt.min ? "#fff" : COLORS.ink,
+              borderColor: duracionMin === opt.min ? COLORS.court : COLORS.line,
+            }}
+          >
+            {opt.label}
+          </button>
+        ))}
+      </div>
+      <div style={{ fontSize: 12, color: COLORS.inkSoft, marginBottom: 18 }}>
+        Termina a las {addMinutos(hora, duracionMin)}. Útil si un alumno quiere sumar media hora más a una clase ya cargada.
+      </div>
+
+      <button onClick={() => onSave(clase.id, hora, duracionMin)} style={primaryBtn}>
+        Guardar horario
+      </button>
+    </ModalShell>
+  );
+}
+
+function AlumnoClasesModal({ alumno, clases, clubes, onClose }) {
+  const clubById = Object.fromEntries(clubes.map((c) => [c.id, c]));
+  const now = new Date();
+
+  const clasesDelAlumno = clases
+    .filter((c) => c.alumnosNombres.includes(alumno.nombre))
+    .sort((a, b) => (a.fecha + a.hora).localeCompare(b.fecha + b.hora));
+
+  const proximas = clasesDelAlumno.filter((c) => new Date(c.fecha + "T" + c.hora) >= now && c.estado !== "cancelada");
+  const anteriores = clasesDelAlumno.filter((c) => new Date(c.fecha + "T" + c.hora) < now || c.estado === "cancelada").reverse();
+
+  const renderClase = (c) => (
+    <div key={c.id} style={{ ...cardStyle, padding: "10px 14px", opacity: c.estado === "cancelada" ? 0.6 : 1 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div>
+          <div style={{ fontWeight: 700, fontSize: 14 }}>
+            {fmtFechaHoraLarga(c.fecha, c.hora)}
+          </div>
+          <div style={{ fontSize: 12, color: COLORS.inkSoft, marginTop: 2, display: "flex", alignItems: "center", gap: 6 }}>
+            {c.clubId && clubById[c.clubId] && (
+              <span style={{ fontSize: 10, fontWeight: 700, color: "#fff", background: clubById[c.clubId].color, padding: "1px 6px", borderRadius: 7 }}>
+                {clubById[c.clubId].nombre}
+              </span>
+            )}
+            {c.estado === "cancelada"
+              ? "Cancelada"
+              : c.asistencia === "asistio"
+              ? "Asistió"
+              : c.asistencia === "falto_aviso"
+              ? "Faltó (avisó)"
+              : c.asistencia === "falto_sin_aviso"
+              ? "Faltó sin aviso"
+              : c.cobrado
+              ? "Cobrado"
+              : "Pendiente"}
+          </div>
+        </div>
+        <div style={{ fontWeight: 700, fontSize: 13.5 }}>{fmtMoney(c.precio)}</div>
+      </div>
+    </div>
+  );
+
+  return (
+    <ModalShell title={alumno.nombre} onClose={onClose}>
+      {alumno.contacto && <div style={{ fontSize: 13, color: COLORS.inkSoft, marginBottom: 16 }}>{alumno.contacto}</div>}
+
+      <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 8 }}>Próximas clases ({proximas.length})</div>
+      {proximas.length === 0 ? (
+        <div style={{ fontSize: 13, color: COLORS.inkSoft, marginBottom: 20 }}>No tiene clases agendadas.</div>
+      ) : (
+        <div style={{ display: "flex", flexDirection: "column", gap: 6, marginBottom: 20 }}>{proximas.map(renderClase)}</div>
+      )}
+
+      <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 8 }}>Historial ({anteriores.length})</div>
+      {anteriores.length === 0 ? (
+        <div style={{ fontSize: 13, color: COLORS.inkSoft }}>Todavía no tiene clases pasadas.</div>
+      ) : (
+        <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>{anteriores.map(renderClase)}</div>
+      )}
+    </ModalShell>
+  );
+}
+
+function Label({ children }) {
+  return <div style={{ fontSize: 12.5, fontWeight: 700, color: COLORS.inkSoft, marginBottom: 6, textTransform: "uppercase", letterSpacing: 0.4 }}>{children}</div>;
+}
+
+const cardStyle = {
+  background: COLORS.card,
+  borderRadius: 12,
+  padding: "12px 14px",
+  border: `1px solid ${COLORS.line}`,
+};
+
+const navBtnStyle = {
+  background: COLORS.card,
+  border: `1px solid ${COLORS.line}`,
+  borderRadius: 8,
+  padding: 6,
+  cursor: "pointer",
+  display: "flex",
+  color: COLORS.ink,
+};
+
+const pillBtn = {
+  display: "flex",
+  alignItems: "center",
+  gap: 4,
+  fontSize: 12,
+  fontWeight: 700,
+  padding: "5px 10px",
+  borderRadius: 20,
+  cursor: "pointer",
+};
+
+const miniPillBtn = {
+  fontSize: 11,
+  fontWeight: 700,
+  padding: "4px 9px",
+  borderRadius: 16,
+  cursor: "pointer",
+};
+
+const fabStyle = {
+  position: "fixed",
+  bottom: 84,
+  right: 20,
+  width: 54,
+  height: 54,
+  borderRadius: "50%",
+  background: COLORS.court,
+  border: "none",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  boxShadow: "0 6px 18px rgba(184,92,46,0.4)",
+  cursor: "pointer",
+  zIndex: 40,
+};
+
+const inputStyle = {
+  width: "100%",
+  padding: "11px 12px",
+  borderRadius: 10,
+  border: `1px solid ${COLORS.line}`,
+  fontSize: 15,
+  background: "#fff",
+  boxSizing: "border-box",
+  color: COLORS.ink,
+};
+
+const chipStyle = {
+  padding: "6px 12px",
+  borderRadius: 20,
+  fontSize: 13,
+  fontWeight: 600,
+  border: "1px solid",
+  cursor: "pointer",
+};
+
+const primaryBtn = {
+  width: "100%",
+  background: COLORS.court,
+  color: "#fff",
+  border: "none",
+  padding: "14px 0",
+  borderRadius: 12,
+  fontSize: 15,
+  fontWeight: 700,
+  cursor: "pointer",
+};
+
+function LoginScreen({ onLogged }) {
+  const [modo, setModo] = useState("login");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [cargando, setCargando] = useState(false);
+  const [aviso, setAviso] = useState("");
+
+  const submit = async () => {
+    setError("");
+    setAviso("");
+
+    if (modo === "recover") {
+      if (!email.trim()) { setError("Ingresá tu email."); return; }
+      setCargando(true);
+      try {
+        const { error } = await supabaseClient.auth.resetPasswordForEmail(email.trim(), {
+          redirectTo: window.location.origin + window.location.pathname,
+        });
+        if (error) setError(error.message);
+        else setAviso("Listo, te mandamos un email con el link para elegir una nueva contraseña.");
+      } catch (e) {
+        setError("Ocurrió un error. Probá de nuevo.");
+      } finally {
+        setCargando(false);
+      }
+      return;
+    }
+
+    if (!email.trim() || !password) {
+      setError("Completá email y contraseña.");
+      return;
+    }
+    setCargando(true);
+    try {
+      if (modo === "login") {
+        const { data, error } = await supabaseClient.auth.signInWithPassword({ email: email.trim(), password });
+        if (error) {
+          setError(error.message === "Invalid login credentials" ? "Email o contraseña incorrectos." : error.message);
+        } else if (data.session) {
+          onLogged(data.session);
+        }
+      } else {
+        const { data, error } = await supabaseClient.auth.signUp({ email: email.trim(), password });
+        if (error) {
+          setError(error.message);
+        } else if (data.session) {
+          onLogged(data.session);
+        } else {
+          setAviso("Si ese email es nuevo, te llegará un correo para confirmarlo. Si ya tenías cuenta, no se modificó nada: iniciá sesión con tu contraseña de siempre.");
+        }
+      }
+    } catch (e) {
+      setError("Ocurrió un error. Probá de nuevo.");
+    } finally {
+      setCargando(false);
+    }
+  };
+
+  return (
+    <div
+      style={{
+        minHeight: "100vh",
+        background: "#B85C2E",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif",
+        padding: 20,
+      }}
+    >
+      <div style={{ background: "#fff", borderRadius: 16, padding: 28, width: "100%", maxWidth: 380 }}>
+          <svg height="30" viewBox="0 0 520 520" xmlns="http://www.w3.org/2000/svg" style={{ display: "block", margin: "0 auto 14px" }}>
+            <defs><clipPath id="loginRoundedSquare"><rect x="40" y="40" width="440" height="440" rx="70" ry="70" /></clipPath></defs>
+            <g clipPath="url(#loginRoundedSquare)">
+              <rect x="40" y="40" width="440" height="440" fill="#B85C2E" />
+              <circle cx="380" cy="150" r="42" fill="#B8D91A" />
+              <path d="M 40 350 Q 155 300 260 335 Q 370 372 480 335 L 480 480 L 40 480 Z" fill="#B8D91A" />
+              <circle cx="150" cy="175" r="16" fill="#FAF9F6" />
+              <rect x="142" y="188" width="16" height="150" fill="#FAF9F6" />
+              <path d="M 150 198 Q 270 210 420 268" fill="none" stroke="#FAF9F6" strokeWidth="13" strokeLinecap="round" />
+              <path d="M 95 340 Q 270 278 420 335" fill="none" stroke="#FAF9F6" strokeWidth="13" strokeLinecap="round" />
+              <g stroke="#FAF9F6" strokeWidth="9" strokeLinecap="round">
+                <line x1="150" y1="202" x2="135" y2="337" /><line x1="217" y1="205" x2="212" y2="330" />
+                <line x1="285" y1="214" x2="285" y2="322" /><line x1="352" y1="234" x2="358" y2="325" />
+                <line x1="420" y1="268" x2="420" y2="335" />
+              </g>
+            </g>
+            <rect x="40" y="40" width="440" height="440" rx="70" ry="70" fill="none" stroke="#FAF9F6" strokeWidth="6" />
+          </svg>
+        <div style={{ fontSize: 22, fontWeight: 800, marginBottom: 20, color: COLORS.ink, textAlign: "center" }}>
+          {modo === "login" ? "Ingresá a tu cuenta" : modo === "signup" ? "Creá tu cuenta" : "Recuperar contraseña"}
+        </div>
+
+        <div style={{ fontSize: 12.5, fontWeight: 700, color: COLORS.inkSoft, marginBottom: 6, textTransform: "uppercase" }}>Email</div>
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="tu@email.com"
+          style={{ width: "100%", padding: "11px 12px", borderRadius: 10, border: `1px solid ${COLORS.line}`, fontSize: 15, marginBottom: 12, boxSizing: "border-box" }}
+        />
+
+        {modo !== "recover" && (
+          <>
+            <div style={{ fontSize: 12.5, fontWeight: 700, color: COLORS.inkSoft, marginBottom: 6, textTransform: "uppercase" }}>Contraseña</div>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="••••••••"
+              style={{ width: "100%", padding: "11px 12px", borderRadius: 10, border: `1px solid ${COLORS.line}`, fontSize: 15, marginBottom: 16, boxSizing: "border-box" }}
+            />
+          </>
+        )}
+
+        {error && <div style={{ color: "#B23A3A", fontSize: 13, marginBottom: 12, fontWeight: 600 }}>{error}</div>}
+        {aviso && <div style={{ color: COLORS.court, fontSize: 13, marginBottom: 12, fontWeight: 600 }}>{aviso}</div>}
+
+        <button
+          onClick={submit}
+          disabled={cargando}
+          style={{ width: "100%", background: COLORS.court, color: "#fff", border: "none", padding: "13px 0", borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: "pointer", opacity: cargando ? 0.6 : 1 }}
+        >
+          {cargando ? "Un momento..." : modo === "login" ? "Ingresar" : modo === "signup" ? "Crear cuenta" : "Enviar link de recuperación"}
+        </button>
+
+        {modo === "login" && (
+          <button
+            onClick={() => { setModo("recover"); setError(""); setAviso(""); }}
+            style={{ width: "100%", background: "none", border: "none", color: COLORS.inkSoft, fontSize: 12.5, fontWeight: 600, padding: "12px 0 0", cursor: "pointer" }}
+          >
+            ¿Olvidaste tu contraseña?
+          </button>
+        )}
+
+        <button
+          onClick={() => { setModo(modo === "login" ? "signup" : "login"); setError(""); setAviso(""); }}
+          style={{ width: "100%", background: "none", border: "none", color: COLORS.court, fontSize: 13, fontWeight: 700, padding: "10px 0 0", cursor: "pointer" }}
+        >
+          {modo === "login" ? "¿No tenés cuenta? Creala acá" : modo === "signup" ? "¿Ya tenés cuenta? Ingresá" : "Volver a ingresar"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function SetNewPasswordScreen({ onDone }) {
+  const [password, setPassword] = useState("");
+  const [confirmar, setConfirmar] = useState("");
+  const [error, setError] = useState("");
+  const [cargando, setCargando] = useState(false);
+  const [ok, setOk] = useState(false);
+
+  const submit = async () => {
+    setError("");
+    if (password.length < 6) { setError("La contraseña debe tener al menos 6 caracteres."); return; }
+    if (password !== confirmar) { setError("Las contraseñas no coinciden."); return; }
+    setCargando(true);
+    const { error } = await supabaseClient.auth.updateUser({ password });
+    setCargando(false);
+    if (error) setError(error.message);
+    else setOk(true);
+  };
+
+  return (
+    <div style={{ minHeight: "100vh", background: "#B85C2E", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "system-ui", padding: 20 }}>
+      <div style={{ background: "#fff", borderRadius: 16, padding: 28, width: "100%", maxWidth: 380 }}>
+        <div style={{ fontSize: 20, fontWeight: 800, marginBottom: 18, color: COLORS.ink }}>Elegí tu nueva contraseña</div>
+        {ok ? (
+          <>
+            <div style={{ color: COLORS.court, fontSize: 14, fontWeight: 600, marginBottom: 18 }}>Contraseña actualizada correctamente.</div>
+            <button onClick={onDone} style={{ width: "100%", background: COLORS.court, color: "#fff", border: "none", padding: "13px 0", borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: "pointer" }}>
+              Continuar
+            </button>
+          </>
+        ) : (
+          <>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Nueva contraseña"
+              style={{ width: "100%", padding: "11px 12px", borderRadius: 10, border: `1px solid ${COLORS.line}`, fontSize: 15, marginBottom: 12, boxSizing: "border-box" }}
+            />
+            <input
+              type="password"
+              value={confirmar}
+              onChange={(e) => setConfirmar(e.target.value)}
+              placeholder="Repetir contraseña"
+              style={{ width: "100%", padding: "11px 12px", borderRadius: 10, border: `1px solid ${COLORS.line}`, fontSize: 15, marginBottom: 16, boxSizing: "border-box" }}
+            />
+            {error && <div style={{ color: "#B23A3A", fontSize: 13, marginBottom: 12, fontWeight: 600 }}>{error}</div>}
+            <button
+              onClick={submit}
+              disabled={cargando}
+              style={{ width: "100%", background: COLORS.court, color: "#fff", border: "none", padding: "13px 0", borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: "pointer", opacity: cargando ? 0.6 : 1 }}
+            >
+              {cargando ? "Un momento..." : "Guardar nueva contraseña"}
+            </button>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function AccountModal({ session, onClose }) {
+  const [modoPass, setModoPass] = useState(false);
+  const [password, setPassword] = useState("");
+  const [confirmar, setConfirmar] = useState("");
+  const [nombre, setNombre] = useState((session.user.user_metadata && session.user.user_metadata.nombre) || "");
+  const [telefono, setTelefono] = useState((session.user.user_metadata && session.user.user_metadata.telefono) || "");
+  const [error, setError] = useState("");
+  const [aviso, setAviso] = useState("");
+  const [cargando, setCargando] = useState(false);
+  const [cargandoPerfil, setCargandoPerfil] = useState(false);
+
+  const cambiarPassword = async () => {
+    setError(""); setAviso("");
+    if (password.length < 6) { setError("La contraseña debe tener al menos 6 caracteres."); return; }
+    if (password !== confirmar) { setError("Las contraseñas no coinciden."); return; }
+    setCargando(true);
+    const { error } = await supabaseClient.auth.updateUser({ password });
+    setCargando(false);
+    if (error) setError(error.message);
+    else { setAviso("Contraseña actualizada."); setPassword(""); setConfirmar(""); setModoPass(false); }
+  };
+
+  const guardarPerfil = async () => {
+    setError(""); setAviso("");
+    setCargandoPerfil(true);
+    const { error } = await supabaseClient.auth.updateUser({ data: { nombre: nombre.trim(), telefono: telefono.trim() } });
+    setCargandoPerfil(false);
+    if (error) setError(error.message);
+    else setAviso("Datos de perfil actualizados.");
+  };
+
+  return (
+    <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)", display: "flex", alignItems: "flex-end", zIndex: 300 }} onClick={onClose}>
+      <div style={{ background: COLORS.bg, width: "100%", maxWidth: 480, margin: "0 auto", borderRadius: "18px 18px 0 0", padding: 20, paddingBottom: 32, maxHeight: "85vh", overflowY: "auto" }} onClick={(e) => e.stopPropagation()}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 18 }}>
+          <div style={{ fontWeight: 800, fontSize: 17 }}>Mi cuenta</div>
+          <button onClick={onClose} style={{ background: "none", border: "none", color: COLORS.inkSoft, cursor: "pointer", fontSize: 18 }}>✕</button>
+        </div>
+
+        <div style={{ fontSize: 12, fontWeight: 700, color: COLORS.inkSoft, textTransform: "uppercase", marginBottom: 4 }}>Email</div>
+        <div style={{ fontSize: 15, fontWeight: 600, marginBottom: 18 }}>{session.user.email}</div>
+
+        <div style={{ fontSize: 12, fontWeight: 700, color: COLORS.inkSoft, textTransform: "uppercase", marginBottom: 6 }}>Nombre y apellido</div>
+        <input
+          value={nombre}
+          onChange={(e) => setNombre(e.target.value)}
+          placeholder="Ej: Juan Pérez"
+          style={{ width: "100%", padding: "11px 12px", borderRadius: 10, border: `1px solid ${COLORS.line}`, fontSize: 15, marginBottom: 10, boxSizing: "border-box" }}
+        />
+        <div style={{ fontSize: 12, fontWeight: 700, color: COLORS.inkSoft, textTransform: "uppercase", marginBottom: 6 }}>Teléfono de contacto</div>
+        <input
+          value={telefono}
+          onChange={(e) => setTelefono(e.target.value)}
+          placeholder="Ej: 1123456789"
+          style={{ width: "100%", padding: "11px 12px", borderRadius: 10, border: `1px solid ${COLORS.line}`, fontSize: 15, marginBottom: 6, boxSizing: "border-box" }}
+        />
+        <div style={{ fontSize: 11.5, color: COLORS.inkSoft, marginBottom: 10 }}>
+          Estos datos van a servir para que un club te identifique cuando conectemos esa parte de la app.
+        </div>
+        <button
+          onClick={guardarPerfil}
+          disabled={cargandoPerfil}
+          style={{ width: "100%", background: "#fff", border: `1px solid ${COLORS.court}`, color: COLORS.court, padding: "11px 0", borderRadius: 12, fontSize: 14, fontWeight: 700, cursor: "pointer", marginBottom: 18, opacity: cargandoPerfil ? 0.6 : 1 }}
+        >
+          {cargandoPerfil ? "Un momento..." : "Guardar datos de perfil"}
+        </button>
+
+        {!modoPass ? (
+          <button
+            onClick={() => setModoPass(true)}
+            style={{ width: "100%", background: "#fff", border: `1px solid ${COLORS.line}`, padding: "12px 0", borderRadius: 12, fontSize: 14, fontWeight: 700, cursor: "pointer", marginBottom: 10 }}
+          >
+            Cambiar contraseña
+          </button>
+        ) : (
+          <div style={{ marginBottom: 14 }}>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Nueva contraseña"
+              style={{ width: "100%", padding: "11px 12px", borderRadius: 10, border: `1px solid ${COLORS.line}`, fontSize: 15, marginBottom: 8, boxSizing: "border-box" }}
+            />
+            <input
+              type="password"
+              value={confirmar}
+              onChange={(e) => setConfirmar(e.target.value)}
+              placeholder="Repetir contraseña"
+              style={{ width: "100%", padding: "11px 12px", borderRadius: 10, border: `1px solid ${COLORS.line}`, fontSize: 15, marginBottom: 10, boxSizing: "border-box" }}
+            />
+            <button
+              onClick={cambiarPassword}
+              disabled={cargando}
+              style={{ width: "100%", background: COLORS.court, color: "#fff", border: "none", padding: "12px 0", borderRadius: 12, fontSize: 14, fontWeight: 700, cursor: "pointer", opacity: cargando ? 0.6 : 1 }}
+            >
+              {cargando ? "Un momento..." : "Guardar nueva contraseña"}
+            </button>
+          </div>
+        )}
+
+        {error && <div style={{ color: "#B23A3A", fontSize: 13, marginBottom: 14, fontWeight: 600 }}>{error}</div>}
+        {aviso && <div style={{ color: COLORS.court, fontSize: 13, marginBottom: 14, fontWeight: 600 }}>{aviso}</div>}
+
+        <button
+          onClick={() => supabaseClient.auth.signOut()}
+          style={{ width: "100%", background: "none", border: `1px solid #B23A3A`, color: "#B23A3A", padding: "12px 0", borderRadius: 12, fontSize: 14, fontWeight: 700, cursor: "pointer" }}
+        >
+          Cerrar sesión
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function Root() {
+  const [session, setSession] = useState(undefined);
+  const [recoveryMode, setRecoveryMode] = useState(false);
+  const [showAccount, setShowAccount] = useState(false);
+
+  useEffect(() => {
+    supabaseClient.auth.getSession().then(({ data }) => {
+      setSession(data.session || null);
+      currentUserId = data.session ? data.session.user.id : null;
+    });
+    const { data: listener } = supabaseClient.auth.onAuthStateChange((event, nuevaSession) => {
+      setSession(nuevaSession);
+      currentUserId = nuevaSession ? nuevaSession.user.id : null;
+      if (event === "PASSWORD_RECOVERY") setRecoveryMode(true);
+    });
+    return () => listener.subscription.unsubscribe();
+  }, []);
+
+  if (session === undefined) {
+    return (
+      <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: COLORS.bg, fontFamily: "system-ui" }}>
+        <div style={{ color: COLORS.inkSoft }}>Cargando...</div>
+      </div>
+    );
+  }
+
+  if (recoveryMode && session) {
+    return <SetNewPasswordScreen onDone={() => setRecoveryMode(false)} />;
+  }
+
+  if (!session) {
+    return <LoginScreen onLogged={(s) => { setSession(s); currentUserId = s.user.id; }} />;
+  }
+
+  return (
+    <>
+      <App key={session.user.id} onOpenAccount={() => setShowAccount(true)} />
+      {showAccount && <AccountModal session={session} onClose={() => setShowAccount(false)} />}
+    </>
+  );
+}
+
+
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<Root />);
+</script>
+</body>
+</html>

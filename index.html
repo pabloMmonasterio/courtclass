@@ -107,6 +107,44 @@ function armarMensajeWa(plantilla, vars) {
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 let currentUserId = null;
+ let currentUserRol = null;
+
+async function obtenerOcrearPerfil(userId, rolPreferido) {
+  const { data: filas, error } = await supabaseClient.from("usuarios").select("*").eq("id", userId);
+  if (error) { console.error("Error leyendo perfil", error); return null; }
+  if (filas && filas.length > 0) return filas[0];
+
+  const rol = rolPreferido === "club" ? "club" : "profe";
+  const { data: userInfo } = await supabaseClient.auth.getUser();
+  const meta = (userInfo && userInfo.user && userInfo.user.user_metadata) || {};
+  const nuevo = {
+    id: userId,
+    rol,
+    nombre: meta.nombre || "",
+    telefono: meta.telefono || "",
+    email: (userInfo && userInfo.user && userInfo.user.email) || "",
+  };
+  const { data: insertado, error: errorInsert } = await supabaseClient.from("usuarios").insert(nuevo).select();
+  if (errorInsert) { console.error("Error creando perfil", errorInsert); return null; }
+  return insertado && insertado[0] ? insertado[0] : nuevo;
+}
+
+async function procesarInvitacionPendiente(token, userId) {
+  if (!token) return null;
+  const { data: filas, error } = await supabaseClient
+    .from("club_profesor")
+    .select("*")
+    .eq("token_invitacion", token)
+    .is("profesor_id", null);
+  if (error || !filas || filas.length === 0) return null;
+  const invitacion = filas[0];
+  const { error: errorUpdate } = await supabaseClient
+    .from("club_profesor")
+    .update({ profesor_id: userId, estado: "activo" })
+    .eq("id", invitacion.id);
+  if (errorUpdate) { console.error("Error aceptando invitación", errorUpdate); return null; }
+  return invitacion.club_id;
+}
 
 function mergeConDefaults(d) {
   return { ...loadData(), ...(d || {}) };
@@ -2988,10 +3026,315 @@ function AccountModal({ session, onClose }) {
   );
 }
 
-function Root() {
+function ClubApp({ session, onOpenAccount }) {
+  const [club, setClub] = useState(undefined); // undefined = cargando, null = todavía no existe
+  const [tab, setTab] = useState("profes");
+  const [toast, setToast] = useState(null);
+
+  const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(null), 2200); };
+
+  useEffect(() => {
+    (async () => {
+      const { data, error } = await supabaseClient.from("clubes").select("*").eq("dueno_id", session.user.id);
+      if (error) { console.error(error); setClub(null); return; }
+      setClub(data && data.length > 0 ? data[0] : null);
+    })();
+  }, []);
+
+  if (club === undefined) {
+    return (
+      <div style={{ minHeight: "100vh", background: COLORS.bg, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "system-ui" }}>
+        <div style={{ color: COLORS.inkSoft }}>Cargando...</div>
+      </div>
+    );
+  }
+
+  if (!club) {
+    return <CrearClubScreen onCreado={(c) => setClub(c)} />;
+  }
+
+  return (
+    <div className="app-shell" style={{ minHeight: "100vh", background: COLORS.bg, fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif", color: COLORS.ink, paddingBottom: 90 }}>
+      <ClubHeader club={club} onOpenAccount={onOpenAccount} />
+
+      {tab === "profes" && <ProfesView club={club} onClubUpdate={setClub} showToast={showToast} />}
+      {tab === "agenda" && <ProximamenteView texto="Acá vas a poder armar y asignar clases a tus profes." />}
+      {tab === "alumnos" && <ProximamenteView texto="Acá vas a poder cargar y administrar tus alumnos." />}
+      {tab === "resumen" && <ProximamenteView texto="Acá vas a ver lo acumulado a pagar por profe." />}
+
+      <ClubTabBar tab={tab} setTab={setTab} />
+      {toast && <Toast msg={toast} />}
+    </div>
+  );
+}
+
+function ProximamenteView({ texto }) {
+  return (
+    <div style={{ padding: 32, textAlign: "center" }}>
+      <div style={{ fontSize: 15, color: COLORS.inkSoft, fontWeight: 600 }}>Próximamente</div>
+      <div style={{ fontSize: 13.5, color: COLORS.inkSoft, marginTop: 6 }}>{texto}</div>
+    </div>
+  );
+}
+
+function ClubHeader({ club, onOpenAccount }) {
+  return (
+    <div style={{ background: "#fff", padding: "18px 20px 16px", position: "relative", borderBottom: `1px solid ${COLORS.line}` }}>
+      {onOpenAccount && (
+        <button
+          onClick={onOpenAccount}
+          title="Mi cuenta"
+          style={{ position: "absolute", top: 14, right: 18, background: COLORS.court, border: "none", color: "#fff", width: 34, height: 34, borderRadius: "50%", cursor: "pointer", fontSize: 16, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center" }}
+        >
+          {"\u263A"}
+        </button>
+      )}
+      <Logo height={38} />
+      <div style={{ fontSize: 13, color: COLORS.inkSoft, marginTop: 6, fontWeight: 600 }}>{club.nombre} · Panel de Club</div>
+    </div>
+  );
+}
+
+function ClubTabBar({ tab, setTab }) {
+  const items = [
+    { id: "agenda", label: "Agenda", icon: Calendar },
+    { id: "alumnos", label: "Alumnos", icon: Users },
+    { id: "profes", label: "Profes", icon: Building2 },
+    { id: "resumen", label: "Resumen", icon: TrendingUp },
+  ];
+  return (
+    <div className="fixed-bar" style={{ position: "fixed", bottom: 0, left: 0, right: 0, background: COLORS.card, borderTop: `1px solid ${COLORS.line}`, display: "flex", padding: "8px 0 max(8px, env(safe-area-inset-bottom))", zIndex: 50 }}>
+      {items.map(({ id, label, icon: Icon }) => (
+        <button key={id} onClick={() => setTab(id)} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 3, background: "none", border: "none", padding: "6px 0", cursor: "pointer", color: tab === id ? COLORS.court : COLORS.inkSoft }}>
+          <Icon size={20} strokeWidth={tab === id ? 2.5 : 2} />
+          <span style={{ fontSize: 11, fontWeight: tab === id ? 700 : 500 }}>{label}</span>
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function CrearClubScreen({ onCreado }) {
+  const [nombre, setNombre] = useState("");
+  const [cargando, setCargando] = useState(false);
+  const [error, setError] = useState("");
+
+  const crear = async () => {
+    if (!nombre.trim()) return;
+    setCargando(true); setError("");
+    const { data: userInfo } = await supabaseClient.auth.getUser();
+    const { data, error } = await supabaseClient
+      .from("clubes")
+      .insert({ dueno_id: userInfo.user.id, nombre: nombre.trim() })
+      .select();
+    setCargando(false);
+    if (error) { setError(error.message); return; }
+    onCreado(data[0]);
+  };
+
+  return (
+    <div style={{ minHeight: "100vh", background: "#B85C2E", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "system-ui", padding: 20 }}>
+      <div style={{ background: "#fff", borderRadius: 16, padding: 28, width: "100%", maxWidth: 380 }}>
+        <div style={{ fontSize: 20, fontWeight: 800, marginBottom: 6, color: COLORS.ink }}>Creá tu club</div>
+        <div style={{ fontSize: 13, color: COLORS.inkSoft, marginBottom: 18 }}>Es el último paso antes de empezar a invitar profes.</div>
+        <input value={nombre} onChange={(e) => setNombre(e.target.value)} placeholder="Nombre del club" style={{ ...inputStyle, marginBottom: 14 }} />
+        {error && <div style={{ color: "#B23A3A", fontSize: 13, marginBottom: 12, fontWeight: 600 }}>{error}</div>}
+        <button onClick={crear} disabled={cargando || !nombre.trim()} style={{ ...primaryBtn, opacity: nombre.trim() ? 1 : 0.5 }}>
+          {cargando ? "Un momento..." : "Crear club"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function ProfesView({ club, onClubUpdate, showToast }) {
+  const [vinculos, setVinculos] = useState(null);
+  const [showInvitar, setShowInvitar] = useState(false);
+  const [showPlantilla, setShowPlantilla] = useState(false);
+
+  const cargar = async () => {
+    const { data, error } = await supabaseClient
+      .from("club_profesor")
+      .select("*, usuarios:profesor_id(nombre, telefono, email)")
+      .eq("club_id", club.id)
+      .order("invitado_en", { ascending: false });
+    if (error) { console.error(error); return; }
+    setVinculos(data || []);
+  };
+
+  useEffect(() => { cargar(); }, [club.id]);
+
+  const crearInvitacion = async (nombre, telefono) => {
+    const token = crypto.randomUUID();
+    const { error } = await supabaseClient.from("club_profesor").insert({
+      club_id: club.id,
+      nombre_invitado: nombre,
+      telefono_invitado: telefono,
+      token_invitacion: token,
+      estado: "invitado",
+    });
+    if (error) { console.error(error); showToast("No se pudo crear la invitación"); return null; }
+    await cargar();
+    return token;
+  };
+
+  const guardarPlantilla = async (texto) => {
+    const { data, error } = await supabaseClient.from("clubes").update({ plantilla_invitacion: texto }).eq("id", club.id).select();
+    if (error) { console.error(error); return; }
+    onClubUpdate(data[0]);
+    setShowPlantilla(false);
+    showToast("Mensaje actualizado");
+  };
+
+  if (vinculos === null) {
+    return <div style={{ padding: 32, textAlign: "center", color: COLORS.inkSoft }}>Cargando...</div>;
+  }
+
+  return (
+    <div style={{ padding: 16 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
+        <div style={{ fontWeight: 800, fontSize: 18 }}>Profes ({vinculos.length})</div>
+        <button onClick={() => setShowPlantilla(true)} title="Editar mensaje de invitación" style={{ background: COLORS.clayLight, border: "none", color: COLORS.ink, width: 30, height: 30, borderRadius: "50%", cursor: "pointer" }}>
+          <Pencil size={14} />
+        </button>
+      </div>
+      <div style={{ fontSize: 13, color: COLORS.inkSoft, marginBottom: 14 }}>
+        Invitá a un profe por WhatsApp, tenga cuenta en CourtClass o no.
+      </div>
+
+      {vinculos.length === 0 && <div style={{ color: COLORS.inkSoft, fontSize: 14, marginBottom: 16 }}>Todavía no invitaste a ningún profe.</div>}
+
+      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        {vinculos.map((v) => {
+          const nombre = (v.usuarios && v.usuarios.nombre) || v.nombre_invitado || "Sin nombre";
+          const telefono = (v.usuarios && v.usuarios.telefono) || v.telefono_invitado;
+          const activo = v.estado === "activo";
+          return (
+            <div key={v.id} style={cardStyle}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <div>
+                  <div style={{ fontWeight: 700, fontSize: 15 }}>{nombre}</div>
+                  {telefono && <div style={{ fontSize: 12.5, color: COLORS.inkSoft }}>{telefono}</div>}
+                </div>
+                <span style={{ fontSize: 11, fontWeight: 700, padding: "3px 9px", borderRadius: 12, color: activo ? "#fff" : COLORS.ink, background: activo ? COLORS.disponible : COLORS.line }}>
+                  {activo ? "Activo" : "Invitado"}
+                </span>
+              </div>
+              {!activo && telefono && (
+                <a
+                  href={linkWhatsApp(telefono, armarMensajeWa(club.plantilla_invitacion || "Hola {nombre}! Te invito a sumarte a CourtClass. Sumate acá: {link}", { nombre: nombre.split(" ")[0], link: `${window.location.origin}${window.location.pathname}?invitacion=${v.token_invitacion}` }))}
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{ ...pillBtn, background: "#25D366", color: "#fff", border: "none", textDecoration: "none", marginTop: 10, display: "inline-flex" }}
+                >
+                  <MessageCircle size={12} /> Reenviar invitación
+                </a>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      <button onClick={() => setShowInvitar(true)} style={fabStyle}>
+        <Plus size={24} color="#fff" />
+      </button>
+
+      {showInvitar && (
+        <AddInvitacionModal club={club} onClose={() => setShowInvitar(false)} onCrear={crearInvitacion} />
+      )}
+      {showPlantilla && (
+        <EditarPlantillaInvitacionModal plantilla={club.plantilla_invitacion} onClose={() => setShowPlantilla(false)} onSave={guardarPlantilla} />
+      )}
+    </div>
+  );
+}
+
+function AddInvitacionModal({ club, onClose, onCrear }) {
+  const [nombre, setNombre] = useState("");
+  const [telefono, setTelefono] = useState("");
+  const [token, setToken] = useState(null);
+  const [cargando, setCargando] = useState(false);
+
+  const crear = async () => {
+    if (!nombre.trim() || !telefono.trim()) return;
+    setCargando(true);
+    const t = await onCrear(nombre.trim(), telefono.trim());
+    setCargando(false);
+    if (t) setToken(t);
+  };
+
+  const mensaje = token
+    ? armarMensajeWa(club.plantilla_invitacion || "Hola {nombre}! Te invito a sumarte a CourtClass. Sumate acá: {link}", {
+        nombre: nombre.trim().split(" ")[0],
+        link: `${window.location.origin}${window.location.pathname}?invitacion=${token}`,
+      })
+    : "";
+
+  return (
+    <ModalShell title="Invitar profe" onClose={onClose}>
+      {!token ? (
+        <>
+          <Label>Nombre</Label>
+          <input value={nombre} onChange={(e) => setNombre(e.target.value)} style={{ ...inputStyle, marginBottom: 12 }} placeholder="Nombre y apellido" />
+          <Label>Teléfono (WhatsApp)</Label>
+          <input value={telefono} onChange={(e) => setTelefono(e.target.value)} style={{ ...inputStyle, marginBottom: 18 }} placeholder="Ej: 1123456789" />
+          <button disabled={!nombre.trim() || !telefono.trim() || cargando} onClick={crear} style={{ ...primaryBtn, opacity: nombre.trim() && telefono.trim() ? 1 : 0.5 }}>
+            {cargando ? "Un momento..." : "Generar invitación"}
+          </button>
+        </>
+      ) : (
+        <>
+          <div style={{ fontSize: 13.5, color: COLORS.inkSoft, marginBottom: 14 }}>
+            Listo. Tocá el botón para abrir WhatsApp con el mensaje ya armado y mandárselo a {nombre.trim()}.
+          </div>
+          <a
+            href={linkWhatsApp(telefono, mensaje)}
+            target="_blank"
+            rel="noreferrer"
+            onClick={onClose}
+            style={{ ...primaryBtn, background: "#25D366", textDecoration: "none", display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}
+          >
+            <MessageCircle size={16} /> Mandar invitación por WhatsApp
+          </a>
+        </>
+      )}
+    </ModalShell>
+  );
+}
+
+function EditarPlantillaInvitacionModal({ plantilla, onClose, onSave }) {
+  const [texto, setTexto] = useState(plantilla || "Hola {nombre}! Te invito a sumarte a CourtClass, la app que uso para organizar las clases. Sumate acá: {link}");
+  return (
+    <ModalShell title="Mensaje de invitación" onClose={onClose}>
+      <div style={{ fontSize: 12.5, color: COLORS.inkSoft, marginBottom: 12 }}>
+        Usá <strong>{"{nombre}"}</strong> y <strong>{"{link}"}</strong> y se completan solos.
+      </div>
+      <textarea value={texto} onChange={(e) => setTexto(e.target.value)} style={{ ...inputStyle, minHeight: 100, resize: "vertical", fontFamily: "inherit", marginBottom: 16 }} />
+      <button onClick={() => onSave(texto)} style={primaryBtn}>Guardar mensaje</button>
+    </ModalShell>
+  );
+}
+
+function RoleGateScreen({ onElegir }) {
+  return (
+    <div style={{ minHeight: "100vh", background: "#B85C2E", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "system-ui", padding: 20 }}>
+      <div style={{ background: "#fff", borderRadius: 16, padding: 28, width: "100%", maxWidth: 380, textAlign: "center" }}>
+        <div style={{ fontSize: 20, fontWeight: 800, marginBottom: 20, color: COLORS.ink }}>¿Cómo vas a usar CourtClass?</div>
+        <button onClick={() => onElegir("profe")} style={{ ...primaryBtn, marginBottom: 12 }}>Soy Profe</button>
+        <button onClick={() => onElegir("club")} style={{ ...primaryBtn, background: "#fff", color: COLORS.court, border: `1.5px solid ${COLORS.court}` }}>Soy Club</button>
+      </div>
+    </div>
+  );
+}
+ function Root() {
   const [session, setSession] = useState(undefined);
   const [recoveryMode, setRecoveryMode] = useState(false);
   const [showAccount, setShowAccount] = useState(false);
+  const [perfil, setPerfil] = useState(undefined); // undefined = sin resolver, null = todavía sin fila
+  const [rolElegido, setRolElegido] = useState(null);
+
+  const params = new URLSearchParams(window.location.search);
+  const tokenInvitacion = params.get("invitacion");
 
   useEffect(() => {
     supabaseClient.auth.getSession().then(({ data }) => {
@@ -3006,7 +3349,24 @@ function Root() {
     return () => listener.subscription.unsubscribe();
   }, []);
 
-  if (session === undefined) {
+  useEffect(() => {
+    if (!session) { setPerfil(undefined); return; }
+    (async () => {
+      const rolGuardado = tokenInvitacion ? "profe" : (rolElegido || localStorage.getItem("courtclass_rol_pendiente"));
+      const p = await obtenerOcrearPerfil(session.user.id, rolGuardado);
+      if (tokenInvitacion) {
+        await procesarInvitacionPendiente(tokenInvitacion, session.user.id);
+        params.delete("invitacion");
+        const nuevaUrl = window.location.pathname + (params.toString() ? "?" + params.toString() : "");
+        window.history.replaceState({}, "", nuevaUrl);
+      }
+      localStorage.removeItem("courtclass_rol_pendiente");
+      currentUserRol = p ? p.rol : "profe";
+      setPerfil(p);
+    })();
+  }, [session]);
+
+  if (session === undefined || (session && perfil === undefined)) {
     return (
       <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: COLORS.bg, fontFamily: "system-ui" }}>
         <div style={{ color: COLORS.inkSoft }}>Cargando...</div>
@@ -3019,7 +3379,19 @@ function Root() {
   }
 
   if (!session) {
+    if (!tokenInvitacion && !rolElegido) {
+      return <RoleGateScreen onElegir={(r) => { setRolElegido(r); localStorage.setItem("courtclass_rol_pendiente", r); }} />;
+    }
     return <LoginScreen onLogged={(s) => { setSession(s); currentUserId = s.user.id; }} />;
+  }
+
+  if (perfil && perfil.rol === "club") {
+    return (
+      <>
+        <ClubApp session={session} onOpenAccount={() => setShowAccount(true)} />
+        {showAccount && <AccountModal session={session} onClose={() => setShowAccount(false)} />}
+      </>
+    );
   }
 
   return (

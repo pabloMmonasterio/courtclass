@@ -138,6 +138,23 @@ async function procesarInvitacionPendiente(token, userId) {
   if (error) { console.error("Error aceptando invitación", error); return null; }
   return data;
 }
+ async function sincronizarDisponibilidadRelacional(disponibilidadArray) {
+  if (!currentUserId) return;
+  await supabaseClient.from("disponibilidad").delete().eq("profesor_id", currentUserId).eq("tipo", "patron");
+  if (!disponibilidadArray || disponibilidadArray.length === 0) return;
+  const filas = disponibilidadArray.map((key) => {
+    const [dia, hora] = key.split("-").map(Number);
+    return {
+      profesor_id: currentUserId,
+      tipo: "patron",
+      dia_semana: dia,
+      hora_inicio: `${String(hora).padStart(2, "0")}:00`,
+      hora_fin: `${String(hora + 1).padStart(2, "0")}:00`,
+      disponible: true,
+    };
+  });
+  await supabaseClient.from("disponibilidad").insert(filas);
+}
 
 function mergeConDefaults(d) {
   return { ...loadData(), ...(d || {}) };
@@ -339,18 +356,21 @@ function App({ onOpenAccount } = {}) {
     const actual = data.disponibilidad || [];
     const nueva = actual.includes(key) ? actual.filter((k) => k !== key) : [...actual, key];
     save({ ...data, disponibilidad: nueva });
+    sincronizarDisponibilidadRelacional(nueva);
   };
 
   const limpiarDisponibilidadDia = (dia) => {
     const actual = data.disponibilidad || [];
     const nueva = actual.filter((k) => !k.startsWith(`${dia}-`));
     save({ ...data, disponibilidad: nueva });
+    sincronizarDisponibilidadRelacional(nueva);
   };
 
   const marcarDiaCompletoDisponible = (dia, horas) => {
     const actual = (data.disponibilidad || []).filter((k) => !k.startsWith(`${dia}-`));
     const nuevas = horas.map((h) => `${dia}-${h}`);
     save({ ...data, disponibilidad: [...actual, ...nuevas] });
+    sincronizarDisponibilidadRelacional([...actual, ...nuevas]);
   };
 
   const toggleExcepcion = (fecha, diaSemana, hora) => {
@@ -2971,6 +2991,36 @@ function AccountModal({ session, onClose }) {
         >
           {cargandoPerfil ? "Un momento..." : "Guardar datos de perfil"}
         </button>
+       function MisClubesSection({ userId }) {
+  const [clubes, setClubes] = useState(null);
+
+  useEffect(() => {
+    supabaseClient
+      .from("club_profesor")
+      .select("*, clubes(nombre)")
+      .eq("profesor_id", userId)
+      .eq("estado", "activo")
+      .then(({ data }) => setClubes(data || []));
+  }, [userId]);
+
+  if (clubes === null || clubes.length === 0) return null;
+
+  return (
+    <div style={{ marginBottom: 18 }}>
+      <div style={{ fontSize: 12, fontWeight: 700, color: COLORS.inkSoft, textTransform: "uppercase", marginBottom: 6 }}>Clubes en los que trabajás</div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+        {clubes.map((c) => (
+          <div key={c.id} style={{ ...cardStyle, padding: "10px 14px" }}>
+            <div style={{ fontWeight: 700, fontSize: 14 }}>{c.clubes && c.clubes.nombre}</div>
+            <div style={{ fontSize: 11.5, color: COLORS.inkSoft, marginTop: 2 }}>
+              {c.permiso_cancelar ? "Podés cancelar/reprogramar tus clases de este club" : "El club maneja tus cancelaciones/reprogramaciones"}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 
         {!modoPass ? (
           <button
@@ -3565,6 +3615,36 @@ function AddClaseClubModal({ club, profesores, onClose, onGuardado }) {
         {guardando ? "Guardando..." : superpuesta ? "Guardar de todos modos (se pisa)" : "Asignar clase"}
       </button>
     </ModalShell>
+  );
+}
+ function MisClubesSection({ userId }) {
+  const [clubes, setClubes] = useState(null);
+
+  useEffect(() => {
+    supabaseClient
+      .from("club_profesor")
+      .select("*, clubes(nombre)")
+      .eq("profesor_id", userId)
+      .eq("estado", "activo")
+      .then(({ data }) => setClubes(data || []));
+  }, [userId]);
+
+  if (clubes === null || clubes.length === 0) return null;
+
+  return (
+    <div style={{ marginBottom: 18 }}>
+      <div style={{ fontSize: 12, fontWeight: 700, color: COLORS.inkSoft, textTransform: "uppercase", marginBottom: 6 }}>Clubes en los que trabajás</div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+        {clubes.map((c) => (
+          <div key={c.id} style={{ ...cardStyle, padding: "10px 14px" }}>
+            <div style={{ fontWeight: 700, fontSize: 14 }}>{c.clubes && c.clubes.nombre}</div>
+            <div style={{ fontSize: 11.5, color: COLORS.inkSoft, marginTop: 2 }}>
+              {c.permiso_cancelar ? "Podés cancelar/reprogramar tus clases de este club" : "El club maneja tus cancelaciones/reprogramaciones"}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }
  function RoleGateScreen({ onElegir }) {

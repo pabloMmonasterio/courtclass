@@ -2991,36 +2991,7 @@ function AccountModal({ session, onClose }) {
         >
           {cargandoPerfil ? "Un momento..." : "Guardar datos de perfil"}
         </button>
-       function MisClubesSection({ userId }) {
-  const [clubes, setClubes] = useState(null);
-
-  useEffect(() => {
-    supabaseClient
-      .from("club_profesor")
-      .select("*, clubes(nombre)")
-      .eq("profesor_id", userId)
-      .eq("estado", "activo")
-      .then(({ data }) => setClubes(data || []));
-  }, [userId]);
-
-  if (clubes === null || clubes.length === 0) return null;
-
-  return (
-    <div style={{ marginBottom: 18 }}>
-      <div style={{ fontSize: 12, fontWeight: 700, color: COLORS.inkSoft, textTransform: "uppercase", marginBottom: 6 }}>Clubes en los que trabajás</div>
-      <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-        {clubes.map((c) => (
-          <div key={c.id} style={{ ...cardStyle, padding: "10px 14px" }}>
-            <div style={{ fontWeight: 700, fontSize: 14 }}>{c.clubes && c.clubes.nombre}</div>
-            <div style={{ fontSize: 11.5, color: COLORS.inkSoft, marginTop: 2 }}>
-              {c.permiso_cancelar ? "Podés cancelar/reprogramar tus clases de este club" : "El club maneja tus cancelaciones/reprogramaciones"}
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
+       {currentUserRol !== "club" && <MisClubesSection userId={session.user.id} />}
 
         {!modoPass ? (
           <button

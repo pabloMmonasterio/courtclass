@@ -3073,7 +3073,7 @@ function ClubApp({ session, onOpenAccount }) {
 
       {tab === "profes" && <ProfesView club={club} onClubUpdate={setClub} showToast={showToast} />}
       {tab === "agenda" && <ClubAgendaView club={club} showToast={showToast} />}
-      {tab === "alumnos" && <ProximamenteView texto="Acá vas a poder cargar y administrar tus alumnos." />}
+      {tab === "alumnos" && <ClubAlumnosView club={club} showToast={showToast} />}
       {tab === "resumen" && <ProximamenteView texto="Acá vas a ver lo acumulado a pagar por profe." />}
 
       <ClubTabBar tab={tab} setTab={setTab} />
@@ -3165,6 +3165,7 @@ function ProfesView({ club, onClubUpdate, showToast }) {
   const [vinculos, setVinculos] = useState(null);
   const [showInvitar, setShowInvitar] = useState(false);
   const [showPlantilla, setShowPlantilla] = useState(false);
+  const [verDisp, setVerDisp] = useState(null);
 
   const cargar = async () => {
     const { data, error } = await supabaseClient
@@ -3234,6 +3235,11 @@ function ProfesView({ club, onClubUpdate, showToast }) {
                   {activo ? "Activo" : "Invitado"}
                 </span>
               </div>
+              {activo && (
+                <button onClick={() => setVerDisp({ id: v.profesor_id, nombre })} style={{ ...pillBtn, background: "transparent", color: COLORS.court, border: `1px solid ${COLORS.court}`, marginTop: 10 }}>
+                  <Clock size={12} /> Ver disponibilidad
+                </button>
+              )}
               {!activo && telefono && (
                 <a
                   href={linkWhatsApp(telefono, armarMensajeWa(club.plantilla_invitacion || "Hola {nombre}! Te invito a sumarte a CourtClass. Sumate acá: {link}", { nombre: nombre.split(" ")[0], link: `${window.location.origin}${window.location.pathname}?invitacion=${v.token_invitacion}` }))}
@@ -3259,10 +3265,54 @@ function ProfesView({ club, onClubUpdate, showToast }) {
       {showPlantilla && (
         <EditarPlantillaInvitacionModal plantilla={club.plantilla_invitacion} onClose={() => setShowPlantilla(false)} onSave={guardarPlantilla} />
       )}
+      {verDisp && (
+        <VerDisponibilidadModal profesorId={verDisp.id} nombre={verDisp.nombre} onClose={() => setVerDisp(null)} />
+      )}
     </div>
   );
 }
 
+function VerDisponibilidadModal({ profesorId, nombre, onClose }) {
+  const [disponibilidad, setDisponibilidad] = useState(null);
+
+  useEffect(() => {
+    supabaseClient.from("disponibilidad").select("*").eq("profesor_id", profesorId).eq("tipo", "patron").then(({ data }) => setDisponibilidad(data || []));
+  }, [profesorId]);
+
+  const disponibleEn = (dia, hora) => {
+    if (!disponibilidad) return false;
+    return disponibilidad.some((d) => d.dia_semana === dia && Number(d.hora_inicio.slice(0, 2)) <= hora && Number(d.hora_fin.slice(0, 2)) > hora && d.disponible);
+  };
+
+  return (
+    <ModalShell title={`Disponibilidad de ${nombre}`} onClose={onClose}>
+      {disponibilidad === null ? (
+        <div style={{ textAlign: "center", color: COLORS.inkSoft, padding: 20 }}>Cargando...</div>
+      ) : disponibilidad.length === 0 ? (
+        <div style={{ color: COLORS.inkSoft, fontSize: 14 }}>Este profe todavía no cargó su disponibilidad.</div>
+      ) : (
+        <div style={{ overflowX: "auto" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "44px repeat(7, 1fr)", gap: 3, minWidth: 460 }}>
+            <div />
+            {DIAS_CORTO.map((d) => (
+              <div key={d} style={{ fontSize: 10.5, fontWeight: 800, textAlign: "center", padding: "6px 2px", color: COLORS.inkSoft }}>{d}</div>
+            ))}
+            {HORAS_CLUB.map((hora) => (
+              <React.Fragment key={hora}>
+                <div style={{ fontSize: 10.5, color: COLORS.inkSoft, display: "flex", alignItems: "center", justifyContent: "flex-end", paddingRight: 4 }}>
+                  {String(hora).padStart(2, "0")}
+                </div>
+                {DIAS_CORTO.map((_, dia) => (
+                  <div key={dia} style={{ height: 22, borderRadius: 4, background: disponibleEn(dia, hora) ? COLORS.disponible : "#fff", boxShadow: disponibleEn(dia, hora) ? "none" : `inset 0 0 0 1px ${COLORS.line}` }} />
+                ))}
+              </React.Fragment>
+            ))}
+          </div>
+        </div>
+      )}
+    </ModalShell>
+  );
+}
 function AddInvitacionModal({ club, onClose, onCrear }) {
   const [nombre, setNombre] = useState("");
   const [telefono, setTelefono] = useState("");
@@ -3616,6 +3666,91 @@ function AddClaseClubModal({ club, profesores, onClose, onGuardado }) {
         ))}
       </div>
     </div>
+  );
+}
+ function ClubAlumnosView({ club, showToast }) {
+  const [alumnos, setAlumnos] = useState(null);
+  const [showAdd, setShowAdd] = useState(false);
+  const [editando, setEditando] = useState(null);
+
+  const cargar = async () => {
+    const { data, error } = await supabaseClient.from("alumnos").select("*").eq("club_id", club.id).order("nombre");
+    if (error) { console.error(error); return; }
+    setAlumnos(data || []);
+  };
+
+  useEffect(() => { cargar(); }, [club.id]);
+
+  const guardar = async (form) => {
+    if (editando) {
+      const { error } = await supabaseClient.from("alumnos").update({ nombre: form.nombre, telefono: form.telefono }).eq("id", editando.id);
+      if (error) { console.error(error); return; }
+      showToast("Alumno actualizado");
+    } else {
+      const { error } = await supabaseClient.from("alumnos").insert({ club_id: club.id, nombre: form.nombre, telefono: form.telefono });
+      if (error) { console.error(error); return; }
+      showToast("Alumno agregado");
+    }
+    setShowAdd(false);
+    setEditando(null);
+    cargar();
+  };
+
+  const eliminar = async (id) => {
+    const { error } = await supabaseClient.from("alumnos").delete().eq("id", id);
+    if (error) { console.error(error); return; }
+    cargar();
+  };
+
+  if (alumnos === null) {
+    return <div style={{ padding: 32, textAlign: "center", color: COLORS.inkSoft }}>Cargando...</div>;
+  }
+
+  return (
+    <div style={{ padding: 16 }}>
+      <div style={{ fontWeight: 800, fontSize: 18, marginBottom: 12 }}>Alumnos ({alumnos.length})</div>
+      {alumnos.length === 0 && <div style={{ color: COLORS.inkSoft, fontSize: 14, marginBottom: 16 }}>Todavía no cargaste alumnos.</div>}
+      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        {alumnos.map((a) => (
+          <div key={a.id} style={{ ...cardStyle, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div>
+              <div style={{ fontWeight: 700, fontSize: 15 }}>{a.nombre}</div>
+              {a.telefono && <div style={{ fontSize: 13, color: COLORS.inkSoft }}>{a.telefono}</div>}
+            </div>
+            <div style={{ display: "flex", gap: 4 }}>
+              <button onClick={() => setEditando(a)} style={{ background: "none", border: "none", color: COLORS.inkSoft, cursor: "pointer", padding: 6 }}>
+                <Pencil size={16} />
+              </button>
+              <button onClick={() => eliminar(a.id)} style={{ background: "none", border: "none", color: COLORS.inkSoft, cursor: "pointer", padding: 6 }}>
+                <Trash2 size={16} />
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+      <button onClick={() => setShowAdd(true)} style={fabStyle}>
+        <Plus size={24} color="#fff" />
+      </button>
+      {(showAdd || editando) && (
+        <AddAlumnoClubModal alumno={editando} onClose={() => { setShowAdd(false); setEditando(null); }} onSave={guardar} />
+      )}
+    </div>
+  );
+}
+
+function AddAlumnoClubModal({ alumno, onClose, onSave }) {
+  const [nombre, setNombre] = useState(alumno?.nombre || "");
+  const [telefono, setTelefono] = useState(alumno?.telefono || "");
+  return (
+    <ModalShell title={alumno ? "Editar alumno" : "Nuevo alumno"} onClose={onClose}>
+      <Label>Nombre</Label>
+      <input value={nombre} onChange={(e) => setNombre(e.target.value)} style={{ ...inputStyle, marginBottom: 12 }} placeholder="Nombre y apellido" />
+      <Label>Teléfono</Label>
+      <input value={telefono} onChange={(e) => setTelefono(e.target.value)} style={{ ...inputStyle, marginBottom: 18 }} placeholder="Teléfono o WhatsApp" />
+      <button disabled={!nombre.trim()} onClick={() => onSave({ nombre: nombre.trim(), telefono: telefono.trim() })} style={{ ...primaryBtn, opacity: nombre.trim() ? 1 : 0.4 }}>
+        {alumno ? "Guardar cambios" : "Guardar alumno"}
+      </button>
+    </ModalShell>
   );
 }
  function RoleGateScreen({ onElegir }) {

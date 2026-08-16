@@ -131,19 +131,12 @@ async function obtenerOcrearPerfil(userId, rolPreferido) {
 
 async function procesarInvitacionPendiente(token, userId) {
   if (!token) return null;
-  const { data: filas, error } = await supabaseClient
-    .from("club_profesor")
-    .select("*")
-    .eq("token_invitacion", token)
-    .is("profesor_id", null);
-  if (error || !filas || filas.length === 0) return null;
-  const invitacion = filas[0];
-  const { error: errorUpdate } = await supabaseClient
-    .from("club_profesor")
-    .update({ profesor_id: userId, estado: "activo" })
-    .eq("id", invitacion.id);
-  if (errorUpdate) { console.error("Error aceptando invitación", errorUpdate); return null; }
-  return invitacion.club_id;
+  const { data, error } = await supabaseClient.rpc("aceptar_invitacion", {
+    p_token: token,
+    p_profesor_id: userId,
+  });
+  if (error) { console.error("Error aceptando invitación", error); return null; }
+  return data;
 }
 
 function mergeConDefaults(d) {

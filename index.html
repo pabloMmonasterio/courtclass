@@ -3051,7 +3051,7 @@ function ClubApp({ session, onOpenAccount }) {
       <ClubHeader club={club} onOpenAccount={onOpenAccount} />
 
       {tab === "profes" && <ProfesView club={club} onClubUpdate={setClub} showToast={showToast} />}
-      {tab === "agenda" && <ProximamenteView texto="Acá vas a poder armar y asignar clases a tus profes." />}
+      {tab === "agenda" && <ClubAgendaView club={club} showToast={showToast} />}
       {tab === "alumnos" && <ProximamenteView texto="Acá vas a poder cargar y administrar tus alumnos." />}
       {tab === "resumen" && <ProximamenteView texto="Acá vas a ver lo acumulado a pagar por profe." />}
 
@@ -3308,7 +3308,266 @@ function EditarPlantillaInvitacionModal({ plantilla, onClose, onSave }) {
   );
 }
 
-function RoleGateScreen({ onElegir }) {
+const HORAS_CLUB = Array.from({ length: 15 }, (_, i) => i + 8); // 8:00 a 22:00
+
+function ClubAgendaView({ club, showToast }) {
+  const [weekStart, setWeekStart] = useState(() => startOfWeek(new Date()));
+  const [clases, setClases] = useState(null);
+  const [profesores, setProfesores] = useState([]);
+  const [showAddClase, setShowAddClase] = useState(false);
+
+  const cargarClases = async () => {
+    const { data, error } = await supabaseClient
+      .from("clases")
+      .select("*, clase_alumnos(alumnos(id, nombre, telefono))")
+      .eq("club_id", club.id)
+      .order("fecha", { ascending: true });
+    if (error) { console.error(error); return; }
+    setClases(data || []);
+  };
+
+  const cargarProfesores = async () => {
+    const { data, error } = await supabaseClient
+      .from("club_profesor")
+      .select("*, usuarios:profesor_id(id, nombre, telefono)")
+      .eq("club_id", club.id)
+      .eq("estado", "activo");
+    if (error) { console.error(error); return; }
+    setProfesores(data || []);
+  };
+
+  useEffect(() => { cargarClases(); cargarProfesores(); }, [club.id]);
+
+  if (clases === null) {
+    return <div style={{ padding: 32, textAlign: "center", color: COLORS.inkSoft }}>Cargando...</div>;
+  }
+
+  const days = Array.from({ length: 7 }, (_, i) => {
+    const d = new Date(weekStart);
+    d.setDate(d.getDate() + i);
+    return d;
+  });
+
+  const clasesByDay = days.map((d) => {
+    const key = toISODateLocal(d);
+    return clases.filter((c) => c.fecha === key).sort((a, b) => a.hora_inicio.localeCompare(b.hora_inicio));
+  });
+
+  if (profesores.length === 0) {
+    return (
+      <div style={{ padding: 32, textAlign: "center" }}>
+        <div style={{ fontSize: 15, color: COLORS.inkSoft, fontWeight: 600 }}>Todavía no tenés profes activos</div>
+        <div style={{ fontSize: 13.5, color: COLORS.inkSoft, marginTop: 6 }}>Invitá a un profe desde la pestaña "Profes" para poder asignarle clases.</div>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ padding: "16px 16px 0" }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
+        <button onClick={() => { const d = new Date(weekStart); d.setDate(d.getDate() - 7); setWeekStart(d); }} style={navBtnStyle}>
+          <ChevronLeft size={18} />
+        </button>
+        <div style={{ fontWeight: 700, fontSize: 14 }}>{fmtDateShort(days[0])} – {fmtDateShort(days[6])}</div>
+        <button onClick={() => { const d = new Date(weekStart); d.setDate(d.getDate() + 7); setWeekStart(d); }} style={navBtnStyle}>
+          <ChevronRight size={18} />
+        </button>
+      </div>
+
+      <div className="week-grid">
+        {days.map((d, i) => {
+          const key = toISODateLocal(d);
+          const clasesDia = clasesByDay[i];
+          const isToday = key === toISODateLocal(new Date());
+          return (
+            <div key={key} style={{ marginBottom: 18 }}>
+              <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginBottom: 8 }}>
+                <span style={{ fontSize: 12, fontWeight: 800, letterSpacing: 1, color: isToday ? COLORS.clay : COLORS.inkSoft }}>{DIAS_CORTO[d.getDay()]}</span>
+                <span style={{ fontSize: 12, color: COLORS.inkSoft }}>{fmtDateShort(d)}</span>
+                {isToday && <span style={{ fontSize: 10, background: COLORS.clay, color: "#fff", padding: "1px 7px", borderRadius: 10, fontWeight: 700 }}>HOY</span>}
+              </div>
+              {clasesDia.length === 0 ? (
+                <div style={{ fontSize: 13, color: COLORS.inkSoft, paddingLeft: 2 }}>Sin clases</div>
+              ) : (
+                <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                  {clasesDia.map((c) => {
+                    const profe = profesores.find((p) => p.profesor_id === c.profesor_id);
+                    const nombreProfe = (profe && profe.usuarios && profe.usuarios.nombre) || profe?.nombre_invitado || "Profe";
+                    const alumnosNombres = (c.clase_alumnos || []).map((ca) => ca.alumnos?.nombre).filter(Boolean);
+                    const cancelada = c.estado === "cancelada";
+                    const hecha = c.estado === "hecha";
+                    return (
+                      <div key={c.id} style={{ ...cardStyle, opacity: cancelada ? 0.6 : 1 }}>
+                        <div style={{ fontWeight: 700, fontSize: 15, display: "flex", alignItems: "center", gap: 6 }}>
+                          <Clock size={14} color={COLORS.court} />
+                          <span style={{ textDecoration: cancelada ? "line-through" : "none" }}>{c.hora_inicio.slice(0, 5)} - {c.hora_fin.slice(0, 5)}</span>
+                        </div>
+                        <div style={{ fontSize: 13.5, color: COLORS.inkSoft, marginTop: 2 }}>
+                          {alumnosNombres.join(", ") || "Sin alumno"}
+                        </div>
+                        <div style={{ fontSize: 12, color: COLORS.inkSoft, marginTop: 2, display: "flex", alignItems: "center", gap: 5 }}>
+                          <span style={{ fontSize: 10.5, fontWeight: 700, color: "#fff", background: COLORS.court, padding: "1px 7px", borderRadius: 8 }}>{nombreProfe}</span>
+                          {hecha && <span style={{ fontSize: 10.5, fontWeight: 700, color: COLORS.court }}>· Hecha</span>}
+                          {cancelada && <span style={{ fontSize: 10.5, fontWeight: 700, color: "#B23A3A" }}>· Cancelada</span>}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      <button onClick={() => setShowAddClase(true)} style={fabStyle}>
+        <Plus size={24} color="#fff" />
+      </button>
+
+      {showAddClase && (
+        <AddClaseClubModal
+          club={club}
+          profesores={profesores}
+          onClose={() => setShowAddClase(false)}
+          onGuardado={() => { setShowAddClase(false); cargarClases(); showToast("Clase asignada"); }}
+        />
+      )}
+    </div>
+  );
+}
+
+function AddClaseClubModal({ club, profesores, onClose, onGuardado }) {
+  const [profesorId, setProfesorId] = useState(profesores[0]?.profesor_id || null);
+  const [alumnos, setAlumnos] = useState([]);
+  const [busqueda, setBusqueda] = useState("");
+  const [mostrarLista, setMostrarLista] = useState(false);
+  const [alumnoSel, setAlumnoSel] = useState(null);
+  const [telefonoNuevo, setTelefonoNuevo] = useState("");
+  const [fecha, setFecha] = useState(toISODateLocal(new Date()));
+  const [hora, setHora] = useState("09:00");
+  const [duracionMin, setDuracionMin] = useState(60);
+  const [disponibilidadProfe, setDisponibilidadProfe] = useState(null);
+  const [clasesProfe, setClasesProfe] = useState([]);
+  const [guardando, setGuardando] = useState(false);
+
+  useEffect(() => {
+    supabaseClient.from("alumnos").select("*").eq("club_id", club.id).then(({ data }) => setAlumnos(data || []));
+  }, [club.id]);
+
+  useEffect(() => {
+    if (!profesorId) return;
+    supabaseClient.from("disponibilidad").select("*").eq("profesor_id", profesorId).eq("tipo", "patron").then(({ data }) => setDisponibilidadProfe(data || []));
+    supabaseClient.from("clases").select("fecha, hora_inicio, hora_fin").eq("profesor_id", profesorId).neq("estado", "cancelada").then(({ data }) => setClasesProfe(data || []));
+  }, [profesorId]);
+
+  const diaSemana = new Date(fecha + "T00:00:00").getDay();
+  const disponibleEnHora = (h) => {
+    if (!disponibilidadProfe) return false;
+    return disponibilidadProfe.some((d) => d.dia_semana === diaSemana && Number(d.hora_inicio.slice(0, 2)) <= h && Number(d.hora_fin.slice(0, 2)) > h && d.disponible);
+  };
+
+  const horaFin = addMinutos(hora, duracionMin);
+  const superpuesta = clasesProfe.find((c) => c.fecha === fecha && rangosSuperponen(hora, horaFin, c.hora_inicio.slice(0, 5), c.hora_fin.slice(0, 5)));
+
+  const alumnosFiltrados = busqueda.trim().length === 0 ? [] : alumnos.filter((a) => a.nombre.toLowerCase().includes(busqueda.trim().toLowerCase()));
+  const yaExisteExacto = alumnos.some((a) => a.nombre.toLowerCase() === busqueda.trim().toLowerCase());
+
+  const puedeGuardar = profesorId && (alumnoSel || busqueda.trim()) && fecha && hora;
+
+  const guardar = async () => {
+    setGuardando(true);
+    let alumnoId = alumnoSel?.id;
+    if (!alumnoId) {
+      const { data: nuevo, error: errorAlumno } = await supabaseClient
+        .from("alumnos")
+        .insert({ club_id: club.id, nombre: busqueda.trim(), telefono: telefonoNuevo.trim() })
+        .select();
+      if (errorAlumno) { console.error(errorAlumno); setGuardando(false); return; }
+      alumnoId = nuevo[0].id;
+    }
+    const { data: clase, error: errorClase } = await supabaseClient
+      .from("clases")
+      .insert({ club_id: club.id, profesor_id: profesorId, fecha, hora_inicio: hora, hora_fin: horaFin, estado: "pendiente" })
+      .select();
+    if (errorClase) { console.error(errorClase); setGuardando(false); return; }
+    await supabaseClient.from("clase_alumnos").insert({ clase_id: clase[0].id, alumno_id: alumnoId });
+    setGuardando(false);
+    onGuardado();
+  };
+
+  return (
+    <ModalShell title="Nueva clase" onClose={onClose}>
+      <Label>Profe</Label>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 16 }}>
+        {profesores.map((p) => {
+          const nombre = (p.usuarios && p.usuarios.nombre) || p.nombre_invitado || "Profe";
+          return (
+            <button key={p.profesor_id} onClick={() => setProfesorId(p.profesor_id)} style={{ ...chipStyle, background: profesorId === p.profesor_id ? COLORS.court : "#fff", color: profesorId === p.profesor_id ? "#fff" : COLORS.ink, borderColor: profesorId === p.profesor_id ? COLORS.court : COLORS.line }}>
+              {nombre}
+            </button>
+          );
+        })}
+      </div>
+
+      <Label>Alumno</Label>
+      {alumnoSel ? (
+        <button onClick={() => setAlumnoSel(null)} style={{ ...chipStyle, background: COLORS.court, color: "#fff", borderColor: COLORS.court, marginBottom: 12, display: "flex", alignItems: "center", gap: 5 }}>
+          {alumnoSel.nombre} <span style={{ fontWeight: 900 }}>✕</span>
+        </button>
+      ) : (
+        <div style={{ position: "relative", marginBottom: 6 }}>
+          <input value={busqueda} onChange={(e) => { setBusqueda(e.target.value); setMostrarLista(true); }} onFocus={() => setMostrarLista(true)} placeholder="🔍 Buscar alumno..." style={inputStyle} />
+          {mostrarLista && busqueda.trim().length > 0 && (
+            <div style={{ position: "absolute", top: "100%", left: 0, right: 0, background: "#fff", border: `1px solid ${COLORS.line}`, borderRadius: 10, marginTop: 4, maxHeight: 200, overflowY: "auto", zIndex: 10, boxShadow: "0 8px 20px rgba(0,0,0,0.12)" }}>
+              {alumnosFiltrados.map((a) => (
+                <button key={a.id} onClick={() => { setAlumnoSel(a); setBusqueda(""); setMostrarLista(false); }} style={{ display: "block", width: "100%", textAlign: "left", padding: "10px 12px", border: "none", background: "none", borderBottom: `1px solid ${COLORS.line}`, cursor: "pointer", fontSize: 14 }}>
+                  {a.nombre}
+                </button>
+              ))}
+              {!yaExisteExacto && (
+                <div style={{ padding: 12 }}>
+                  <div style={{ fontSize: 12, color: COLORS.inkSoft, marginBottom: 6 }}>No encontrado. Se va a cargar "{busqueda.trim()}" como alumno nuevo:</div>
+                  <input value={telefonoNuevo} onChange={(e) => setTelefonoNuevo(e.target.value)} placeholder="Teléfono (opcional)" style={{ ...inputStyle, fontSize: 13, padding: "8px 10px" }} />
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+
+      <Label>Fecha</Label>
+      <input type="date" value={fecha} onChange={(e) => setFecha(e.target.value)} style={{ ...inputStyle, marginBottom: 12 }} />
+
+      <Label>Horario</Label>
+      <input type="time" value={hora} onChange={(e) => setHora(e.target.value)} style={{ ...inputStyle, marginBottom: 6 }} />
+      {disponibilidadProfe && (
+        <div style={{ fontSize: 12, marginBottom: 12, fontWeight: 600, color: disponibleEnHora(Number(hora.slice(0, 2))) ? COLORS.disponible : "#B23A3A" }}>
+          {disponibleEnHora(Number(hora.slice(0, 2))) ? "✓ El profe marcó este horario como disponible" : "⚠ El profe no marcó este horario como disponible"}
+        </div>
+      )}
+
+      <Label>Duración</Label>
+      <div style={{ display: "flex", gap: 6, marginBottom: 12 }}>
+        {[{ label: "1 h", min: 60 }, { label: "1:30 h", min: 90 }, { label: "2 h", min: 120 }, { label: "2:30 h", min: 150 }].map((opt) => (
+          <button key={opt.min} onClick={() => setDuracionMin(opt.min)} style={{ ...chipStyle, background: duracionMin === opt.min ? COLORS.court : "#fff", color: duracionMin === opt.min ? "#fff" : COLORS.ink, borderColor: duracionMin === opt.min ? COLORS.court : COLORS.line }}>
+            {opt.label}
+          </button>
+        ))}
+      </div>
+
+      {superpuesta && (
+        <div style={{ background: "#FBE4E4", border: "1.5px solid #B23A3A", borderRadius: 10, padding: "10px 12px", marginBottom: 12, fontSize: 13, color: "#8A2A2A", fontWeight: 700 }}>
+          ⚠ Ese profe ya tiene una clase de {superpuesta.hora_inicio.slice(0, 5)} a {superpuesta.hora_fin.slice(0, 5)} ese día.
+        </div>
+      )}
+
+      <button disabled={!puedeGuardar || guardando} onClick={guardar} style={{ ...primaryBtn, background: superpuesta ? "#B23A3A" : primaryBtn.background, opacity: puedeGuardar ? 1 : 0.5 }}>
+        {guardando ? "Guardando..." : superpuesta ? "Guardar de todos modos (se pisa)" : "Asignar clase"}
+      </button>
+    </ModalShell>
+  );
+}
+ function RoleGateScreen({ onElegir }) {
   return (
     <div style={{ minHeight: "100vh", background: "#B85C2E", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "system-ui", padding: 20 }}>
       <div style={{ background: "#fff", borderRadius: 16, padding: 28, width: "100%", maxWidth: 380, textAlign: "center" }}>

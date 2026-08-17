@@ -3500,7 +3500,7 @@ function ClubAgendaView({ club, showToast }) {
           club={club}
           profesores={profesores}
           onClose={() => setShowAddClase(false)}
-          onGuardado={() => { setShowAddClase(false); cargarClases(); showToast("Clase asignada"); }}
+          onGuardado={() => { cargarClases(); showToast("Clase asignada"); }}
         />
       )}
     </div>
@@ -3520,6 +3520,7 @@ function AddClaseClubModal({ club, profesores, onClose, onGuardado }) {
   const [disponibilidadProfe, setDisponibilidadProfe] = useState(null);
   const [clasesProfe, setClasesProfe] = useState([]);
   const [guardando, setGuardando] = useState(false);
+  const [claseCreada, setClaseCreada] = useState(null);
 
   useEffect(() => {
     supabaseClient.from("alumnos").select("*").eq("club_id", club.id).then(({ data }) => setAlumnos(data || []));
@@ -3548,6 +3549,8 @@ function AddClaseClubModal({ club, profesores, onClose, onGuardado }) {
   const guardar = async () => {
     setGuardando(true);
     let alumnoId = alumnoSel?.id;
+    let alumnoNombre = alumnoSel?.nombre;
+    let alumnoTelefono = alumnoSel?.telefono;
     if (!alumnoId) {
       const { data: nuevo, error: errorAlumno } = await supabaseClient
         .from("alumnos")
@@ -3555,6 +3558,8 @@ function AddClaseClubModal({ club, profesores, onClose, onGuardado }) {
         .select();
       if (errorAlumno) { console.error(errorAlumno); setGuardando(false); return; }
       alumnoId = nuevo[0].id;
+      alumnoNombre = nuevo[0].nombre;
+      alumnoTelefono = nuevo[0].telefono;
     }
     const { data: clase, error: errorClase } = await supabaseClient
       .from("clases")
@@ -3563,8 +3568,37 @@ function AddClaseClubModal({ club, profesores, onClose, onGuardado }) {
     if (errorClase) { console.error(errorClase); setGuardando(false); return; }
     await supabaseClient.from("clase_alumnos").insert({ clase_id: clase[0].id, alumno_id: alumnoId });
     setGuardando(false);
+    const profe = profesores.find((p) => p.profesor_id === profesorId);
+    const profeNombre = (profe && profe.usuarios && profe.usuarios.nombre) || (profe && profe.nombre_invitado) || "Profe";
+    const profeTelefono = (profe && profe.usuarios && profe.usuarios.telefono) || (profe && profe.telefono_invitado);
+    setClaseCreada({ alumnoNombre, alumnoTelefono, profeNombre, profeTelefono, fecha, hora });
     onGuardado();
   };
+
+  if (claseCreada) {
+    const mensajeAlumno = `Hola ${claseCreada.alumnoNombre.split(" ")[0]}! Te confirmamos tu clase en ${club.nombre} el ${fmtFechaHoraLarga(claseCreada.fecha, claseCreada.hora)}.`;
+    const mensajeProfe = `Hola ${claseCreada.profeNombre.split(" ")[0]}! Te asignaron una clase en ${club.nombre} el ${fmtFechaHoraLarga(claseCreada.fecha, claseCreada.hora)} con ${claseCreada.alumnoNombre}.`;
+    return (
+      <ModalShell title="Clase asignada" onClose={onClose}>
+        <div style={{ fontSize: 13.5, color: COLORS.inkSoft, marginBottom: 14 }}>
+          Listo. Avisale a cada uno por WhatsApp si querés:
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          {claseCreada.alumnoTelefono && (
+            <a href={linkWhatsApp(claseCreada.alumnoTelefono, mensajeAlumno)} target="_blank" rel="noreferrer" style={{ ...primaryBtn, background: "#25D366", textDecoration: "none", display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}>
+              <MessageCircle size={16} /> Avisar a {claseCreada.alumnoNombre.split(" ")[0]}
+            </a>
+          )}
+          {claseCreada.profeTelefono && (
+            <a href={linkWhatsApp(claseCreada.profeTelefono, mensajeProfe)} target="_blank" rel="noreferrer" style={{ ...primaryBtn, background: "#25D366", textDecoration: "none", display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}>
+              <MessageCircle size={16} /> Avisar a {claseCreada.profeNombre.split(" ")[0]}
+            </a>
+          )}
+          <button onClick={onClose} style={{ ...primaryBtn, background: "#fff", color: COLORS.ink, border: `1px solid ${COLORS.line}` }}>Listo</button>
+        </div>
+      </ModalShell>
+    );
+  }
 
   return (
     <ModalShell title="Nueva clase" onClose={onClose}>

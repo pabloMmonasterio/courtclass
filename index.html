@@ -1061,8 +1061,7 @@ function AgendaView({ data, clasesClub, weekStart, setWeekStart, onAddClick, onT
             ) : (
               <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                 {clases.map((c) => {
-                  {clases.map((c) => {
-                  if (c.esDeClub) {
+                                    if (c.esDeClub) {
                     const cancelada = c.estado === "cancelada";
                     return (
                       <div key={c.id} style={{ ...cardStyle, opacity: cancelada ? 0.6 : 1 }}>

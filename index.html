@@ -157,7 +157,9 @@ async function procesarInvitacionPendiente(token, userId) {
 }
 
 function mergeConDefaults(d) {
-  return { ...loadData(), ...(d || {}) };async function fetchClasesClubDelProfe() {
+  return { ...loadData(), ...(d || {}) };
+}
+ async function fetchClasesClubDelProfe() {
   if (!currentUserId) return [];
   const { data, error } = await supabaseClient
     .from("clases")
@@ -183,9 +185,7 @@ function mergeConDefaults(d) {
       precio: null,
       cobrado: false,
     };
-  });
-}
-}
+ }
 
 async function persist(data) {
   if (!currentUserId) return false;

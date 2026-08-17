@@ -164,8 +164,7 @@ function mergeConDefaults(d) {
   const { data, error } = await supabaseClient
     .from("clases")
     .select("*, clase_alumnos(alumnos(nombre, telefono)), clubes(nombre)")
-    .eq("profesor_id", currentUserId)
-    .neq("estado", "cancelada");
+    .eq("profesor_id", currentUserId);
   if (error) { console.error("Error leyendo clases de club", error); return []; }
   return (data || []).map((c) => {
     const [h1, m1] = c.hora_inicio.split(":").map(Number);
@@ -176,18 +175,22 @@ function mergeConDefaults(d) {
       hora: c.hora_inicio.slice(0, 5),
       duracionMin: h2 * 60 + m2 - (h1 * 60 + m1),
       alumnosNombres: (c.clase_alumnos || []).map((ca) => ca.alumnos && ca.alumnos.nombre).filter(Boolean),
-      estado: "programada",
+      estado: c.estado,
       esDeClub: true,
       clubNombreClub: (c.clubes && c.clubes.nombre) || "Club",
+      motivoCancelacion: c.motivo_cancelacion,
+      conAviso: c.con_aviso,
+      motivoReprogramacion: c.motivo_reprogramacion,
+      fechaAnterior: c.fecha_anterior,
+      horaAnterior: c.hora_inicio_anterior ? c.hora_inicio_anterior.slice(0, 5) : null,
       cancelacion: null,
       reprogramada: null,
       asistencia: null,
       precio: null,
       cobrado: false,
     };
-   });
- }
-
+  });
+}
 async function persist(data) {
   if (!currentUserId) return false;
   try {
@@ -1058,12 +1061,14 @@ function AgendaView({ data, clasesClub, weekStart, setWeekStart, onAddClick, onT
             ) : (
               <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                 {clases.map((c) => {
+                  {clases.map((c) => {
                   if (c.esDeClub) {
+                    const cancelada = c.estado === "cancelada";
                     return (
-                      <div key={c.id} style={cardStyle}>
+                      <div key={c.id} style={{ ...cardStyle, opacity: cancelada ? 0.6 : 1 }}>
                         <div style={{ fontWeight: 700, fontSize: 15, display: "flex", alignItems: "center", gap: 6 }}>
                           <Clock size={14} color={COLORS.court} />
-                          <span>{c.hora} - {addMinutos(c.hora, c.duracionMin || 60)}</span>
+                          <span style={{ textDecoration: cancelada ? "line-through" : "none" }}>{c.hora} - {addMinutos(c.hora, c.duracionMin || 60)}</span>
                         </div>
                         <div style={{ fontSize: 13.5, color: COLORS.inkSoft, marginTop: 2 }}>
                           {c.alumnosNombres.join(", ") || "Sin alumno"}
@@ -1071,6 +1076,16 @@ function AgendaView({ data, clasesClub, weekStart, setWeekStart, onAddClick, onT
                         <div style={{ fontSize: 10.5, fontWeight: 700, color: "#fff", background: COLORS.clay, display: "inline-block", padding: "2px 8px", borderRadius: 8, marginTop: 6 }}>
                           Asignada por {c.clubNombreClub}
                         </div>
+                        {!cancelada && c.motivoReprogramacion && (
+                          <div style={{ fontSize: 11.5, color: COLORS.clay, marginTop: 6, fontWeight: 600 }}>
+                            Reprogramada · {c.motivoReprogramacion}
+                          </div>
+                        )}
+                        {cancelada && (
+                          <div style={{ fontSize: 11.5, color: "#B23A3A", marginTop: 6, fontWeight: 700 }}>
+                            Cancelada{c.motivoCancelacion ? ` · ${c.motivoCancelacion}` : ""}{c.conAviso != null ? (c.conAviso ? " · con aviso" : " · sin aviso") : ""}
+                          </div>
+                        )}
                       </div>
                     );
                   }
@@ -3437,6 +3452,9 @@ function ClubAgendaView({ club, showToast }) {
   const [clases, setClases] = useState(null);
   const [profesores, setProfesores] = useState([]);
   const [showAddClase, setShowAddClase] = useState(false);
+  const [filtroProfe, setFiltroProfe] = useState("todos");
+  const [reprogramando, setReprogramando] = useState(null);
+  const [cancelando, setCancelando] = useState(null);
 
   const cargarClases = async () => {
     const { data, error } = await supabaseClient
@@ -3460,6 +3478,12 @@ function ClubAgendaView({ club, showToast }) {
 
   useEffect(() => { cargarClases(); cargarProfesores(); }, [club.id]);
 
+  const marcarHecha = async (clase) => {
+    const { error } = await supabaseClient.from("clases").update({ estado: clase.estado === "hecha" ? "pendiente" : "hecha" }).eq("id", clase.id);
+    if (error) { console.error(error); return; }
+    cargarClases();
+  };
+
   if (clases === null) {
     return <div style={{ padding: 32, textAlign: "center", color: COLORS.inkSoft }}>Cargando...</div>;
   }
@@ -3470,9 +3494,11 @@ function ClubAgendaView({ club, showToast }) {
     return d;
   });
 
+  const clasesFiltradas = clases.filter((c) => filtroProfe === "todos" || c.profesor_id === filtroProfe);
+
   const clasesByDay = days.map((d) => {
     const key = toISODateLocal(d);
-    return clases.filter((c) => c.fecha === key).sort((a, b) => a.hora_inicio.localeCompare(b.hora_inicio));
+    return clasesFiltradas.filter((c) => c.fecha === key).sort((a, b) => a.hora_inicio.localeCompare(b.hora_inicio));
   });
 
   if (profesores.length === 0) {
@@ -3494,6 +3520,20 @@ function ClubAgendaView({ club, showToast }) {
         <button onClick={() => { const d = new Date(weekStart); d.setDate(d.getDate() + 7); setWeekStart(d); }} style={navBtnStyle}>
           <ChevronRight size={18} />
         </button>
+      </div>
+
+      <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 16 }}>
+        <button onClick={() => setFiltroProfe("todos")} style={{ ...chipStyle, background: filtroProfe === "todos" ? COLORS.ink : "#fff", color: filtroProfe === "todos" ? "#fff" : COLORS.ink, borderColor: filtroProfe === "todos" ? COLORS.ink : COLORS.line }}>
+          Todos
+        </button>
+        {profesores.map((p) => {
+          const nombre = (p.usuarios && p.usuarios.nombre) || p.nombre_invitado || "Profe";
+          return (
+            <button key={p.profesor_id} onClick={() => setFiltroProfe(p.profesor_id)} style={{ ...chipStyle, background: filtroProfe === p.profesor_id ? COLORS.court : "#fff", color: filtroProfe === p.profesor_id ? "#fff" : COLORS.ink, borderColor: filtroProfe === p.profesor_id ? COLORS.court : COLORS.line }}>
+              {nombre}
+            </button>
+          );
+        })}
       </div>
 
       <div className="week-grid">
@@ -3527,11 +3567,33 @@ function ClubAgendaView({ club, showToast }) {
                         <div style={{ fontSize: 13.5, color: COLORS.inkSoft, marginTop: 2 }}>
                           {alumnosNombres.join(", ") || "Sin alumno"}
                         </div>
-                        <div style={{ fontSize: 12, color: COLORS.inkSoft, marginTop: 2, display: "flex", alignItems: "center", gap: 5 }}>
+                        <div style={{ fontSize: 12, color: COLORS.inkSoft, marginTop: 2, display: "flex", alignItems: "center", gap: 5, flexWrap: "wrap" }}>
                           <span style={{ fontSize: 10.5, fontWeight: 700, color: "#fff", background: COLORS.court, padding: "1px 7px", borderRadius: 8 }}>{nombreProfe}</span>
-                          {hecha && <span style={{ fontSize: 10.5, fontWeight: 700, color: COLORS.court }}>· Hecha</span>}
-                          {cancelada && <span style={{ fontSize: 10.5, fontWeight: 700, color: "#B23A3A" }}>· Cancelada</span>}
                         </div>
+                        {c.reprogramada_desde_fecha_anterior && null}
+                        {c.motivo_reprogramacion && !cancelada && (
+                          <div style={{ fontSize: 11.5, color: COLORS.clay, marginTop: 4, fontWeight: 600 }}>
+                            <CloudRain size={12} /> Reprogramada · {c.motivo_reprogramacion}
+                          </div>
+                        )}
+                        {cancelada && (
+                          <div style={{ fontSize: 11.5, color: "#B23A3A", marginTop: 4, fontWeight: 700 }}>
+                            Cancelada{c.motivo_cancelacion ? ` · ${c.motivo_cancelacion}` : ""}{c.con_aviso != null ? (c.con_aviso ? " · con aviso" : " · sin aviso") : ""}
+                          </div>
+                        )}
+                        {!cancelada && (
+                          <div style={{ display: "flex", gap: 8, marginTop: 10, flexWrap: "wrap" }}>
+                            <button onClick={() => marcarHecha(c)} style={{ ...pillBtn, background: hecha ? COLORS.court : "transparent", color: hecha ? "#fff" : COLORS.court, border: `1px solid ${COLORS.court}` }}>
+                              <Check size={12} /> {hecha ? "Hecha" : "Marcar hecha"}
+                            </button>
+                            <button onClick={() => setReprogramando(c)} style={{ ...pillBtn, background: "transparent", color: COLORS.clay, border: `1px solid ${COLORS.clay}` }}>
+                              <CloudRain size={12} /> Reprogramar
+                            </button>
+                            <button onClick={() => setCancelando(c)} style={{ ...pillBtn, background: "transparent", color: "#B23A3A", border: "1px solid #B23A3A" }}>
+                              Cancelar
+                            </button>
+                          </div>
+                        )}
                       </div>
                     );
                   })}
@@ -3554,10 +3616,127 @@ function ClubAgendaView({ club, showToast }) {
           onGuardado={() => { cargarClases(); showToast("Clase asignada"); }}
         />
       )}
+      {reprogramando && (
+        <ReprogramarClaseClubModal
+          clase={reprogramando}
+          club={club}
+          profesores={profesores}
+          onClose={() => setReprogramando(null)}
+          onGuardado={() => { setReprogramando(null); cargarClases(); showToast("Clase reprogramada"); }}
+        />
+      )}
+      {cancelando && (
+        <CancelarClaseClubModal
+          clase={cancelando}
+          club={club}
+          profesores={profesores}
+          onClose={() => setCancelando(null)}
+          onGuardado={() => { setCancelando(null); cargarClases(); showToast("Clase cancelada"); }}
+        />
+      )}
     </div>
   );
 }
 
+function ReprogramarClaseClubModal({ clase, club, profesores, onClose, onGuardado }) {
+  const [fecha, setFecha] = useState(clase.fecha);
+  const [hora, setHora] = useState(clase.hora_inicio.slice(0, 5));
+  const [motivo, setMotivo] = useState("Lluvia");
+  const [guardando, setGuardando] = useState(false);
+
+  const duracionMin = (() => {
+    const [h1, m1] = clase.hora_inicio.split(":").map(Number);
+    const [h2, m2] = clase.hora_fin.split(":").map(Number);
+    return h2 * 60 + m2 - (h1 * 60 + m1);
+  })();
+  const horaFin = addMinutos(hora, duracionMin);
+
+  const guardar = async () => {
+    setGuardando(true);
+    const { error } = await supabaseClient
+      .from("clases")
+      .update({
+        fecha,
+        hora_inicio: hora,
+        hora_fin: horaFin,
+        motivo_reprogramacion: motivo,
+        fecha_anterior: clase.fecha,
+        hora_inicio_anterior: clase.hora_inicio,
+      })
+      .eq("id", clase.id);
+    setGuardando(false);
+    if (error) { console.error(error); return; }
+    onGuardado();
+  };
+
+  return (
+    <ModalShell title="Reprogramar clase" onClose={onClose}>
+      <div style={{ fontSize: 13.5, color: COLORS.inkSoft, marginBottom: 14 }}>
+        Originalmente {fmtFechaHoraLarga(clase.fecha, clase.hora_inicio.slice(0, 5))}
+      </div>
+      <Label>Motivo</Label>
+      <div style={{ display: "flex", gap: 6, marginBottom: 12, flexWrap: "wrap" }}>
+        {["Lluvia", "Alumno", "Profe", "Otro"].map((m) => (
+          <button key={m} onClick={() => setMotivo(m)} style={{ ...chipStyle, background: motivo === m ? COLORS.clay : "#fff", color: motivo === m ? "#fff" : COLORS.ink, borderColor: motivo === m ? COLORS.clay : COLORS.line }}>
+            {m}
+          </button>
+        ))}
+      </div>
+      <Label>Nueva fecha</Label>
+      <input type="date" value={fecha} onChange={(e) => setFecha(e.target.value)} style={{ ...inputStyle, marginBottom: 12 }} />
+      <Label>Nuevo horario</Label>
+      <input type="time" value={hora} onChange={(e) => setHora(e.target.value)} style={{ ...inputStyle, marginBottom: 18 }} />
+      <button disabled={guardando} onClick={guardar} style={primaryBtn}>
+        {guardando ? "Guardando..." : "Confirmar reprogramación"}
+      </button>
+    </ModalShell>
+  );
+}
+
+function CancelarClaseClubModal({ clase, club, profesores, onClose, onGuardado }) {
+  const [motivo, setMotivo] = useState("Alumno");
+  const [conAviso, setConAviso] = useState(true);
+  const [guardando, setGuardando] = useState(false);
+
+  const guardar = async () => {
+    setGuardando(true);
+    const { error } = await supabaseClient
+      .from("clases")
+      .update({ estado: "cancelada", motivo_cancelacion: motivo, con_aviso: conAviso })
+      .eq("id", clase.id);
+    setGuardando(false);
+    if (error) { console.error(error); return; }
+    onGuardado();
+  };
+
+  return (
+    <ModalShell title="Cancelar clase" onClose={onClose}>
+      <div style={{ fontSize: 13.5, color: COLORS.inkSoft, marginBottom: 14 }}>
+        {fmtFechaHoraLarga(clase.fecha, clase.hora_inicio.slice(0, 5))}
+      </div>
+      <Label>¿Quién cancela?</Label>
+      <div style={{ display: "flex", gap: 6, marginBottom: 14, flexWrap: "wrap" }}>
+        {["Alumno", "Profe", "Clima", "Otro"].map((m) => (
+          <button key={m} onClick={() => setMotivo(m)} style={{ ...chipStyle, background: motivo === m ? "#B23A3A" : "#fff", color: motivo === m ? "#fff" : COLORS.ink, borderColor: motivo === m ? "#B23A3A" : COLORS.line }}>
+            {m}
+          </button>
+        ))}
+      </div>
+      <Label>¿Avisó con tiempo suficiente?</Label>
+      <div style={{ display: "flex", gap: 6, marginBottom: 18 }}>
+        <button onClick={() => setConAviso(true)} style={{ ...chipStyle, background: conAviso ? COLORS.court : "#fff", color: conAviso ? "#fff" : COLORS.ink, borderColor: conAviso ? COLORS.court : COLORS.line }}>
+          Sí, con aviso
+        </button>
+        <button onClick={() => setConAviso(false)} style={{ ...chipStyle, background: !conAviso ? "#B23A3A" : "#fff", color: !conAviso ? "#fff" : COLORS.ink, borderColor: !conAviso ? "#B23A3A" : COLORS.line }}>
+          No, sin aviso
+        </button>
+      </div>
+      <button disabled={guardando} onClick={guardar} style={{ ...primaryBtn, background: "#B23A3A" }}>
+        {guardando ? "Guardando..." : "Confirmar cancelación"}
+      </button>
+    </ModalShell>
+  );
+}
 function AddClaseClubModal({ club, profesores, onClose, onGuardado }) {
   const [profesorId, setProfesorId] = useState(profesores[0]?.profesor_id || null);
   const [alumnos, setAlumnos] = useState([]);

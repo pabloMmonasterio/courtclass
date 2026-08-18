@@ -1073,7 +1073,6 @@ function AgendaView({ data, clasesClub, weekStart, setWeekStart, onAddClick, onT
                           {c.alumnosNombres.join(", ") || "Sin alumno"}
                         </div>
                         <div style={{ fontSize: 10.5, fontWeight: 700, color: "#fff", background: COLORS.clay, display: "inline-block", padding: "2px 8px", borderRadius: 8, marginTop: 6 }}>
-                          <div style={{ fontSize: 10.5, fontWeight: 700, color: "#fff", background: COLORS.clay, display: "inline-block", padding: "2px 8px", borderRadius: 8, marginTop: 6 }}>
                           Asignada por {c.clubNombreClub}
                         </div>
                         {c.precio != null && (
@@ -3573,8 +3572,7 @@ function ClubAgendaView({ club, showToast }) {
                           {alumnosNombres.join(", ") || "Sin alumno"}
                         </div>
                         <div style={{ fontSize: 12, color: COLORS.inkSoft, marginTop: 2, display: "flex", alignItems: "center", gap: 5, flexWrap: "wrap" }}>
-                          <span style={{ fontSize: 10.5, fontWeight: 700, color: "#fff", background: COLORS.court, padding: "1px 7px", borderRadius: 8 }}><div style={{ fontSize: 12, color: COLORS.inkSoft, marginTop: 2, display: "flex", alignItems: "center", gap: 5, flexWrap: "wrap" }}>
-                          <span style={{ fontSize: 10.5, fontWeight: 700, color: "#fff", background: COLORS.court, padding: "1px 7px", borderRadius: 8 }}>{nombreProfe}</span>
+                         <span style={{ fontSize: 10.5, fontWeight: 700, color: "#fff", background: COLORS.court, padding: "1px 7px", borderRadius: 8 }}>{nombreProfe}</span>
                           {c.precio != null && <span style={{ fontWeight: 700 }}>{fmtMoney(c.precio)}</span>}
                         </div>
                         {c.reprogramada_desde_fecha_anterior && null}

@@ -178,6 +178,7 @@ function mergeConDefaults(d) {
       estado: c.estado,
       esDeClub: true,
       clubNombreClub: (c.clubes && c.clubes.nombre) || "Club",
+      precio: c.precio,
       motivoCancelacion: c.motivo_cancelacion,
       conAviso: c.con_aviso,
       motivoReprogramacion: c.motivo_reprogramacion,
@@ -186,7 +187,6 @@ function mergeConDefaults(d) {
       cancelacion: null,
       reprogramada: null,
       asistencia: null,
-      precio: null,
       cobrado: false,
     };
   });
@@ -1073,8 +1073,14 @@ function AgendaView({ data, clasesClub, weekStart, setWeekStart, onAddClick, onT
                           {c.alumnosNombres.join(", ") || "Sin alumno"}
                         </div>
                         <div style={{ fontSize: 10.5, fontWeight: 700, color: "#fff", background: COLORS.clay, display: "inline-block", padding: "2px 8px", borderRadius: 8, marginTop: 6 }}>
+                          <div style={{ fontSize: 10.5, fontWeight: 700, color: "#fff", background: COLORS.clay, display: "inline-block", padding: "2px 8px", borderRadius: 8, marginTop: 6 }}>
                           Asignada por {c.clubNombreClub}
                         </div>
+                        {c.precio != null && (
+                          <div style={{ fontSize: 12.5, color: COLORS.inkSoft, marginTop: 4, fontWeight: 700 }}>
+                            {fmtMoney(c.precio)}
+                          </div>
+                        )}
                         {!cancelada && c.motivoReprogramacion && (
                           <div style={{ fontSize: 11.5, color: COLORS.clay, marginTop: 6, fontWeight: 600 }}>
                             Reprogramada · {c.motivoReprogramacion}
@@ -3567,7 +3573,9 @@ function ClubAgendaView({ club, showToast }) {
                           {alumnosNombres.join(", ") || "Sin alumno"}
                         </div>
                         <div style={{ fontSize: 12, color: COLORS.inkSoft, marginTop: 2, display: "flex", alignItems: "center", gap: 5, flexWrap: "wrap" }}>
+                          <span style={{ fontSize: 10.5, fontWeight: 700, color: "#fff", background: COLORS.court, padding: "1px 7px", borderRadius: 8 }}><div style={{ fontSize: 12, color: COLORS.inkSoft, marginTop: 2, display: "flex", alignItems: "center", gap: 5, flexWrap: "wrap" }}>
                           <span style={{ fontSize: 10.5, fontWeight: 700, color: "#fff", background: COLORS.court, padding: "1px 7px", borderRadius: 8 }}>{nombreProfe}</span>
+                          {c.precio != null && <span style={{ fontWeight: 700 }}>{fmtMoney(c.precio)}</span>}
                         </div>
                         {c.reprogramada_desde_fecha_anterior && null}
                         {c.motivo_reprogramacion && !cancelada && (
@@ -3642,6 +3650,7 @@ function ReprogramarClaseClubModal({ clase, club, profesores, onClose, onGuardad
   const [hora, setHora] = useState(clase.hora_inicio.slice(0, 5));
   const [motivo, setMotivo] = useState("Lluvia");
   const [guardando, setGuardando] = useState(false);
+  const [guardado, setGuardado] = useState(false);
 
   const duracionMin = (() => {
     const [h1, m1] = clase.hora_inicio.split(":").map(Number);
@@ -3649,6 +3658,11 @@ function ReprogramarClaseClubModal({ clase, club, profesores, onClose, onGuardad
     return h2 * 60 + m2 - (h1 * 60 + m1);
   })();
   const horaFin = addMinutos(hora, duracionMin);
+
+  const profe = profesores.find((p) => p.profesor_id === clase.profesor_id);
+  const profeNombre = (profe && profe.usuarios && profe.usuarios.nombre) || (profe && profe.nombre_invitado) || "Profe";
+  const profeTelefono = (profe && profe.usuarios && profe.usuarios.telefono) || (profe && profe.telefono_invitado);
+  const alumnos = (clase.clase_alumnos || []).map((ca) => ca.alumnos).filter(Boolean);
 
   const guardar = async () => {
     setGuardando(true);
@@ -3665,8 +3679,32 @@ function ReprogramarClaseClubModal({ clase, club, profesores, onClose, onGuardad
       .eq("id", clase.id);
     setGuardando(false);
     if (error) { console.error(error); return; }
+    setGuardado(true);
     onGuardado();
   };
+
+  if (guardado) {
+    const mensajeAlumno = `Hola! Te reprogramamos tu clase en ${club.nombre} de ${fmtFechaHoraLarga(clase.fecha, clase.hora_inicio.slice(0, 5))} para el ${fmtFechaHoraLarga(fecha, hora)} (${motivo.toLowerCase()}).`;
+    const mensajeProfe = `Hola ${profeNombre.split(" ")[0]}! Se reprogramó tu clase en ${club.nombre} de ${fmtFechaHoraLarga(clase.fecha, clase.hora_inicio.slice(0, 5))} para el ${fmtFechaHoraLarga(fecha, hora)} (${motivo.toLowerCase()}).`;
+    return (
+      <ModalShell title="Clase reprogramada" onClose={onClose}>
+        <div style={{ fontSize: 13.5, color: COLORS.inkSoft, marginBottom: 14 }}>Avisale a cada uno por WhatsApp si querés:</div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          {alumnos.filter((a) => a.telefono).map((a) => (
+            <a key={a.id} href={linkWhatsApp(a.telefono, mensajeAlumno)} target="_blank" rel="noreferrer" style={{ ...primaryBtn, background: "#25D366", textDecoration: "none", display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}>
+              <MessageCircle size={16} /> Avisar a {a.nombre.split(" ")[0]}
+            </a>
+          ))}
+          {profeTelefono && (
+            <a href={linkWhatsApp(profeTelefono, mensajeProfe)} target="_blank" rel="noreferrer" style={{ ...primaryBtn, background: "#25D366", textDecoration: "none", display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}>
+              <MessageCircle size={16} /> Avisar a {profeNombre.split(" ")[0]}
+            </a>
+          )}
+          <button onClick={onClose} style={{ ...primaryBtn, background: "#fff", color: COLORS.ink, border: `1px solid ${COLORS.line}` }}>Listo</button>
+        </div>
+      </ModalShell>
+    );
+  }
 
   return (
     <ModalShell title="Reprogramar clase" onClose={onClose}>
@@ -3695,18 +3733,49 @@ function ReprogramarClaseClubModal({ clase, club, profesores, onClose, onGuardad
 function CancelarClaseClubModal({ clase, club, profesores, onClose, onGuardado }) {
   const [motivo, setMotivo] = useState("Alumno");
   const [conAviso, setConAviso] = useState(true);
+  const [cobrarIgual, setCobrarIgual] = useState(false);
   const [guardando, setGuardando] = useState(false);
+  const [guardado, setGuardado] = useState(false);
+
+  const profe = profesores.find((p) => p.profesor_id === clase.profesor_id);
+  const profeNombre = (profe && profe.usuarios && profe.usuarios.nombre) || (profe && profe.nombre_invitado) || "Profe";
+  const profeTelefono = (profe && profe.usuarios && profe.usuarios.telefono) || (profe && profe.telefono_invitado);
+  const alumnos = (clase.clase_alumnos || []).map((ca) => ca.alumnos).filter(Boolean);
 
   const guardar = async () => {
     setGuardando(true);
     const { error } = await supabaseClient
       .from("clases")
-      .update({ estado: "cancelada", motivo_cancelacion: motivo, con_aviso: conAviso })
+      .update({ estado: "cancelada", motivo_cancelacion: motivo, con_aviso: conAviso, cobrar_igual: !conAviso ? cobrarIgual : false })
       .eq("id", clase.id);
     setGuardando(false);
     if (error) { console.error(error); return; }
+    setGuardado(true);
     onGuardado();
   };
+
+  if (guardado) {
+    const mensajeAlumno = `Hola! Te avisamos que se cancela tu clase en ${club.nombre} del ${fmtFechaHoraLarga(clase.fecha, clase.hora_inicio.slice(0, 5))} (${motivo.toLowerCase()}). Coordinamos otra fecha.`;
+    const mensajeProfe = `Hola ${profeNombre.split(" ")[0]}! Se cancela tu clase en ${club.nombre} del ${fmtFechaHoraLarga(clase.fecha, clase.hora_inicio.slice(0, 5))} (${motivo.toLowerCase()}).`;
+    return (
+      <ModalShell title="Clase cancelada" onClose={onClose}>
+        <div style={{ fontSize: 13.5, color: COLORS.inkSoft, marginBottom: 14 }}>Avisale a cada uno por WhatsApp si querés:</div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          {alumnos.filter((a) => a.telefono).map((a) => (
+            <a key={a.id} href={linkWhatsApp(a.telefono, mensajeAlumno)} target="_blank" rel="noreferrer" style={{ ...primaryBtn, background: "#25D366", textDecoration: "none", display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}>
+              <MessageCircle size={16} /> Avisar a {a.nombre.split(" ")[0]}
+            </a>
+          ))}
+          {profeTelefono && (
+            <a href={linkWhatsApp(profeTelefono, mensajeProfe)} target="_blank" rel="noreferrer" style={{ ...primaryBtn, background: "#25D366", textDecoration: "none", display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}>
+              <MessageCircle size={16} /> Avisar a {profeNombre.split(" ")[0]}
+            </a>
+          )}
+          <button onClick={onClose} style={{ ...primaryBtn, background: "#fff", color: COLORS.ink, border: `1px solid ${COLORS.line}` }}>Listo</button>
+        </div>
+      </ModalShell>
+    );
+  }
 
   return (
     <ModalShell title="Cancelar clase" onClose={onClose}>
@@ -3722,7 +3791,7 @@ function CancelarClaseClubModal({ clase, club, profesores, onClose, onGuardado }
         ))}
       </div>
       <Label>¿Avisó con tiempo suficiente?</Label>
-      <div style={{ display: "flex", gap: 6, marginBottom: 18 }}>
+      <div style={{ display: "flex", gap: 6, marginBottom: 14 }}>
         <button onClick={() => setConAviso(true)} style={{ ...chipStyle, background: conAviso ? COLORS.court : "#fff", color: conAviso ? "#fff" : COLORS.ink, borderColor: conAviso ? COLORS.court : COLORS.line }}>
           Sí, con aviso
         </button>
@@ -3730,12 +3799,33 @@ function CancelarClaseClubModal({ clase, club, profesores, onClose, onGuardado }
           No, sin aviso
         </button>
       </div>
+      {!conAviso && (
+        <div
+          onClick={() => setCobrarIgual((v) => !v)}
+          style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", borderRadius: 10, border: `1px solid ${cobrarIgual ? "#B23A3A" : COLORS.line}`, background: cobrarIgual ? "#FBE4E4" : "#fff", marginBottom: 18, cursor: "pointer" }}
+        >
+          <div style={{ width: 18, height: 18, borderRadius: 5, border: `2px solid ${cobrarIgual ? "#B23A3A" : COLORS.inkSoft}`, background: cobrarIgual ? "#B23A3A" : "transparent", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+            {cobrarIgual && <Check size={12} color="#fff" />}
+          </div>
+          <div>
+            <div style={{ fontWeight: 700, fontSize: 13.5 }}>Cobrar la clase igual</div>
+            <div style={{ fontSize: 12, color: COLORS.inkSoft }}>Queda marcada para que la resuelvas con el alumno.</div>
+          </div>
+        </div>
+      )}
       <button disabled={guardando} onClick={guardar} style={{ ...primaryBtn, background: "#B23A3A" }}>
         {guardando ? "Guardando..." : "Confirmar cancelación"}
       </button>
     </ModalShell>
   );
 }
+const TIPOS_CLASE = [
+  { id: "individual", label: "Individual", max: 1 },
+  { id: "dobles", label: "Dobles", max: 2 },
+  { id: "triples", label: "Triples", max: 3 },
+  { id: "cuadruples", label: "Cuádruples", max: 4 },
+];
+
 function AddClaseClubModal({ club, profesores, onClose, onGuardado }) {
   const [profesorId, setProfesorId] = useState(profesores[0]?.profesor_id || null);
   const [alumnos, setAlumnos] = useState([]);
@@ -3743,6 +3833,9 @@ function AddClaseClubModal({ club, profesores, onClose, onGuardado }) {
   const [mostrarLista, setMostrarLista] = useState(false);
   const [alumnoSel, setAlumnoSel] = useState(null);
   const [telefonoNuevo, setTelefonoNuevo] = useState("");
+  const [tipoClase, setTipoClase] = useState("individual");
+  const [extraNombres, setExtraNombres] = useState(["", "", ""]);
+  const [precio, setPrecio] = useState("");
   const [fecha, setFecha] = useState(toISODateLocal(new Date()));
   const [hora, setHora] = useState("09:00");
   const [duracionMin, setDuracionMin] = useState(60);
@@ -3773,6 +3866,9 @@ function AddClaseClubModal({ club, profesores, onClose, onGuardado }) {
   const alumnosFiltrados = busqueda.trim().length === 0 ? [] : alumnos.filter((a) => a.nombre.toLowerCase().includes(busqueda.trim().toLowerCase()));
   const yaExisteExacto = alumnos.some((a) => a.nombre.toLowerCase() === busqueda.trim().toLowerCase());
 
+  const maxAlumnos = TIPOS_CLASE.find((t) => t.id === tipoClase).max;
+  const cantidadExtras = maxAlumnos - 1;
+
   const puedeGuardar = profesorId && (alumnoSel || busqueda.trim()) && fecha && hora;
 
   const guardar = async () => {
@@ -3790,23 +3886,40 @@ function AddClaseClubModal({ club, profesores, onClose, onGuardado }) {
       alumnoNombre = nuevo[0].nombre;
       alumnoTelefono = nuevo[0].telefono;
     }
+
     const { data: clase, error: errorClase } = await supabaseClient
       .from("clases")
-      .insert({ club_id: club.id, profesor_id: profesorId, fecha, hora_inicio: hora, hora_fin: horaFin, estado: "pendiente" })
+      .insert({ club_id: club.id, profesor_id: profesorId, fecha, hora_inicio: hora, hora_fin: horaFin, estado: "pendiente", precio: precio ? Number(precio) : null })
       .select();
     if (errorClase) { console.error(errorClase); setGuardando(false); return; }
+
     await supabaseClient.from("clase_alumnos").insert({ clase_id: clase[0].id, alumno_id: alumnoId });
+
+    const nombresExtras = [];
+    for (let i = 0; i < cantidadExtras; i++) {
+      const nombreExtra = (extraNombres[i] || "").trim();
+      if (!nombreExtra) continue;
+      const { data: nuevoExtra, error: errorExtra } = await supabaseClient
+        .from("alumnos")
+        .insert({ club_id: club.id, nombre: nombreExtra })
+        .select();
+      if (errorExtra) { console.error(errorExtra); continue; }
+      await supabaseClient.from("clase_alumnos").insert({ clase_id: clase[0].id, alumno_id: nuevoExtra[0].id });
+      nombresExtras.push(nombreExtra);
+    }
+
     setGuardando(false);
     const profe = profesores.find((p) => p.profesor_id === profesorId);
     const profeNombre = (profe && profe.usuarios && profe.usuarios.nombre) || (profe && profe.nombre_invitado) || "Profe";
     const profeTelefono = (profe && profe.usuarios && profe.usuarios.telefono) || (profe && profe.telefono_invitado);
-    setClaseCreada({ alumnoNombre, alumnoTelefono, profeNombre, profeTelefono, fecha, hora });
+    setClaseCreada({ alumnoNombre, alumnoTelefono, nombresExtras, profeNombre, profeTelefono, fecha, hora });
     onGuardado();
   };
 
   if (claseCreada) {
-    const mensajeAlumno = `Hola ${claseCreada.alumnoNombre.split(" ")[0]}! Te confirmamos tu clase en ${club.nombre} el ${fmtFechaHoraLarga(claseCreada.fecha, claseCreada.hora)}.`;
-    const mensajeProfe = `Hola ${claseCreada.profeNombre.split(" ")[0]}! Te asignaron una clase en ${club.nombre} el ${fmtFechaHoraLarga(claseCreada.fecha, claseCreada.hora)} con ${claseCreada.alumnoNombre}.`;
+    const todosNombres = [claseCreada.alumnoNombre, ...claseCreada.nombresExtras].join(", ");
+    const mensajeAlumno = `Hola ${claseCreada.alumnoNombre.split(" ")[0]}! Te confirmamos tu clase en ${club.nombre} el ${fmtFechaHoraLarga(claseCreada.fecha, claseCreada.hora)} con el profe ${claseCreada.profeNombre}.`;
+    const mensajeProfe = `Hola ${claseCreada.profeNombre.split(" ")[0]}! Te asignaron una clase en ${club.nombre} el ${fmtFechaHoraLarga(claseCreada.fecha, claseCreada.hora)} con ${todosNombres}.`;
     return (
       <ModalShell title="Clase asignada" onClose={onClose}>
         <div style={{ fontSize: 13.5, color: COLORS.inkSoft, marginBottom: 14 }}>
@@ -3843,7 +3956,16 @@ function AddClaseClubModal({ club, profesores, onClose, onGuardado }) {
         })}
       </div>
 
-      <Label>Alumno</Label>
+      <Label>Tipo de clase</Label>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 16 }}>
+        {TIPOS_CLASE.map((t) => (
+          <button key={t.id} onClick={() => setTipoClase(t.id)} style={{ ...chipStyle, background: tipoClase === t.id ? COLORS.court : "#fff", color: tipoClase === t.id ? "#fff" : COLORS.ink, borderColor: tipoClase === t.id ? COLORS.court : COLORS.line }}>
+            {t.label}
+          </button>
+        ))}
+      </div>
+
+      <Label>Alumno responsable</Label>
       {alumnoSel ? (
         <button onClick={() => setAlumnoSel(null)} style={{ ...chipStyle, background: COLORS.court, color: "#fff", borderColor: COLORS.court, marginBottom: 12, display: "flex", alignItems: "center", gap: 5 }}>
           {alumnoSel.nombre} <span style={{ fontWeight: 900 }}>✕</span>
@@ -3869,6 +3991,22 @@ function AddClaseClubModal({ club, profesores, onClose, onGuardado }) {
         </div>
       )}
 
+      {cantidadExtras > 0 && (
+        <>
+          <Label>Otros alumnos (opcional)</Label>
+          {Array.from({ length: cantidadExtras }).map((_, i) => (
+            <input
+              key={i}
+              value={extraNombres[i] || ""}
+              onChange={(e) => setExtraNombres((prev) => { const next = [...prev]; next[i] = e.target.value; return next; })}
+              placeholder={`Nombre del alumno ${i + 2}`}
+              style={{ ...inputStyle, marginBottom: 8 }}
+            />
+          ))}
+          <div style={{ fontSize: 12, color: COLORS.inkSoft, marginBottom: 12 }}>No hace falta completarlos todos si todavía no sabés los nombres.</div>
+        </>
+      )}
+
       <Label>Fecha</Label>
       <input type="date" value={fecha} onChange={(e) => setFecha(e.target.value)} style={{ ...inputStyle, marginBottom: 12 }} />
 
@@ -3888,6 +4026,9 @@ function AddClaseClubModal({ club, profesores, onClose, onGuardado }) {
           </button>
         ))}
       </div>
+
+      <Label>Precio total de la clase (opcional)</Label>
+      <input type="number" inputMode="numeric" value={precio} onChange={(e) => setPrecio(e.target.value)} placeholder="Ej: 8000" style={{ ...inputStyle, marginBottom: 18 }} />
 
       {superpuesta && (
         <div style={{ background: "#FBE4E4", border: "1.5px solid #B23A3A", borderRadius: 10, padding: "10px 12px", marginBottom: 12, fontSize: 13, color: "#8A2A2A", fontWeight: 700 }}>

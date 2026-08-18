@@ -3144,8 +3144,7 @@ function ClubApp({ session, onOpenAccount }) {
       {tab === "profes" && <ProfesView club={club} onClubUpdate={setClub} showToast={showToast} />}
       {tab === "agenda" && <ClubAgendaView club={club} showToast={showToast} />}
       {tab === "alumnos" && <ClubAlumnosView club={club} showToast={showToast} />}
-      {tab === "resumen" && <ProximamenteView texto="Acá vas a ver lo acumulado a pagar por profe." />}
-
+      {tab === "resumen" && <ClubResumenView club={club} showToast={showToast} />}
       <ClubTabBar tab={tab} setTab={setTab} />
       {toast && <Toast msg={toast} />}
     </div>
@@ -4153,6 +4152,134 @@ function AddAlumnoClubModal({ alumno, onClose, onSave }) {
         {alumno ? "Guardar cambios" : "Guardar alumno"}
       </button>
     </ModalShell>
+  );
+}
+ function ClubResumenView({ club, showToast }) {
+  const [clases, setClases] = useState(null);
+  const [profesores, setProfesores] = useState([]);
+  const [historial, setHistorial] = useState([]);
+
+  const cargar = async () => {
+    const { data, error } = await supabaseClient
+      .from("clases")
+      .select("*")
+      .eq("club_id", club.id)
+      .eq("estado", "hecha")
+      .is("liquidacion_id", null);
+    if (error) { console.error(error); return; }
+    setClases(data || []);
+  };
+
+  const cargarProfesores = async () => {
+    const { data, error } = await supabaseClient
+      .from("club_profesor")
+      .select("*, usuarios:profesor_id(id, nombre, telefono)")
+      .eq("club_id", club.id)
+      .eq("estado", "activo");
+    if (error) { console.error(error); return; }
+    setProfesores(data || []);
+  };
+
+  const cargarHistorial = async () => {
+    const { data, error } = await supabaseClient
+      .from("liquidaciones")
+      .select("*")
+      .eq("club_id", club.id)
+      .order("pagada_en", { ascending: false })
+      .limit(10);
+    if (error) { console.error(error); return; }
+    setHistorial(data || []);
+  };
+
+  useEffect(() => { cargar(); cargarProfesores(); cargarHistorial(); }, [club.id]);
+
+  if (clases === null) {
+    return <div style={{ padding: 32, textAlign: "center", color: COLORS.inkSoft }}>Cargando...</div>;
+  }
+
+  const porProfe = {};
+  clases.forEach((c) => {
+    if (!porProfe[c.profesor_id]) porProfe[c.profesor_id] = { cantidad: 0, total: 0, fechas: [] };
+    porProfe[c.profesor_id].cantidad += 1;
+    porProfe[c.profesor_id].total += Number(c.precio || 0);
+    porProfe[c.profesor_id].fechas.push(c.fecha);
+  });
+
+  const nombreDeProfe = (profesorId) => {
+    const profe = profesores.find((p) => p.profesor_id === profesorId);
+    return (profe && profe.usuarios && profe.usuarios.nombre) || (profe && profe.nombre_invitado) || "Profe";
+  };
+
+  const marcarPagado = async (profesorId) => {
+    const clasesDelProfe = clases.filter((c) => c.profesor_id === profesorId);
+    const fechas = clasesDelProfe.map((c) => c.fecha).sort();
+    const { data: liquidacion, error: errorLiq } = await supabaseClient
+      .from("liquidaciones")
+      .insert({
+        club_id: club.id,
+        profesor_id: profesorId,
+        periodo_desde: fechas[0],
+        periodo_hasta: fechas[fechas.length - 1],
+        estado: "pagada",
+        pagada_en: new Date().toISOString(),
+      })
+      .select();
+    if (errorLiq) { console.error(errorLiq); return; }
+    const ids = clasesDelProfe.map((c) => c.id);
+    const { error: errorUpdate } = await supabaseClient
+      .from("clases")
+      .update({ liquidacion_id: liquidacion[0].id })
+      .in("id", ids);
+    if (errorUpdate) { console.error(errorUpdate); return; }
+    showToast("Marcado como pagado");
+    cargar();
+    cargarHistorial();
+  };
+
+  const entries = Object.entries(porProfe);
+
+  return (
+    <div style={{ padding: 16 }}>
+      <div style={{ fontWeight: 800, fontSize: 18, marginBottom: 4 }}>Resumen</div>
+      <div style={{ fontSize: 13, color: COLORS.inkSoft, marginBottom: 16 }}>Clases dadas ("hechas") todavía sin pagar, por profe.</div>
+
+      {entries.length === 0 ? (
+        <div style={{ color: COLORS.inkSoft, fontSize: 14, marginBottom: 20 }}>No hay clases pendientes de pago.</div>
+      ) : (
+        <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 24 }}>
+          {entries.map(([profesorId, info]) => (
+            <div key={profesorId} style={cardStyle}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <div>
+                  <div style={{ fontWeight: 700, fontSize: 15 }}>{nombreDeProfe(profesorId)}</div>
+                  <div style={{ fontSize: 12.5, color: COLORS.inkSoft, marginTop: 2 }}>{info.cantidad} clase{info.cantidad === 1 ? "" : "s"}</div>
+                </div>
+                <div style={{ fontWeight: 800, fontSize: 17, color: COLORS.court }}>{fmtMoney(info.total)}</div>
+              </div>
+              <button onClick={() => marcarPagado(profesorId)} style={{ ...pillBtn, background: COLORS.court, color: "#fff", border: "none", marginTop: 10 }}>
+                <Check size={12} /> Marcar como pagado
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {historial.length > 0 && (
+        <>
+          <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 8 }}>Últimos pagos</div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+            {historial.map((l) => (
+              <div key={l.id} style={{ ...cardStyle, padding: "10px 14px" }}>
+                <div style={{ fontSize: 13.5, fontWeight: 600 }}>{nombreDeProfe(l.profesor_id)}</div>
+                <div style={{ fontSize: 11.5, color: COLORS.inkSoft, marginTop: 2 }}>
+                  {fmtDateShort(new Date(l.periodo_desde + "T00:00:00"))} – {fmtDateShort(new Date(l.periodo_hasta + "T00:00:00"))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
   );
 }
  function RoleGateScreen({ onElegir }) {

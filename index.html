@@ -4158,6 +4158,9 @@ function AddAlumnoClubModal({ alumno, onClose, onSave }) {
   const [clases, setClases] = useState(null);
   const [profesores, setProfesores] = useState([]);
   const [historial, setHistorial] = useState([]);
+  const [filtroProfe, setFiltroProfe] = useState("todos");
+  const [desde, setDesde] = useState("");
+  const [hasta, setHasta] = useState("");
 
   const cargar = async () => {
     const { data, error } = await supabaseClient
@@ -4186,7 +4189,7 @@ function AddAlumnoClubModal({ alumno, onClose, onSave }) {
       .select("*")
       .eq("club_id", club.id)
       .order("pagada_en", { ascending: false })
-      .limit(10);
+      .limit(200);
     if (error) { console.error(error); return; }
     setHistorial(data || []);
   };
@@ -4241,6 +4244,13 @@ function AddAlumnoClubModal({ alumno, onClose, onSave }) {
 
   const entries = Object.entries(porProfe);
 
+  const historialFiltrado = historial.filter((l) => {
+    if (filtroProfe !== "todos" && l.profesor_id !== filtroProfe) return false;
+    if (desde && l.periodo_hasta < desde) return false;
+    if (hasta && l.periodo_desde > hasta) return false;
+    return true;
+  });
+
   return (
     <div style={{ padding: 16 }}>
       <div style={{ fontWeight: 800, fontSize: 18, marginBottom: 4 }}>Resumen</div>
@@ -4267,24 +4277,49 @@ function AddAlumnoClubModal({ alumno, onClose, onSave }) {
         </div>
       )}
 
-      {historial.length > 0 && (
-        <>
-          <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 8 }}>Últimos pagos</div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-            {historial.map((l) => (
-              <div key={l.id} style={{ ...cardStyle, padding: "10px 14px" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <div style={{ fontSize: 13.5, fontWeight: 600 }}>{nombreDeProfe(l.profesor_id)}</div>
-                  {l.monto_total != null && <div style={{ fontSize: 13.5, fontWeight: 700, color: COLORS.court }}>{fmtMoney(l.monto_total)}</div>}
-                </div>
-                <div style={{ fontSize: 11.5, color: COLORS.inkSoft, marginTop: 2 }}>
-                  {fmtDateShort(new Date(l.periodo_desde + "T00:00:00"))} – {fmtDateShort(new Date(l.periodo_hasta + "T00:00:00"))}
-                  {l.cantidad_clases != null && ` · ${l.cantidad_clases} clase${l.cantidad_clases === 1 ? "" : "s"}`}
-                </div>
+      <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 10 }}>Historial de pagos</div>
+
+      {profesores.length > 0 && (
+        <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 10 }}>
+          <button onClick={() => setFiltroProfe("todos")} style={{ ...chipStyle, background: filtroProfe === "todos" ? COLORS.ink : "#fff", color: filtroProfe === "todos" ? "#fff" : COLORS.ink, borderColor: filtroProfe === "todos" ? COLORS.ink : COLORS.line }}>
+            Todos
+          </button>
+          {profesores.map((p) => (
+            <button key={p.profesor_id} onClick={() => setFiltroProfe(p.profesor_id)} style={{ ...chipStyle, background: filtroProfe === p.profesor_id ? COLORS.court : "#fff", color: filtroProfe === p.profesor_id ? "#fff" : COLORS.ink, borderColor: filtroProfe === p.profesor_id ? COLORS.court : COLORS.line }}>
+              {nombreDeProfe(p.profesor_id)}
+            </button>
+          ))}
+        </div>
+      )}
+
+      <div style={{ display: "flex", gap: 8, marginBottom: 14 }}>
+        <div style={{ flex: 1 }}>
+          <Label>Desde</Label>
+          <input type="date" value={desde} onChange={(e) => setDesde(e.target.value)} style={inputStyle} />
+        </div>
+        <div style={{ flex: 1 }}>
+          <Label>Hasta</Label>
+          <input type="date" value={hasta} onChange={(e) => setHasta(e.target.value)} style={inputStyle} />
+        </div>
+      </div>
+
+      {historialFiltrado.length === 0 ? (
+        <div style={{ color: COLORS.inkSoft, fontSize: 14 }}>No hay pagos para ese filtro.</div>
+      ) : (
+        <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+          {historialFiltrado.map((l) => (
+            <div key={l.id} style={{ ...cardStyle, padding: "10px 14px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <div style={{ fontSize: 13.5, fontWeight: 600 }}>{nombreDeProfe(l.profesor_id)}</div>
+                {l.monto_total != null && <div style={{ fontSize: 13.5, fontWeight: 700, color: COLORS.court }}>{fmtMoney(l.monto_total)}</div>}
               </div>
-            ))}
-          </div>
-        </>
+              <div style={{ fontSize: 11.5, color: COLORS.inkSoft, marginTop: 2 }}>
+                {fmtDateShort(new Date(l.periodo_desde + "T00:00:00"))} – {fmtDateShort(new Date(l.periodo_hasta + "T00:00:00"))}
+                {l.cantidad_clases != null && ` · ${l.cantidad_clases} clase${l.cantidad_clases === 1 ? "" : "s"}`}
+              </div>
+            </div>
+          ))}
+        </div>
       )}
     </div>
   );

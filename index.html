@@ -4213,6 +4213,7 @@ function AddAlumnoClubModal({ alumno, onClose, onSave }) {
   const marcarPagado = async (profesorId) => {
     const clasesDelProfe = clases.filter((c) => c.profesor_id === profesorId);
     const fechas = clasesDelProfe.map((c) => c.fecha).sort();
+    const montoTotal = clasesDelProfe.reduce((s, c) => s + Number(c.precio || 0), 0);
     const { data: liquidacion, error: errorLiq } = await supabaseClient
       .from("liquidaciones")
       .insert({
@@ -4222,6 +4223,8 @@ function AddAlumnoClubModal({ alumno, onClose, onSave }) {
         periodo_hasta: fechas[fechas.length - 1],
         estado: "pagada",
         pagada_en: new Date().toISOString(),
+        monto_total: montoTotal,
+        cantidad_clases: clasesDelProfe.length,
       })
       .select();
     if (errorLiq) { console.error(errorLiq); return; }
@@ -4270,9 +4273,13 @@ function AddAlumnoClubModal({ alumno, onClose, onSave }) {
           <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
             {historial.map((l) => (
               <div key={l.id} style={{ ...cardStyle, padding: "10px 14px" }}>
-                <div style={{ fontSize: 13.5, fontWeight: 600 }}>{nombreDeProfe(l.profesor_id)}</div>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <div style={{ fontSize: 13.5, fontWeight: 600 }}>{nombreDeProfe(l.profesor_id)}</div>
+                  {l.monto_total != null && <div style={{ fontSize: 13.5, fontWeight: 700, color: COLORS.court }}>{fmtMoney(l.monto_total)}</div>}
+                </div>
                 <div style={{ fontSize: 11.5, color: COLORS.inkSoft, marginTop: 2 }}>
                   {fmtDateShort(new Date(l.periodo_desde + "T00:00:00"))} – {fmtDateShort(new Date(l.periodo_hasta + "T00:00:00"))}
+                  {l.cantidad_clases != null && ` · ${l.cantidad_clases} clase${l.cantidad_clases === 1 ? "" : "s"}`}
                 </div>
               </div>
             ))}

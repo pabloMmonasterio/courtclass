@@ -1351,8 +1351,6 @@ function ultimoDiaMes(d) {
 
 const HORAS_DISPONIBILIDAD = Array.from({ length: 15 }, (_, i) => i + 8); // 8:00 a 22:00
 
-const HORAS_DISPONIBILIDAD = Array.from({ length: 15 }, (_, i) => i + 8); // 8:00 a 22:00
-
 function DisponibilidadView({ data, clasesClub, onToggle, onLimpiarDia, onMarcarDiaCompleto, onToggleExcepcion, onSetExcepcionDiaCompleto, onLimpiarExcepcionesDia }) {
   const [subVista, setSubVista] = useState("patron"); // patron | excepciones
   const [mesRef, setMesRef] = useState(() => new Date());

@@ -584,9 +584,10 @@ function App({ onOpenAccount } = {}) {
       {tab === "clubes" && (
         <ClubesView data={data} onAddClick={() => setShowAddClub(true)} onDelete={deleteClub} onEdit={(c) => setEditandoClubInfo(c)} />
       )}
-      {tab === "disponibilidad" && (
+      {tab === {tab === "disponibilidad" && (
         <DisponibilidadView
           data={data}
+          clasesClub={clasesClub}
           onToggle={toggleDisponibilidad}
           onLimpiarDia={limpiarDisponibilidadDia}
           onMarcarDiaCompleto={marcarDiaCompletoDisponible}
@@ -604,6 +605,7 @@ function App({ onOpenAccount } = {}) {
           alumnos={data.alumnos}
           clubes={data.clubes || []}
           clasesExistentes={data.clases}
+          clasesClub={clasesClub}
           onClose={() => setShowAddClase(false)}
           onSave={(clase) => {
             addClase(clase);
@@ -1349,7 +1351,9 @@ function ultimoDiaMes(d) {
 
 const HORAS_DISPONIBILIDAD = Array.from({ length: 15 }, (_, i) => i + 8); // 8:00 a 22:00
 
-function DisponibilidadView({ data, onToggle, onLimpiarDia, onMarcarDiaCompleto, onToggleExcepcion, onSetExcepcionDiaCompleto, onLimpiarExcepcionesDia }) {
+const HORAS_DISPONIBILIDAD = Array.from({ length: 15 }, (_, i) => i + 8); // 8:00 a 22:00
+
+function DisponibilidadView({ data, clasesClub, onToggle, onLimpiarDia, onMarcarDiaCompleto, onToggleExcepcion, onSetExcepcionDiaCompleto, onLimpiarExcepcionesDia }) {
   const [subVista, setSubVista] = useState("patron"); // patron | excepciones
   const [mesRef, setMesRef] = useState(() => new Date());
   const [semanaIdx, setSemanaIdx] = useState(0);
@@ -1357,6 +1361,7 @@ function DisponibilidadView({ data, onToggle, onLimpiarDia, onMarcarDiaCompleto,
   const disponibilidad = data.disponibilidad || [];
   const excepciones = data.disponibilidadExcepciones || {};
   const clubById = Object.fromEntries((data.clubes || []).map((c) => [c.id, c]));
+  const clasesDeClub = clasesClub || [];
 
   const estaDisponiblePatron = (dia, hora) => disponibilidad.includes(`${dia}-${hora}`);
   const diaCompletoPatron = (dia) => HORAS_DISPONIBILIDAD.every((h) => estaDisponiblePatron(dia, h));
@@ -1364,6 +1369,7 @@ function DisponibilidadView({ data, onToggle, onLimpiarDia, onMarcarDiaCompleto,
   // Ocupación global (para el patrón general): cualquier clase futura o de hoy, no cancelada,
   // cruzada por día de semana + hora, sin importar el mes.
   const ocupadoPatron = new Set();
+  const ocupadoClubPatron = {}; // key dia-hora -> nombre del club
   {
     const hoyStr = toISODateLocal(new Date());
     (data.clases || [])
@@ -1375,6 +1381,17 @@ function DisponibilidadView({ data, onToggle, onLimpiarDia, onMarcarDiaCompleto,
         const finDec = inicioDec + (c.duracionMin || 60) / 60;
         HORAS_DISPONIBILIDAD.forEach((h) => {
           if (inicioDec < h + 1 && finDec > h) ocupadoPatron.add(`${diaSemana}-${h}`);
+        });
+      });
+    clasesDeClub
+      .filter((c) => c.estado !== "cancelada" && c.fecha >= hoyStr)
+      .forEach((c) => {
+        const diaSemana = new Date(c.fecha + "T00:00:00").getDay();
+        const [hh, mm] = c.hora.split(":").map(Number);
+        const inicioDec = hh + mm / 60;
+        const finDec = inicioDec + (c.duracionMin || 60) / 60;
+        HORAS_DISPONIBILIDAD.forEach((h) => {
+          if (inicioDec < h + 1 && finDec > h) ocupadoClubPatron[`${diaSemana}-${h}`] = c.clubNombreClub;
         });
       });
   }
@@ -1412,6 +1429,7 @@ function DisponibilidadView({ data, onToggle, onLimpiarDia, onMarcarDiaCompleto,
 
   // Ocupación real por fecha exacta
   const ocupadoInfo = {}; // key fecha-hora -> {clubId}
+  const ocupadoClubInfo = {}; // key fecha-hora -> nombre del club
   (data.clases || [])
     .filter((c) => c.estado !== "cancelada")
     .forEach((c) => {
@@ -1421,6 +1439,18 @@ function DisponibilidadView({ data, onToggle, onLimpiarDia, onMarcarDiaCompleto,
       HORAS_DISPONIBILIDAD.forEach((h) => {
         if (inicioDec < h + 1 && finDec > h) {
           ocupadoInfo[`${c.fecha}-${h}`] = { clubId: c.clubId };
+        }
+      });
+    });
+  clasesDeClub
+    .filter((c) => c.estado !== "cancelada")
+    .forEach((c) => {
+      const [hh, mm] = c.hora.split(":").map(Number);
+      const inicioDec = hh + mm / 60;
+      const finDec = inicioDec + (c.duracionMin || 60) / 60;
+      HORAS_DISPONIBILIDAD.forEach((h) => {
+        if (inicioDec < h + 1 && finDec > h) {
+          ocupadoClubInfo[`${c.fecha}-${h}`] = c.clubNombreClub;
         }
       });
     });
@@ -1465,6 +1495,9 @@ function DisponibilidadView({ data, onToggle, onLimpiarDia, onMarcarDiaCompleto,
             <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11.5, color: COLORS.inkSoft }}>
               <div style={{ width: 12, height: 12, borderRadius: 3, background: "#E8B93E" }} /> Con clase agendada (hoy o después)
             </div>
+            <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11.5, color: COLORS.inkSoft }}>
+              <div style={{ width: 12, height: 12, borderRadius: 3, background: COLORS.clay }} /> Clase de un club
+            </div>
           </div>
           <div style={{ overflowX: "auto" }}>
             <div style={{ display: "grid", gridTemplateColumns: "44px repeat(7, 1fr)", gap: 3, minWidth: 460 }}>
@@ -1495,18 +1528,19 @@ function DisponibilidadView({ data, onToggle, onLimpiarDia, onMarcarDiaCompleto,
                   {DIAS_CORTO.map((_, dia) => {
                     const activo = estaDisponiblePatron(dia, hora);
                     const ocupado = estaOcupadoPatron(dia, hora);
+                    const clubOcupante = ocupadoClubPatron[`${dia}-${hora}`];
                     return (
                       <button
                         key={dia}
                         onClick={() => onToggle(dia, hora)}
-                        title={ocupado ? "Tenés al menos una clase agendada en este horario" : undefined}
+                        title={clubOcupante ? `Clase de ${clubOcupante}` : ocupado ? "Tenés al menos una clase agendada en este horario" : undefined}
                         style={{
                           height: 26,
                           border: "none",
                           borderRadius: 4,
                           cursor: "pointer",
-                          background: ocupado ? "#E8B93E" : activo ? COLORS.disponible : "#fff",
-                          boxShadow: ocupado || activo ? "none" : `inset 0 0 0 1px ${COLORS.line}`,
+                          background: clubOcupante ? COLORS.clay : ocupado ? "#E8B93E" : activo ? COLORS.disponible : "#fff",
+                          boxShadow: clubOcupante || ocupado || activo ? "none" : `inset 0 0 0 1px ${COLORS.line}`,
                         }}
                       />
                     );
@@ -1567,6 +1601,9 @@ function DisponibilidadView({ data, onToggle, onLimpiarDia, onMarcarDiaCompleto,
               <div style={{ width: 12, height: 12, borderRadius: 3, background: "#E8B93E" }} /> Con clase agendada
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11.5, color: COLORS.inkSoft }}>
+              <div style={{ width: 12, height: 12, borderRadius: 3, background: COLORS.clay }} /> Clase de un club
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11.5, color: COLORS.inkSoft }}>
               <div style={{ width: 12, height: 12, borderRadius: 3, boxShadow: `inset 0 0 0 2px ${COLORS.clay}` }} /> Excepción puntual
             </div>
           </div>
@@ -1610,10 +1647,14 @@ function DisponibilidadView({ data, onToggle, onLimpiarDia, onMarcarDiaCompleto,
                     const diaSemana = d.getDay();
                     const activo = efectivoEnFecha(fechaStr, diaSemana, hora);
                     const ocupInfo = ocupadoInfo[`${fechaStr}-${hora}`];
+                    const clubOcupante = ocupadoClubInfo[`${fechaStr}-${hora}`];
                     const esExc = esExcepcion(fechaStr, hora);
                     let bg = "#fff";
                     let sombra = `inset 0 0 0 1px ${COLORS.line}`;
-                    if (ocupInfo) {
+                    if (clubOcupante) {
+                      bg = COLORS.clay;
+                      sombra = "none";
+                    } else if (ocupInfo) {
                       bg = "#E8B93E";
                       sombra = "none";
                     } else if (activo) {
@@ -1625,7 +1666,7 @@ function DisponibilidadView({ data, onToggle, onLimpiarDia, onMarcarDiaCompleto,
                       <button
                         key={fechaStr}
                         onClick={() => onToggleExcepcion(fechaStr, diaSemana, hora)}
-                        title={ocupInfo ? `Clase agendada · ${fechaStr}` : esExc ? "Excepción puntual" : undefined}
+                        title={clubOcupante ? `Clase de ${clubOcupante} · ${fechaStr}` : ocupInfo ? `Clase agendada · ${fechaStr}` : esExc ? "Excepción puntual" : undefined}
                         style={{ height: 26, border: "none", borderRadius: 4, cursor: "pointer", background: bg, boxShadow: sombra }}
                       />
                     );
@@ -1650,7 +1691,6 @@ function DisponibilidadView({ data, onToggle, onLimpiarDia, onMarcarDiaCompleto,
     </div>
   );
 }
-
 function ResumenView({ data }) {
   const now = new Date();
   const clubes = data.clubes || [];
@@ -1818,7 +1858,7 @@ function ModalShell({ title, onClose, children }) {
   );
 }
 
-function AddClaseModal({ alumnos, clubes, clasesExistentes, onClose, onSave }) {
+function AddClaseModal({ alumnos, clubes, clasesExistentes, clasesClub, onClose, onSave }) {
   const [seleccion, setSeleccion] = useState([]);
   const [fecha, setFecha] = useState(new Date().toISOString().slice(0, 10));
   const [hora, setHora] = useState("09:00");
@@ -1857,6 +1897,11 @@ function AddClaseModal({ alumnos, clubes, clasesExistentes, onClose, onSave }) {
           if (c.estado === "cancelada" || c.fecha !== f) return false;
           const finExistente = addMinutos(c.hora, c.duracionMin || 60);
           return rangosSuperponen(hora, horaFin, c.hora, finExistente);
+        }) ||
+        (clasesClub || []).some((c) => {
+          if (c.estado === "cancelada" || c.fecha !== f) return false;
+          const finExistente = addMinutos(c.hora, c.duracionMin || 60);
+          return rangosSuperponen(hora, horaFin, c.hora, finExistente);
         })
       )
     : [];
@@ -1866,6 +1911,14 @@ function AddClaseModal({ alumnos, clubes, clasesExistentes, onClose, onSave }) {
     const finExistente = addMinutos(c.hora, c.duracionMin || 60);
     return rangosSuperponen(hora, horaFin, c.hora, finExistente);
   });
+
+  const superpuestaClub = !superpuesta
+    ? (clasesClub || []).find((c) => {
+        if (c.estado === "cancelada" || c.fecha !== fecha) return false;
+        const finExistente = addMinutos(c.hora, c.duracionMin || 60);
+        return rangosSuperponen(hora, horaFin, c.hora, finExistente);
+      })
+    : null;
 
   const toggleAlumno = (a) => {
     setSeleccion((prev) => {
@@ -2177,6 +2230,23 @@ function AddClaseModal({ alumnos, clubes, clasesExistentes, onClose, onSave }) {
         </div>
       )}
 
+      {!superpuesta && superpuestaClub && (
+        <div
+          style={{
+            background: "#FBE4E4",
+            border: "1.5px solid #B23A3A",
+            borderRadius: 10,
+            padding: "10px 12px",
+            marginBottom: 12,
+            fontSize: 13,
+            color: "#8A2A2A",
+            fontWeight: 700,
+          }}
+        >
+          ⚠ Ese horario ya tiene una clase asignada por {superpuestaClub.clubNombreClub} ({superpuestaClub.hora} - {addMinutos(superpuestaClub.hora, superpuestaClub.duracionMin || 60)}). Revisalo antes de guardar.
+        </div>
+      )}
+
       <button
         disabled={!puedeGuardar}
         onClick={() =>
@@ -2208,11 +2278,11 @@ function AddClaseModal({ alumnos, clubes, clasesExistentes, onClose, onSave }) {
         }
         style={{
           ...primaryBtn,
-          background: superpuesta ? "#B23A3A" : primaryBtn.background,
+          background: superpuesta || superpuestaClub ? "#B23A3A" : primaryBtn.background,
           opacity: puedeGuardar ? 1 : 0.4,
         }}
       >
-        {superpuesta
+        {superpuesta || superpuestaClub
           ? "Guardar de todos modos (se pisa)"
           : modoAbono
           ? `Agendar ${fechasAbono.length} clases del mes`
@@ -2221,7 +2291,6 @@ function AddClaseModal({ alumnos, clubes, clasesExistentes, onClose, onSave }) {
     </ModalShell>
   );
 }
-
 function ClubesView({ data, onAddClick, onDelete, onEdit }) {
   const clubes = data.clubes || [];
   return (
